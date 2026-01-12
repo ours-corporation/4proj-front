@@ -1,12 +1,32 @@
 
-function verifyLoginInput(email: string, password: string): { error: string } | null {
+function verifyLoginInput(email: string, password: string, username? :string): { error: string } | null {
     const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-    console.log("Verifying login input:", email, password);
+    if( username ) {
+        if ( username.length < 3 || username.length > 30 ) {
+            return { "error": "Username must be between 3 and 30 characters" };
+        }
+    }
     if ( email == "" || password == "" || email == null || password == null ) {
         return { "error": "Email and password are required" };
     } else if (!emailRegex.test(email)) {
         return { "error": "Invalid email format" };
     }
+    if (password.length < 12) {
+        return { "error": "Password must be at least 12 characters" };
+    }
+    if (!/[a-z]/.test(password)) {
+        return { "error": "Password must contain at least one lowercase letter" };
+    }
+    if (!/[A-Z]/.test(password)) {
+        return { "error": "Password must contain at least one uppercase letter" };
+    }
+    if (!/[0-9]/.test(password)) {
+        return { "error": "Password must contain at least one number" };
+    }
+    if (!/[!@#$%^&*]/.test(password)) {
+        return { "error": "Password must contain at least one special character (! @ # $ % ^ & *)" };
+    }
+
     return null;
 }
 
@@ -29,9 +49,9 @@ export async function login(email: string, password: string) {
     });
 }
 
-export async function register(email: string, password: string) {
+export async function register(email: string, password: string, username?: string) {
 
-    const validationError = verifyLoginInput(email, password);
+    const validationError = verifyLoginInput(email, password, username);
 
     if (validationError) {
         return new Response(JSON.stringify(validationError), { status: 401, headers: { "Content-Type": "application/json" } });
@@ -43,7 +63,7 @@ export async function register(email: string, password: string) {
         headers: {
             "Content-Type": "application/json",
         },
-        body: JSON.stringify({email, password}),
+        body: JSON.stringify({email, password, username}),
     });
 }
 

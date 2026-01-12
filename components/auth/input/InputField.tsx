@@ -13,7 +13,9 @@ type InputProps = {
 export default function InputField({ id, name, label, value, type, required, onChange }: InputProps) {
     return (
         <div>
-            <label className="block text-sm font-medium text-gray-700" id={id}>{label}</label>
+            <label className="block text-sm font-medium text-gray-700" htmlFor={id}>
+                {label} {required && <span className="text-red-500">*</span>}
+            </label>
             <input
                 id={id}
                 name={name}
@@ -26,3 +28,4 @@ export default function InputField({ id, name, label, value, type, required, onC
         </div>
     );
 }
+

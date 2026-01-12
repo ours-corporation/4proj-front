@@ -5,14 +5,18 @@ import { useState } from "react";
 import InputField from "@/components/auth/input/InputField";
 import SubmitButton from "@/components/auth/button/SubmitButton";
 import { register } from "@/api/auth";
+import {useRouter} from "next/navigation";
 
 
 export default function LoginPage() {
     const [email, setEmail] = useState("");
     const [password, setPassword] = useState("");
     const [confirmPassword, setConfirmPassword] = useState("");
+    const [username, setUsername] = useState("");
     const [loading, setLoading] = useState(false);
     const [error, setError] = useState("");
+
+    const router = useRouter();
 
     const handleSubmit = async (e: { preventDefault: () => void; }) => {
         e.preventDefault();
@@ -26,7 +30,7 @@ export default function LoginPage() {
                 return;
             }
 
-            const res = await register(email, password);
+            const res = await register(email, password, username);
 
             if (!res.ok) {
                 if(res.status === 401) {
@@ -34,11 +38,9 @@ export default function LoginPage() {
                 } else {
                     setError(`Erreur : ${res.status}`);
                 }
+            }else {
+                router.push("/login");
             }
-
-            const data = await res.json();
-            console.log("Login OK", data);
-            // localStorage.setItem("token", data.token)
         } catch (err) {
             console.error("Login failed", err);
         } finally {
@@ -62,7 +64,7 @@ export default function LoginPage() {
                     label="Email"
                     value={email}
                     type="email"
-
+                    required
                     onChange={setEmail}
                 />
 
@@ -72,6 +74,7 @@ export default function LoginPage() {
                     label="Mot de passe"
                     value={password}
                     type="password"
+                    required
                     onChange={setPassword}
                 />
 
@@ -81,7 +84,17 @@ export default function LoginPage() {
                     label="Confirmer le mot de passe"
                     value={confirmPassword}
                     type="password"
+                    required
                     onChange={setConfirmPassword}
+                />
+
+                <InputField
+                    id="username"
+                    name="username"
+                    label="Nom d'utilisateur"
+                    value={username}
+                    type="text"
+                    onChange={setUsername}
                 />
 
                 {error && (
@@ -95,6 +108,10 @@ export default function LoginPage() {
                     loading={loading}
                     loadingText="Inscription..."
                 />
+
+                <p className="text-sm text-red-500">
+                    * Champs obligatoires
+                </p>
 
                 <p className="text-sm text-center text-gray-600">
                     Vous avez déjà un compte ?{' '}
