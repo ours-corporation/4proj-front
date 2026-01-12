@@ -97,9 +97,9 @@ export default function LoginPage() {
                 />
 
                 <p className="text-sm text-center text-gray-600">
-                    Pas de compte ?{" "}
-                    <a href="/register" className="text-blue-600 hover:underline">
-                        Inscrivez-vous
+                    Vous avez déjà un compte ?{' '}
+                    <a href="/login" className="text-blue-600 hover:underline">
+                        Connectez-vous
                     </a>
                 </p>
             </form>

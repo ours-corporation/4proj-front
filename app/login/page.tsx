@@ -5,6 +5,7 @@ import { useState } from "react";
 import InputField from "@/components/auth/input/InputField";
 import SubmitButton from "@/components/auth/button/SubmitButton";
 import { login } from "@/api/auth";
+import {useRouter} from "next/navigation";
 
 
 export default function LoginPage() {
@@ -12,6 +13,8 @@ export default function LoginPage() {
     const [password, setPassword] = useState("");
     const [loading, setLoading] = useState(false);
     const [error, setError] = useState("");
+
+    const router = useRouter();
 
     const handleSubmit = async (e: { preventDefault: () => void; }) => {
         e.preventDefault();
@@ -33,8 +36,14 @@ export default function LoginPage() {
             }
 
             const data = await res.json();
-            console.log("Login OK", data);
-            // localStorage.setItem("token", data.token)
+
+            if(data.accessToken) {
+                localStorage.setItem("accessToken", data.accessToken);
+            }
+
+            router.push("/dashboard");
+
+
         } catch (err) {
             console.error("Login failed", err);
         } finally {
