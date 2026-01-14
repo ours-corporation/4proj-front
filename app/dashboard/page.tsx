@@ -1,12 +1,14 @@
 'use client';
 
 import { useAuth } from "@/src/hooks/useAuth";
+import Loading from "@/components/loading";
 
 export default function Dashboard() {
 
     //--------protection de vérification d'authentification---------
-    useAuth();
+    const loading = useAuth();
     //--------------------------------------------------------------
+    if (loading) return <Loading />;
 
     return (
         <div className="flex min-h-screen items-center justify-center bg-zinc-50 font-sans dark:bg-black">

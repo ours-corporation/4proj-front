@@ -4,7 +4,7 @@ import React from "react";
 import { useState } from "react";
 import InputField from "@/components/auth/input/InputField";
 import SubmitButton from "@/components/auth/button/SubmitButton";
-import { register } from "@/api/auth";
+import { register } from "@/src/api/auth";
 import {useRouter} from "next/navigation";
 
 

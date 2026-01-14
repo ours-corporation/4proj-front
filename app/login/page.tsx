@@ -1,11 +1,15 @@
 'use client';
 
-import React from "react";
+import React, {useEffect} from "react";
 import { useState } from "react";
 import InputField from "@/components/auth/input/InputField";
 import SubmitButton from "@/components/auth/button/SubmitButton";
-import { login } from "@/api/auth";
+import { login } from "@/src/api/auth";
 import {useRouter} from "next/navigation";
+import { FcGoogle } from "react-icons/fc";
+import { FaGithub } from "react-icons/fa";
+
+import { GetGoogleClientId } from "@/src/services/envReader"
 
 
 export default function LoginPage() {
@@ -16,40 +20,50 @@ export default function LoginPage() {
 
     const router = useRouter();
 
+    const [ redirect, setRedirect ] = useState("");
+    const [ redirectUri, setRedirectUri ] = useState("");
+
+    const uriGoogle = GetGoogleClientId();
+
+    useEffect(() => {
+        setRedirect(window.location.origin + "/auth/google/callback");
+        setRedirectUri("https://accounts.google.com/o/oauth2/v2/auth?client_id=" + uriGoogle +"&redirect_uri=" + redirect + "&response_type=code&scope=openid email profile&access_type=offline&prompt=consent");
+        console.log(redirect);
+        console.log(redirectUri);
+    }, [uriGoogle, redirect, redirectUri]);
+
     const handleSubmit = async (e: { preventDefault: () => void; }) => {
         e.preventDefault();
         setLoading(true);
         setError("");
 
         try {
-            console.log("Submitting", { email, password });
             const res = await login(email, password);
-
-            console.log("le call passe bien");
 
             if (!res.ok) {
                 if(res.status === 401) {
                     setError("Les identifiants sont invalides.");
+                    return;
                 } else {
                     setError(`Erreur : ${res.status}`);
+                    return;
                 }
             }
 
             const data = await res.json();
 
             if(data.accessToken) {
-                localStorage.setItem("accessToken", data.accessToken);
+                router.push("/dashboard");
             }
 
-            router.push("/dashboard");
-
-
-        } catch (err) {
-            console.error("Login failed", err);
+        } catch {
+            console.error("Login failed");
         } finally {
             setLoading(false);
         }
     };
+
+    console.log(uriGoogle);
 
     return (
         <main className="min-h-screen flex items-center justify-center bg-gray-100">
@@ -92,6 +106,38 @@ export default function LoginPage() {
                     loadingText="Connexion..."
                 />
 
+                <div className="space-y-3">
+                    <div className="flex items-center gap-3">
+                        <div className="flex-1 h-px bg-gray-300" />
+                        <span className="text-xs text-gray-500">OU</span>
+                        <div className="flex-1 h-px bg-gray-300" />
+                    </div>
+                    <button
+                        type="button"
+                        onClick={() => {
+                            window.location.href = redirectUri
+                        }}
+                        className="w-full flex items-center justify-center gap-3 border border-gray-300 rounded-lg py-2 hover:bg-gray-50 transition"
+                    >
+                        <FcGoogle size={22} />
+                        <span className="text-sm font-medium text-gray-700">
+                            Continuer avec Google
+                        </span>
+                    </button>
+                    <button
+                        type="button"
+                        onClick={() => {
+                            window.location.href = "http://localhost:3000/auth/google";
+                        }}
+                        className="w-full flex items-center justify-center gap-3 border border-gray-300 rounded-lg py-2 hover:bg-gray-50 transition"
+                    >
+                        <FaGithub size={22} />
+                        <span className="text-sm font-medium text-gray-700">
+                            Continuer avec Github
+                        </span>
+                    </button>
+                </div>
+
                 <p className="text-sm text-center text-gray-600">
                     Pas de compte ?{" "}
                     <a href="/register" className="text-blue-600 hover:underline">
@@ -99,6 +145,7 @@ export default function LoginPage() {
                     </a>
                 </p>
             </form>
+
             <div className="absolute bottom-4 text-center w-full text-gray-500 text-sm">
                 &copy; 2026 Supfile. Tous droits réservés.
             </div>
