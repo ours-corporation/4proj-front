@@ -1,6 +1,6 @@
 'use client';
 
-import { testToken, refreshToken } from "@/api/auth";
+import { testToken, refreshToken } from "@/src/api/auth";
 
 async function checkAuth(): Promise<boolean> {
     const accessToken = localStorage.getItem('accessToken');

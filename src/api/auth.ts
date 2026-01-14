@@ -1,4 +1,5 @@
 
+//todo : c'est pas au bon endroit
 function verifyLoginInput(email: string, password: string, username? :string): { error: string } | null {
     const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
     if( username ) {
