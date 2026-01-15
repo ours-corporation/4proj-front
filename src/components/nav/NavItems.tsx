@@ -12,7 +12,7 @@ export default function NavItems({ text, href, icon, isActive = false }: NavItem
     const activeStyle = "bg-action dark:bg-dark-action text-white shadow-lg shadow-blue-900/20 font-semibold";
 
     // Styles pour les éléments inactifs (Gris, hover léger)
-    const inactiveStyle = "text-txt-secondary dark:text-dark-txt-secondary hover:text-[#E5E5E5] hover:bg-white/5";
+    const inactiveStyle = "text-txt-secondary hover:text-txt-primary hover:bg-white/5";
 
     return (
         <a

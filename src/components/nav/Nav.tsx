@@ -1,40 +1,12 @@
 import React from 'react';
-import NavItems from "@/components/nav/NavItems";
-import { useState } from 'react';
-import { useEffect } from 'react';
-import { jwtDecode } from "jwt-decode";
-
-interface CustomJwtPayload {
-    username: string;
-    exp?: number;
-    iat?: number;
-}
+import NavItems from "@/src/components/nav/NavItems";
+import {useJwtInformation} from "@/src/hooks/getJwtInformation";
 
 export default function NavBar({ currentPage }: { currentPage: string }) {
-
-    const [username, setUsername] = useState<string>("No Name");
-
-    useEffect(() => {
-        const token = localStorage.getItem("accessToken");
-
-        if (token) {
-            try {
-                const decoded = jwtDecode<CustomJwtPayload>(token);
-                if (decoded.username) {
-                    // eslint-disable-next-line react-hooks/set-state-in-effect
-                    setUsername(decoded.username);
-                }
-            } catch (error) {
-                console.error("Token invalide ou impossible à décoder", error);
-                localStorage.removeItem("accessToken");
-            }
-        }
-    }, []);
-
-
+    const userInfo = useJwtInformation();
 
     return (
-        <aside className="w-64 h-screen flex-shrink-0 bg-main-bg dark:bg-dark-main-bg border-r border-[#2C2E33] flex flex-col p-4 overflow-y-auto">
+        <aside className="w-64 h-screen flex-shrink-0 bg-surface dark:bg-dark-surface border-r border-main-bg dark:border-dark-main-bg flex-col p-4 overflow-y-auto hidden md:flex">
             <h1>
                 <a href="/dashboard" className="text-2xl font-bold text-txt-primary dark:text-dark-txt-primary mb-6 block px-4 py-3">
                     SupFile
@@ -60,8 +32,8 @@ export default function NavBar({ currentPage }: { currentPage: string }) {
 
                 <NavItems
                     text="Mes Fichiers"
-                    href="/files"
-                    isActive={currentPage === '/files'}
+                    href="/folders"
+                    isActive={currentPage === '/folders'}
                     icon={
                         <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor">
                             <path strokeLinecap="round" strokeLinejoin="round" d="M2.25 12.75V12A2.25 2.25 0 0 1 4.5 9.75h15A2.25 2.25 0 0 1 21.75 12v.75m-8.69-6.44-2.12-2.12a1.5 1.5 0 0 0-1.061-.44H4.5A2.25 2.25 0 0 0 2.25 6v12a2.25 2.25 0 0 0 2.25 2.25h15A2.25 2.25 0 0 0 21.75 18V9a2.25 2.25 0 0 0-2.25-2.25h-5.379a1.5 1.5 0 0 1-1.06-.44Z" />
@@ -119,7 +91,7 @@ export default function NavBar({ currentPage }: { currentPage: string }) {
                         alt="Jean Dupont"
                     />
                     <div className="flex-1 min-w-0">
-                        <p className="text-sm font-semibold text-txt-secondary dark:text-dark-txt-secondary truncate">{username}</p>
+                        <p className="text-sm font-semibold text-txt-secondary dark:text-dark-txt-secondary truncate">{userInfo.username}</p>
                     </div>
                 </div>
             </div>

@@ -1,0 +1,14 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="none">
+    <path d="M14 2H6C4.9 2 4 2.9 4 4V20C4 21.1 4.9 22 6 22H18C19.1 22 20 21.1 20 20V8L14 2Z" fill="#66BB6A"/>
+    <path d="M14 2V8H20" fill="#388E3C" opacity="0.3"/>
+    <rect x="7" y="11" width="3" height="1" fill="white"/>
+    <rect x="11.5" y="11" width="3" height="1" fill="white"/>
+    <rect x="15.5" y="11" width="1.5" height="1" fill="white"/>
+
+    <rect x="7" y="14" width="2" height="1" fill="white"/>
+    <rect x="10.5" y="14" width="3.5" height="1" fill="white"/>
+    <rect x="15.5" y="14" width="1.5" height="1" fill="white"/>
+
+
+    <text x="12" y="20.5" font-family="Arial, sans-serif" font-size="3" fill="white" text-anchor="middle">CSV</text>
+</svg>

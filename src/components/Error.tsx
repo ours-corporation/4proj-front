@@ -5,7 +5,7 @@ interface InputProps {
     errorMsg?: string;
 }
 
-export default function InputField({ errorCode, errorMsg }: InputProps) {
+export default function Error({ errorCode, errorMsg }: InputProps) {
     return (
         <div className="flex min-h-screen items-center justify-center bg-gray-100 dark:bg-gray-900 p-6">
             <div className="w-full max-w-md rounded-xl bg-white dark:bg-gray-800 shadow-lg p-8">
