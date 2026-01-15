@@ -5,19 +5,27 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="f91a7d97-50ab-473f-bc75-76b22759da4e" name="Changes" comment="feat : add username / fix : password restriction">
-      <change afterPath="$PROJECT_DIR$/app/auth/google/callback/page.tsx" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/components/loading.tsx" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/api/authGoogle.ts" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/services/envReader.ts" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.gitignore" beforeDir="false" afterPath="$PROJECT_DIR$/.gitignore" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/app/auth/github/callback/page.tsx" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/components/Headers.tsx" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/components/nav/Nav.tsx" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/components/nav/NavItems.tsx" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/api/authGithub.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.env.example" beforeDir="false" afterPath="$PROJECT_DIR$/.env.example" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/api/auth.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/api/auth.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/app/auth/google/callback/page.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/app/auth/google/callback/page.tsx" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/app/dashboard/page.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/app/dashboard/page.tsx" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/app/globals.css" beforeDir="false" afterPath="$PROJECT_DIR$/app/globals.css" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/app/login/page.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/app/login/page.tsx" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/app/register/page.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/app/register/page.tsx" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/components/auth/button/SubmitButton.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/components/auth/button/SubmitButton.tsx" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/components/auth/input/InputField.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/components/auth/input/InputField.tsx" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/components/error.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/components/Error.tsx" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/components/loading.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/components/Loading.tsx" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/package-lock.json" beforeDir="false" afterPath="$PROJECT_DIR$/package-lock.json" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/package.json" beforeDir="false" afterPath="$PROJECT_DIR$/package.json" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/hooks/useAuth.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/hooks/useAuth.ts" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/middlewares/checkAuth.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/middlewares/checkAuth.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/services/envReader.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/services/envReader.ts" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -62,11 +70,11 @@
       <recent name="$PROJECT_DIR$/app/register" />
     </key>
     <key name="MoveFile.RECENT_KEYS">
+      <recent name="$PROJECT_DIR$/components/nav" />
       <recent name="$PROJECT_DIR$/src" />
       <recent name="$PROJECT_DIR$/src/hooks" />
       <recent name="$PROJECT_DIR$/components" />
       <recent name="$PROJECT_DIR$/components/auth" />
-      <recent name="$PROJECT_DIR$/app/login" />
     </key>
   </component>
   <component name="RunManager" selected="npm.Next.js: server-side">

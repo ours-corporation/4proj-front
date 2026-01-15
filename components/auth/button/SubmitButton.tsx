@@ -15,7 +15,7 @@ export default function InputField({ id, type, text, loading, loadingText, onCli
             id={id}
             type={type}
             disabled={loading}
-            className="w-full rounded-md bg-blue-600 py-2 text-white font-medium hover:bg-blue-700 transition disabled:opacity-50"
+            className="w-full rounded-md bg-action dark:bg-dark-action dark: py-2 text-white font-medium hover:bg-action-hover dark:hover:bg-dark-action-hover transition disabled:opacity-50"
             onClick={onClick}
         >
             {loading ? (loadingText || text) : text}

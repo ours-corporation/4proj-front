@@ -2,7 +2,7 @@
 
 import { testToken, refreshToken } from "@/src/api/auth";
 
-async function checkAuth(): Promise<boolean> {
+export async function checkAuth(): Promise<boolean> {
     const accessToken = localStorage.getItem('accessToken');
 
     if (accessToken && accessToken !== "undefined") {
@@ -28,5 +28,3 @@ async function checkAuth(): Promise<boolean> {
 
     return false;
 }
-
-export default checkAuth;

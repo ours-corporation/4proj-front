@@ -4,6 +4,7 @@ import Loading from "@/components/Loading";
 import {useEffect} from "react";
 import { authGoogle } from "@/src/api/authGoogle";
 import {useRouter} from "next/navigation";
+import {authGithub} from "@/src/api/authGithub";
 
 export default function Dashboard() {
     const router = useRouter();
@@ -15,10 +16,11 @@ export default function Dashboard() {
             const code = urlParams.get('code');
             if (!code) {
                 console.error("Code d'autorisation manquant dans l'URL");
+                router.push("/login");
                 return;
             }
 
-            const rep = await authGoogle(code)
+            const rep = await authGithub(code)
             if (!rep.ok) {
                 router.push("/login");
             } else {
