@@ -2,35 +2,44 @@
 
 import React, {useEffect} from "react";
 import { useState } from "react";
-import InputField from "@/components/auth/input/InputField";
-import SubmitButton from "@/components/auth/button/SubmitButton";
+import InputField from "@/src/components/auth/input/InputField";
+import SubmitButton from "@/src/components/auth/button/SubmitButton";
 import { login } from "@/src/api/auth";
 import {useRouter} from "next/navigation";
 import { FcGoogle } from "react-icons/fc";
 import { FaGithub } from "react-icons/fa";
 
-import { GetGoogleClientId } from "@/src/services/envReader"
+import { GetGoogleClientId, GetGithubClientId } from "@/src/services/envReader"
+import { useNotAuth } from "@/src/hooks/useAuth";
 
 
 export default function LoginPage() {
     const [email, setEmail] = useState("");
     const [password, setPassword] = useState("");
-    const [loading, setLoading] = useState(false);
+    const [loading, setLoading] = useState(useNotAuth());
     const [error, setError] = useState("");
 
     const router = useRouter();
 
-    const [ redirect, setRedirect ] = useState("");
-    const [ redirectUri, setRedirectUri ] = useState("");
+    //information Google OAuth
+    const [ googleCallback, setGoogleCallback ] = useState("");
+    const [ googleRedirectUri, setGoogleRedirectUri ] = useState("");
+    const googleClientId = GetGoogleClientId();
 
-    const uriGoogle = GetGoogleClientId();
+    //information Github OAuth
+    const [ githubCallback, setGithubCallback ] = useState("");
+    const [ githubRedirectUri, setGithubRedirectUri ] = useState("");
+    const githubClientId = GetGithubClientId();
+
 
     useEffect(() => {
-        setRedirect(window.location.origin + "/auth/google/callback");
-        setRedirectUri("https://accounts.google.com/o/oauth2/v2/auth?client_id=" + uriGoogle +"&redirect_uri=" + redirect + "&response_type=code&scope=openid email profile&access_type=offline&prompt=consent");
-        console.log(redirect);
-        console.log(redirectUri);
-    }, [uriGoogle, redirect, redirectUri]);
+        setGoogleCallback(window.location.origin + "/auth/google/callback");
+        setGoogleRedirectUri("https://accounts.google.com/o/oauth2/v2/auth?client_id=" + googleClientId +"&redirect_uri=" + googleCallback + "&response_type=code&scope=openid email profile&access_type=offline&prompt=consent");
+
+        setGithubCallback(window.location.origin + "/auth/github/callback");
+        //todo : revoir le state (pour CSRF)
+        setGithubRedirectUri("https://github.com/login/oauth/authorize?client_id=" + githubClientId + "&redirect_uri=" + githubCallback + "&scope=user:email&state=xyz");
+    }, [googleClientId, googleCallback, googleRedirectUri, githubClientId, githubCallback, githubRedirectUri]);
 
     const handleSubmit = async (e: { preventDefault: () => void; }) => {
         e.preventDefault();
@@ -63,15 +72,13 @@ export default function LoginPage() {
         }
     };
 
-    console.log(uriGoogle);
-
     return (
-        <main className="min-h-screen flex items-center justify-center bg-gray-100">
+        <main className="min-h-screen flex items-center justify-center bg-main-bg dark:bg-dark-main-bg">
             <form
                 onSubmit={handleSubmit}
-                className="w-full max-w-md bg-white p-8 rounded-xl shadow-lg space-y-6"
+                className="w-full max-w-md bg-surface dark:bg-dark-surface p-8 rounded-xl shadow-lg space-y-6"
             >
-                <h1 className="text-2xl font-semibold text-center text-gray-800">
+                <h1 className="text-2xl font-semibold text-center text-txt-primary dark:text-dark-txt-primary">
                     Connexion
                 </h1>
 
@@ -81,7 +88,6 @@ export default function LoginPage() {
                     label="Email"
                     value={email}
                     type="email"
-
                     onChange={setEmail}
                 />
 
@@ -108,39 +114,39 @@ export default function LoginPage() {
 
                 <div className="space-y-3">
                     <div className="flex items-center gap-3">
-                        <div className="flex-1 h-px bg-gray-300" />
-                        <span className="text-xs text-gray-500">OU</span>
-                        <div className="flex-1 h-px bg-gray-300" />
+                        <div className="flex-1 h-px bg-txt-secondary dark:bg-dark-txt-primary" />
+                        <span className="text-xs text-txt-secondary dark:text-dark-txt-primary">OU</span>
+                        <div className="flex-1 h-px bg-txt-secondary dark:bg-dark-txt-primary" />
                     </div>
                     <button
                         type="button"
                         onClick={() => {
-                            window.location.href = redirectUri
+                            window.location.href = googleRedirectUri;
                         }}
-                        className="w-full flex items-center justify-center gap-3 border border-gray-300 rounded-lg py-2 hover:bg-gray-50 transition"
+                        className="w-full flex items-center justify-center gap-3 border border-border-subtle dark:border-dark-border-subtle rounded-lg py-2 hover:bg-surface-hover dark:hover:bg-dark-surface-hover transition"
                     >
                         <FcGoogle size={22} />
-                        <span className="text-sm font-medium text-gray-700">
+                        <span className="text-sm font-medium text-txt-primary dark:text-dark-txt-primary">
                             Continuer avec Google
                         </span>
                     </button>
                     <button
                         type="button"
                         onClick={() => {
-                            window.location.href = "http://localhost:3000/auth/google";
+                            window.location.href = githubRedirectUri;
                         }}
-                        className="w-full flex items-center justify-center gap-3 border border-gray-300 rounded-lg py-2 hover:bg-gray-50 transition"
+                        className="w-full flex items-center justify-center gap-3 border border-border-subtle dark:border-dark-border-subtle rounded-lg py-2 hover:bg-surface-hover dark:hover:bg-dark-surface-hover transition"
                     >
                         <FaGithub size={22} />
-                        <span className="text-sm font-medium text-gray-700">
+                        <span className="text-sm font-medium text-txt-primary dark:text-dark-txt-primary">
                             Continuer avec Github
                         </span>
                     </button>
                 </div>
 
-                <p className="text-sm text-center text-gray-600">
+                <p className="text-sm text-center text-txt-secondary dark:text-dark-txt-secondary">
                     Pas de compte ?{" "}
-                    <a href="/register" className="text-blue-600 hover:underline">
+                    <a href="/register" className="text-action dark:text-dark-action hover:underline">
                         Inscrivez-vous
                     </a>
                 </p>

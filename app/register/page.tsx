@@ -2,10 +2,11 @@
 
 import React from "react";
 import { useState } from "react";
-import InputField from "@/components/auth/input/InputField";
-import SubmitButton from "@/components/auth/button/SubmitButton";
+import InputField from "@/src/components/auth/input/InputField";
+import SubmitButton from "@/src/components/auth/button/SubmitButton";
 import { register } from "@/src/api/auth";
 import {useRouter} from "next/navigation";
+import {useNotAuth} from "@/src/hooks/useAuth";
 
 
 export default function LoginPage() {
@@ -13,7 +14,7 @@ export default function LoginPage() {
     const [password, setPassword] = useState("");
     const [confirmPassword, setConfirmPassword] = useState("");
     const [username, setUsername] = useState("");
-    const [loading, setLoading] = useState(false);
+    const [loading, setLoading] = useState(useNotAuth());
     const [error, setError] = useState("");
 
     const router = useRouter();

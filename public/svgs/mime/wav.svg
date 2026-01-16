@@ -1,0 +1,6 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="none">
+    <path d="M14 2H6C4.9 2 4 2.9 4 4V20C4 21.1 4.9 22 6 22H18C19.1 22 20 21.1 20 20V8L14 2Z" fill="#0277BD"/>
+    <path d="M14 2V8H20" fill="#01579B" opacity="0.3"/>
+    <path d="M7 14L9 11L11 15L13 10L15 14L17 12" stroke="white" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+    <text x="12" y="20.5" font-family="Arial, sans-serif" font-size="4" fill="white" fill-opacity="0.9" text-anchor="middle">WAV</text>
+</svg>

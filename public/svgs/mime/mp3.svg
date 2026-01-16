@@ -1,0 +1,6 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="none">
+    <path d="M14 2H6C4.9 2 4 2.9 4 4V20C4 21.1 4.9 22 6 22H18C19.1 22 20 21.1 20 20V8L14 2Z" fill="#FBC02D"/>
+    <path d="M14 2V8H20" fill="#F57F17" opacity="0.3"/>
+    <path d="M12 10V13.55C11.75 13.4 11.45 13.3 11.15 13.3C10.25 13.3 9.5 13.9 9.5 14.65C9.5 15.4 10.25 16 11.15 16C12.05 16 12.8 15.4 12.8 14.65V11.5H14.5V10H12Z" fill="white"/>
+    <text x="12" y="20.5" font-family="Arial, sans-serif" font-size="4" fill="white" font-weight="bold" fill-opacity="0.9" text-anchor="middle">MP3</text>
+</svg>

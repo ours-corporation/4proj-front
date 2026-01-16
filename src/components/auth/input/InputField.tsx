@@ -13,7 +13,7 @@ type InputProps = {
 export default function InputField({ id, name, label, value, type, required, onChange }: InputProps) {
     return (
         <div>
-            <label className="block text-sm font-medium text-gray-700" htmlFor={id}>
+            <label className="block text-sm font-medium text-txt-primary dark:text-dark-txt-primary" htmlFor={id}>
                 {label} {required && <span className="text-red-500">*</span>}
             </label>
             <input
@@ -23,8 +23,14 @@ export default function InputField({ id, name, label, value, type, required, onC
                 required={required}
                 value={value}
                 onChange={(e) => onChange(e.target.value)}
-                className="mt-1 w-full rounded-md border border-gray-300 px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500"
+                className="
+                    mt-1 w-full rounded-md border border-border-subtle dark:border-dark-border-subtle
+                    px-3 py-2
+                    text-txt-primary dark:text-dark-txt-primary
+                    focus:outline-none focus:ring-2 focus:ring-blue-500
+                    bg-input-bg dark:bg-dark-input-bg"
             />
+
         </div>
     );
 }
