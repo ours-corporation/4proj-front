@@ -30,7 +30,10 @@ export default function FileCard({ file }: FileProps) {
                 />
             </div>
 
-            <h2 className="text-lg font-bold text-gray-900 dark:text-white mb-2 truncate">
+            <h2
+                className="text-lg font-bold text-gray-900 dark:text-white mb-2 truncate w-full flex items-start justify-start"
+                title={file.name}
+            >
                 {file.name}
             </h2>
 

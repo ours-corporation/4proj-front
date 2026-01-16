@@ -4,42 +4,15 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="f91a7d97-50ab-473f-bc75-76b22759da4e" name="Changes" comment="feat : auth with github and nav bar">
-      <change afterPath="$PROJECT_DIR$/app/folders/page.tsx" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/api/folders.ts" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/api/user.ts" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/components/Folders.tsx" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/components/Headers.tsx" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/components/Layout.tsx" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/components/card/FileCard.tsx" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/components/card/GlobalCard.tsx" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/components/modal/Modal.tsx" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/hooks/getJwtInformation.ts" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/interface/file.ts" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/interface/folder.ts" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/interface/quota.ts" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/interface/user.ts" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/types/file-mime.ts" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/utils/conver-created-at.ts" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/utils/convert-file-size.ts" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/utils/get-file-color.ts" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/utils/get-file-svg.ts" afterDir="false" />
+    <list default="true" id="f91a7d97-50ab-473f-bc75-76b22759da4e" name="Changes" comment="feat : file front">
+      <change afterPath="$PROJECT_DIR$/src/api/file.ts" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/components/preview/imgPreview.tsx" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/auth/github/callback/page.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/app/auth/github/callback/page.tsx" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/auth/google/callback/page.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/app/auth/google/callback/page.tsx" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/dashboard/page.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/app/dashboard/page.tsx" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/globals.css" beforeDir="false" afterPath="$PROJECT_DIR$/app/globals.css" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/login/page.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/app/login/page.tsx" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/register/page.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/app/register/page.tsx" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/components/Error.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/src/components/Error.tsx" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/components/Headers.tsx" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/components/Loading.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/src/components/Loading.tsx" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/components/auth/button/SubmitButton.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/src/components/auth/button/SubmitButton.tsx" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/components/auth/input/InputField.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/src/components/auth/input/InputField.tsx" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/components/nav/Nav.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/src/components/nav/Nav.tsx" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/components/nav/NavItems.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/src/components/nav/NavItems.tsx" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/package-lock.json" beforeDir="false" afterPath="$PROJECT_DIR$/package-lock.json" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/package.json" beforeDir="false" afterPath="$PROJECT_DIR$/package.json" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/app/folders/page.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/app/folders/page.tsx" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/components/Folders.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/src/components/Folders.tsx" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/components/Headers.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/src/components/Headers.tsx" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/components/card/FileCard.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/src/components/card/FileCard.tsx" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/components/modal/Modal.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/src/components/modal/Modal.tsx" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -125,7 +98,7 @@
       <workItem from="1768225368924" duration="16156000" />
       <workItem from="1768292102143" duration="8541000" />
       <workItem from="1768306770874" duration="7403000" />
-      <workItem from="1768464380715" duration="24017000" />
+      <workItem from="1768464380715" duration="30753000" />
     </task>
     <task id="LOCAL-00001" summary="feat : start login">
       <option name="closed" value="true" />
@@ -159,7 +132,15 @@
       <option name="project" value="LOCAL" />
       <updated>1768435528825</updated>
     </task>
-    <option name="localTasksCounter" value="5" />
+    <task id="LOCAL-00005" summary="feat : file front">
+      <option name="closed" value="true" />
+      <created>1768494576433</created>
+      <option name="number" value="00005" />
+      <option name="presentableId" value="LOCAL-00005" />
+      <option name="project" value="LOCAL" />
+      <updated>1768494576433</updated>
+    </task>
+    <option name="localTasksCounter" value="6" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -170,6 +151,7 @@
     <MESSAGE value="feat : add verif token and refresh token" />
     <MESSAGE value="feat : add username / fix : password restriction" />
     <MESSAGE value="feat : auth with github and nav bar" />
-    <option name="LAST_COMMIT_MESSAGE" value="feat : auth with github and nav bar" />
+    <MESSAGE value="feat : file front" />
+    <option name="LAST_COMMIT_MESSAGE" value="feat : file front" />
   </component>
 </project>
