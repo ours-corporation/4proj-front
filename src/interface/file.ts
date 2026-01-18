@@ -8,6 +8,6 @@ export interface FileResponse {
     mime_type: string;
     trashed_at: string | null;
     deleted_at: string | null;
-    created_at: string;
-    updated_at: string;
+    createdAt: string;
+    updatedAt: string;
 }

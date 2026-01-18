@@ -2,8 +2,8 @@
 
 import React, {useEffect} from "react";
 import { useState } from "react";
-import InputField from "@/src/components/auth/input/InputField";
-import SubmitButton from "@/src/components/auth/button/SubmitButton";
+import InputField from "@/src/components/input/InputField";
+import SubmitButton from "@/src/components/button/SubmitButton";
 import { login } from "@/src/api/auth";
 import {useRouter} from "next/navigation";
 import { FcGoogle } from "react-icons/fc";

@@ -6,13 +6,24 @@ import Loading from '@/src/components/Loading';
 import Layout from '@/src/components/Layout';
 import Error from "@/src/components/Error";
 import Folders from "@/src/components/Folders";
-import {FolderDetailResponse, getFolderById} from "@/src/api/folders";
+import {createNewFolderAPI, FolderDetailResponse, getFolderById} from "@/src/api/folders";
+import Modal from "@/src/components/modal/Modal";
+import InputField from "@/src/components/input/InputField";
+import InputFile from "@/src/components/input/InputFile";
+import SubmitButton from "@/src/components/button/SubmitButton";
+import { uploadFileAPI } from '@/src/api/file';
 
 
 export default function ShowFolders() {
     const [folderId, setFolderId] = useState<string>('');
     const [folderData, setFolderData] = useState<FolderDetailResponse | null>(null);
     const [error, setError] = useState<string | null>(null);
+
+    const [ createFolderOpen, setCreateFolderOpen ] = useState<boolean>(false);
+    const [folderName, setFolderName] = useState<string>("");
+
+    const [ addFileOpen, setAddFileOpen ] = useState<boolean>(false);
+    const [file , setFile] = useState<File | null>(null);
 
 
     useEffect(() => {
@@ -38,6 +49,32 @@ export default function ShowFolders() {
             setFolderData(data);
         } catch (error) {
             setFolderData(null);
+        }
+    }
+
+    async function createNewFolder() {
+        try {
+            const newFolder = await createNewFolderAPI(folderName, folderId ? parseInt(folderId) : null);
+            const data = await getFolderById({ folderId });
+            setFolderData(data);
+            setFolderName("");
+            setCreateFolderOpen(false);
+        } catch (error) {
+            console.error("Erreur lors de la création du dossier :", error);
+        }
+    }
+
+    async function uploadFile() {
+
+        const repUploadFile = await uploadFileAPI(file, folderId ? parseInt(folderId) : null);
+
+        if (repUploadFile.ok) {
+            const data = await getFolderById({ folderId });
+            setFolderData(data);
+            setFile(null);
+            setAddFileOpen(false);
+        } else {
+            console.error("Erreur lors de l'upload du fichier :", repUploadFile.statusText);
         }
     }
 
@@ -90,7 +127,9 @@ export default function ShowFolders() {
 
 
                 <div className="flex flex-row items-center space-x-4">
-                    <button name="add-folder" className="flex flex-row bg-action dark:bg-dark-action hover:bg-action-hover dark:hover:bg-dark-action-hover text-white font-semibold py-2 px-4 rounded-lg shadow-md transition duration-300 mr-4">
+                    <button name="add-folder" className="flex flex-row bg-action dark:bg-dark-action hover:bg-action-hover dark:hover:bg-dark-action-hover text-white font-semibold py-2 px-4 rounded-lg shadow-md transition duration-300 mr-4"
+                        onClick={() => setCreateFolderOpen(true)}
+                    >
                         <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth="1.5"
                              stroke="currentColor" className="size-6 mr-2">
                             <path strokeLinecap="round" strokeLinejoin="round"
@@ -98,7 +137,9 @@ export default function ShowFolders() {
                         </svg>
                         Nouveau Dossier
                     </button>
-                    <button name="add-file" className="flex flex-row bg-action dark:bg-dark-action hover:bg-action-hover dark:hover:bg-dark-action-hover text-white font-semibold py-2 px-4 rounded-lg shadow-md transition duration-300">
+                    <button name="add-file" className="flex flex-row bg-action dark:bg-dark-action hover:bg-action-hover dark:hover:bg-dark-action-hover text-white font-semibold py-2 px-4 rounded-lg shadow-md transition duration-300"
+                        onClick={() => setAddFileOpen(true)}
+                    >
                         <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth="1.5"
                              stroke="currentColor" className="size-6 mr-2">
                             <path strokeLinecap="round" strokeLinejoin="round"
@@ -113,6 +154,58 @@ export default function ShowFolders() {
                 listFiles={folderData?.files || []}
                 changeFolderId={changeFolderId}
             />
+
+            <Modal
+                size="small"
+                isOpen={createFolderOpen}
+                title={"Création d'un nouveau dossier"}
+                onClose={() => setCreateFolderOpen(false)}
+            >
+                <div className="space-y-6">
+                    <InputField
+                        id="new-folder-name"
+                        label="Nom du dossier"
+                        value={folderName}
+                        type={"text"}
+                        onChange={setFolderName}
+                    />
+
+                    {folderId}
+
+                    <SubmitButton
+                        id="create-folder-button"
+                        type="button"
+                        text="Créer le dossier"
+                        onClick={async () => { await createNewFolder(); }}
+                    />
+                </div>
+
+            </Modal>
+
+            <Modal
+                size="small"
+                title="Ajouter un fichier"
+                isOpen={addFileOpen}
+                onClose={() => setAddFileOpen(false)}
+            >
+                <div className="space-y-6">
+                    <InputFile
+                        id="file-upload"
+                        label="Sélectionner un fichier"
+                        value={file}
+                        onChange={setFile}
+                        accept="*/*"
+                        required
+                    />
+
+                    <SubmitButton
+                        id="add-file-button"
+                        type="button"
+                        text="Ajouter le fichier"
+                        onClick={async () => { await uploadFile(); }}
+                    />
+                </div>
+            </Modal>
         </Layout>
     );
 }

@@ -1,5 +1,8 @@
 
-export const convertFileSize = (size: number): string => {
+export const convertFileSize = (size? : number): string => {
+    if(size === undefined || size === null || isNaN(size)) {
+        size = 0;
+    }
     const sizeStr = size.toString();
     const units = ['B', 'KB', 'MB', 'GB', 'TB'];
     let index = 0;

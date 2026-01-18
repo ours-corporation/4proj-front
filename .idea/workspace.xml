@@ -5,14 +5,30 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="f91a7d97-50ab-473f-bc75-76b22759da4e" name="Changes" comment="feat : file front">
-      <change afterPath="$PROJECT_DIR$/src/api/file.ts" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/components/preview/imgPreview.tsx" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/components/card/FolderCard.tsx" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/components/input/InputFile.tsx" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/components/preview/audioPreview.tsx" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/components/preview/pdfPreview.tsx" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/components/preview/videoPreview.tsx" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/app/auth/github/callback/page.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/app/auth/github/callback/page.tsx" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/app/auth/google/callback/page.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/app/auth/google/callback/page.tsx" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/app/folders/page.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/app/folders/page.tsx" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/app/login/page.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/app/login/page.tsx" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/app/register/page.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/app/register/page.tsx" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/api/file.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/api/file.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/api/folders.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/api/folders.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/api/user.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/api/user.ts" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/components/Folders.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/src/components/Folders.tsx" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/components/Headers.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/src/components/Headers.tsx" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/components/auth/button/SubmitButton.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/src/components/button/SubmitButton.tsx" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/components/auth/input/InputField.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/src/components/input/InputField.tsx" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/components/card/FileCard.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/src/components/card/FileCard.tsx" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/components/modal/Modal.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/src/components/modal/Modal.tsx" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/components/preview/imgPreview.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/src/components/preview/imgPreview.tsx" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/interface/file.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/interface/file.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/interface/folder.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/interface/folder.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/utils/convert-file-size.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/utils/convert-file-size.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/utils/get-file-color.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/utils/get-file-color.ts" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -39,7 +55,7 @@
     "ModuleVcsDetector.initialDetectionPerformed": "true",
     "RunOnceActivity.ShowReadmeOnStart": "true",
     "RunOnceActivity.git.unshallow": "true",
-    "git-widget-placeholder": "auth-with-github",
+    "git-widget-placeholder": "main",
     "js.debugger.nextJs.config.created.client": "true",
     "js.debugger.nextJs.config.created.server": "true",
     "last_opened_file_path": "/Users/mathislecomte/Documents/ecole/PGE4/4PROJ/4proj-front/app/folders",
@@ -58,11 +74,11 @@
       <recent name="$PROJECT_DIR$/app/register" />
     </key>
     <key name="MoveFile.RECENT_KEYS">
+      <recent name="$PROJECT_DIR$/src/components/button" />
+      <recent name="$PROJECT_DIR$/src/components/input" />
       <recent name="$PROJECT_DIR$/src" />
       <recent name="$PROJECT_DIR$/components/nav" />
       <recent name="$PROJECT_DIR$/src/hooks" />
-      <recent name="$PROJECT_DIR$/components" />
-      <recent name="$PROJECT_DIR$/components/auth" />
     </key>
   </component>
   <component name="RunManager" selected="npm.Next.js: server-side">
@@ -145,6 +161,29 @@
   </component>
   <component name="TypeScriptGeneratedFilesManager">
     <option name="version" value="3" />
+  </component>
+  <component name="Vcs.Log.Tabs.Properties">
+    <option name="TAB_STATES">
+      <map>
+        <entry key="MAIN">
+          <value>
+            <State>
+              <option name="FILTERS">
+                <map>
+                  <entry key="branch">
+                    <value>
+                      <list>
+                        <option value="auth-with-github" />
+                      </list>
+                    </value>
+                  </entry>
+                </map>
+              </option>
+            </State>
+          </value>
+        </entry>
+      </map>
+    </option>
   </component>
   <component name="VcsManagerConfiguration">
     <MESSAGE value="feat : start login" />

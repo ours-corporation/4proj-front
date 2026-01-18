@@ -4,6 +4,6 @@ export interface FolderResponse {
     parent_id: number | null;
     name: string;
     trashed_at: string | null;
-    created_at: string;
-    updated_at: string;
+    createdAt: string;
+    updatedAt: string;
 }

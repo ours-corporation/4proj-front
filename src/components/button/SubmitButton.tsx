@@ -9,7 +9,7 @@ type ButtonProps = {
     onClick?: () => void;
 };
 
-export default function InputField({ id, type, text, loading, loadingText, onClick }: ButtonProps) {
+export default function SubmitButton({ id, type, text, loading, loadingText, onClick }: ButtonProps) {
     return (
         <button
             id={id}

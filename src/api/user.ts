@@ -17,7 +17,6 @@ export async function getMyInformation() {
 
         if (rep.ok) {
             const data: User = await rep.json();
-            console.log(data);
             return data;
         } else {
             throw new Error(`Erreur lors de la récupération des informations utilisateur : ${rep.status}`);

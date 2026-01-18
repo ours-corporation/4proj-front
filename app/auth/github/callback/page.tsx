@@ -11,11 +11,9 @@ export default function Dashboard() {
 
     useEffect(() => {
         async function verify() {
-            console.log("Vérification de l'authentification Google en cours...");
             const urlParams = new URLSearchParams(window.location.search);
             const code = urlParams.get('code');
             if (!code) {
-                console.error("Code d'autorisation manquant dans l'URL");
                 router.push("/login");
                 return;
             }
