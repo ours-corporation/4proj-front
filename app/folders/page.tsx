@@ -12,6 +12,10 @@ import InputField from "@/src/components/input/InputField";
 import InputFile from "@/src/components/input/InputFile";
 import SubmitButton from "@/src/components/button/SubmitButton";
 import { uploadFileAPI } from '@/src/api/file';
+import {FileResponse} from "@/src/interface/file";
+import {loginValidatorValidator} from "@/src/validator/auth";
+import {createNewFolderValidator} from "@/src/validator/folder";
+import {addFileValidator} from "@/src/validator/file";
 
 
 export default function ShowFolders() {
@@ -19,11 +23,15 @@ export default function ShowFolders() {
     const [folderData, setFolderData] = useState<FolderDetailResponse | null>(null);
     const [error, setError] = useState<string | null>(null);
 
+    // Création de dossier
     const [ createFolderOpen, setCreateFolderOpen ] = useState<boolean>(false);
-    const [folderName, setFolderName] = useState<string>("");
+    const [ folderName, setFolderName ] = useState<string>("");
+    const [ folderNameError, setFolderNameError ] = useState<string>("");
 
+    // Ajout de fichier
     const [ addFileOpen, setAddFileOpen ] = useState<boolean>(false);
-    const [file , setFile] = useState<File | null>(null);
+    const [ file , setFile ] = useState<File | null>(null);
+    const [ fileError , setFileError ] = useState<string>("");
 
 
     useEffect(() => {
@@ -32,7 +40,7 @@ export default function ShowFolders() {
             try {
                 const data = await getFolderById({ folderId });
                 setFolderData(data);
-            } catch (err) {
+            } catch {
                 setFolderData(null);
             }
         };
@@ -53,6 +61,13 @@ export default function ShowFolders() {
     }
 
     async function createNewFolder() {
+        const validatorResult = createNewFolderValidator.safeParse({ name: folderName });
+        if (!validatorResult.success) {
+            const firstError = validatorResult.error.issues[0];
+            setFolderNameError(firstError.message);
+            return;
+        }
+
         try {
             const newFolder = await createNewFolderAPI(folderName, folderId ? parseInt(folderId) : null);
             const data = await getFolderById({ folderId });
@@ -65,6 +80,12 @@ export default function ShowFolders() {
     }
 
     async function uploadFile() {
+        const validatorResult = addFileValidator.safeParse({ file: file });
+        if (!validatorResult.success) {
+            const firstError = validatorResult.error.issues[0];
+            setFileError(firstError.message);
+            return;
+        }
 
         const repUploadFile = await uploadFileAPI(file, folderId ? parseInt(folderId) : null);
 
@@ -155,6 +176,7 @@ export default function ShowFolders() {
                 changeFolderId={changeFolderId}
             />
 
+            {/* Création de dossier modal */}
             <Modal
                 size="small"
                 isOpen={createFolderOpen}
@@ -170,7 +192,9 @@ export default function ShowFolders() {
                         onChange={setFolderName}
                     />
 
-                    {folderId}
+                    { folderNameError &&
+                        <p className="text-error dark:text-dark-error text-sm">{folderNameError}</p>
+                    }
 
                     <SubmitButton
                         id="create-folder-button"
@@ -182,6 +206,7 @@ export default function ShowFolders() {
 
             </Modal>
 
+            {/* Ajout de fichier modal */}
             <Modal
                 size="small"
                 title="Ajouter un fichier"
@@ -197,6 +222,10 @@ export default function ShowFolders() {
                         accept="*/*"
                         required
                     />
+
+                    { fileError &&
+                        <p className="text-error dark:text-dark-error text-sm">{fileError}</p>
+                    }
 
                     <SubmitButton
                         id="add-file-button"

@@ -12,6 +12,8 @@ import VideoPreview from "@/src/components/preview/videoPreview";
 import AudioPreview from "@/src/components/preview/audioPreview";
 import FolderCard from "@/src/components/card/FolderCard";
 import {convertFileSize} from "@/src/utils/convert-file-size";
+import UpdateFileModal from "@/src/components/modal/UpdateFile";
+import ShareFileModal from "@/src/components/modal/ShareFile";
 
 interface FoldersProps {
     listFolders: FolderResponse[];
@@ -23,6 +25,14 @@ export default function Folders({ listFolders, listFiles, changeFolderId }: Fold
     const [open, setOpen] = useState(false);
     const [selectedFile, setSelectedFile] = useState<FileResponse | null>(null);
     const [file , setFile] = useState<File | null>(null);
+
+    //Edit file modal
+    const [ openUpdateModal, setOpenUpdateModal ] = useState<boolean>(false);
+    const [ editFileInfo, setEditFileInfo ] = useState<FileResponse | null>(null);
+
+    //Share file modal
+    const [ openShareModal, setOpenShareModal ] = useState<boolean>(false);
+    const [ shareFileInfo, setShareFileInfo ] = useState<FileResponse | null>(null);
 
     function setFileInformationAndOpen(file: FileResponse) {
         setSelectedFile(file);
@@ -40,7 +50,6 @@ export default function Folders({ listFolders, listFiles, changeFolderId }: Fold
         setFile(null);
     }
 
-    // J'ajoute fileName en paramètre pour nommer correctement le fichier téléchargé
     async function downloadFileById(fileId: number | null, fileName: string) {
         if (!fileId) return;
         if (!fileName) return;
@@ -57,6 +66,30 @@ export default function Folders({ listFolders, listFiles, changeFolderId }: Fold
         } catch (error) {
             console.error("Erreur lors du téléchargement :", error);
         }
+    }
+
+    //File edit modal
+    async function openUpdateFileModal(file: FileResponse){
+        if (!file) return;
+        setEditFileInfo(file);
+        setOpenUpdateModal(true);
+    }
+
+    async function closeUploadFileModal() : Promise<void> {
+        setEditFileInfo(null);
+        setOpenUpdateModal(false);
+    }
+
+    //Share file modal
+    async function openShareFileModal(file: FileResponse){
+        if (!file) return;
+        setShareFileInfo(file);
+        setOpenShareModal(true);
+    }
+
+    async function closeShareFileModal() : Promise<void> {
+        setShareFileInfo(null);
+        setOpenShareModal(false);
     }
 
     const formatDate = (dateString: string) => {
@@ -111,7 +144,6 @@ export default function Folders({ listFolders, listFiles, changeFolderId }: Fold
             );
         }
 
-        // 4. Par défaut (type inconnu)
         return <p>Aperçu non disponible pour ce type de fichier.</p>;
     };
 
@@ -137,13 +169,14 @@ export default function Folders({ listFolders, listFiles, changeFolderId }: Fold
                         file={file}
                         key={file.id}
                         downloadFile={downloadFileById}
-                        editFile={undefined}
+                        editFile={openUpdateFileModal}
+                        shareFile={openShareFileModal}
                         deleteFile={undefined}
                     />
                 </button>
             ))}
 
-
+            {/* Show details modal */}
             <Modal
                 isOpen={open}
                 title={selectedFile ? selectedFile.name : 'Détails du fichier'}
@@ -187,6 +220,18 @@ export default function Folders({ listFolders, listFiles, changeFolderId }: Fold
                     </div>
                 </div>
             </Modal>
+
+            <UpdateFileModal
+                isOpen={openUpdateModal}
+                fileInfo={editFileInfo!}
+                closeModal={() => closeUploadFileModal()}
+            />
+
+            <ShareFileModal
+                isOpen={openShareModal}
+                fileInfo={shareFileInfo!}
+                closeModal={() => closeShareFileModal()}
+            />
         </div>
     );
 }

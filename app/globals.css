@@ -10,6 +10,7 @@
   --color-txt-secondary: #6B7280;
   --color-action: #315EFB;
   --color-action-hover: #1E40AF;
+  --color-error: #F44336;
 
   --color-dark-main-bg: #1F2123;
   --color-dark-surface: #2C2E33;
@@ -20,6 +21,7 @@
   --color-dark-txt-secondary: #9CA3AF;
   --color-dark-action: #4C7BFF;
   --color-dark-action-hover: #315EFB;
+  --color-dark-error: #EF5350;
 }
 
 :root {

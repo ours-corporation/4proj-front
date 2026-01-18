@@ -9,16 +9,17 @@ import { converCreatedAt } from "@/src/utils/conver-created-at";
 interface FileProps {
     file: FileResponse;
     downloadFile?: (fileId: number, fileName: string) => Promise<void>;
-    editFile?: (fileId: number) => void;
+    editFile?: (file: FileResponse) => Promise<void>;
+    shareFile?: (file: FileResponse) => Promise<void>;
     deleteFile?: (fileId: number) => void;
 }
 
-export default function FileCard({ file, downloadFile, editFile, deleteFile }: FileProps) {
-    const hasActions = !!(downloadFile || editFile || deleteFile);
+export default function FileCard({ file, downloadFile, editFile, shareFile, deleteFile }: FileProps) {
+    const hasActions = !!(downloadFile || editFile || shareFile || deleteFile);
     const [open, setOpen] = useState(false);
     const menuRef = useRef<HTMLDivElement>(null);
 
-    // Ferme le menu si clic à l’extérieur
+
     useEffect(() => {
         function handleClickOutside(e: MouseEvent) {
             if (menuRef.current && !menuRef.current.contains(e.target as Node)) {
@@ -46,6 +47,7 @@ export default function FileCard({ file, downloadFile, editFile, deleteFile }: F
                     />
                 </div>
 
+                {/* Burger des actions */}
                 <div className="relative" ref={menuRef}>
                     {hasActions && (
                         <>
@@ -54,19 +56,18 @@ export default function FileCard({ file, downloadFile, editFile, deleteFile }: F
                                     e.stopPropagation();
                                     setOpen(!open);
                                 }}
-                                className="p-2 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-700"
+                                className="rounded-lg hover:bg-gray-100 dark:hover:bg-gray-700"
                             >
                                 ⋯
                             </button>
 
                             {open && (
-                                <div className="absolute right-0 mt-2 w-40 bg-white dark:bg-gray-800 rounded-lg shadow-lg border border-gray-200 dark:border-gray-700 z-10">
+                                <div className="absolute right-0 w-40 bg-main-bg dark:bg-dark-main-bg rounded-lg shadow-lg border border-gray-200 dark:border-gray-700 z-10">
                                     {downloadFile && (
                                         <button
-                                            className="w-full text-left px-4 py-2 text-sm hover:bg-gray-100 dark:hover:bg-gray-700"
+                                            className="w-full text-left px-4 py-2 text-sm hover:bg-gray-200 dark:hover:bg-gray-700"
                                             onClick={(e) => {
                                                 e.stopPropagation();
-                                                console.log("Download", file.id);
                                                 downloadFile(file.id, file.name);
                                                 setOpen(false);
                                             }}
@@ -77,12 +78,25 @@ export default function FileCard({ file, downloadFile, editFile, deleteFile }: F
                                     {editFile && (
                                         <button
                                             className="w-full text-left px-4 py-2 text-sm hover:bg-gray-100 dark:hover:bg-gray-700"
-                                            onClick={() => {
-                                                editFile(file.id);
+                                            onClick={(e) => {
+                                                e.stopPropagation();
+                                                editFile(file);
                                                 setOpen(false);
                                             }}
                                         >
                                             Renommer
+                                        </button>
+                                    )}
+                                    {shareFile && (
+                                        <button
+                                            className="w-full text-left px-4 py-2 text-sm hover:bg-gray-100 dark:hover:bg-gray-700"
+                                            onClick={(e) => {
+                                                e.stopPropagation();
+                                                shareFile(file);
+                                                setOpen(false);
+                                            }}
+                                        >
+                                            Partager
                                         </button>
                                     )}
                                     {deleteFile && (
@@ -104,7 +118,7 @@ export default function FileCard({ file, downloadFile, editFile, deleteFile }: F
             </div>
 
             <h2
-                className="text-lg font-bold text-gray-900 dark:text-white mb-2 truncate w-full"
+                className="text-lg font-bold text-gray-900 dark:text-white mb-2 truncate w-full flex items-start justify-start"
                 title={file.name}
             >
                 {file.name}

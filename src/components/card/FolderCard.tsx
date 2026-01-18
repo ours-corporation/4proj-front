@@ -7,10 +7,8 @@ interface FolderCardProps {
 }
 
 export default function FolderCard({ folder }: FolderCardProps) {
-    // Couleur thématique pour les dossiers (Jaune/Ambre)
-    // Vous pouvez changer ces valeurs selon votre charte graphique
-    const folderColor = "#F59E0B"; // amber-500
-    const folderBgColor = "#F59E0B20"; // amber-500 avec 20% d'opacité
+    const folderColor = "#F59E0B";
+    const folderBgColor = "#F59E0B20";
 
     return (
         <div className="flex flex-col justify-center items-start cursor-pointer hover:opacity-80 transition-opacity">

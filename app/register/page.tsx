@@ -7,6 +7,7 @@ import SubmitButton from "@/src/components/button/SubmitButton";
 import { register } from "@/src/api/auth";
 import {useRouter} from "next/navigation";
 import {useNotAuth} from "@/src/hooks/useAuth";
+import { registerValidatorValidator } from "@/src/validator/auth";
 
 
 export default function LoginPage() {
@@ -23,6 +24,14 @@ export default function LoginPage() {
         e.preventDefault();
         setLoading(true);
         setError("");
+
+        const validatorResult = registerValidatorValidator.safeParse({ username, email, password, confirmPassword });
+        if (!validatorResult.success) {
+            const firstError = validatorResult.error.issues[0];
+            setError(firstError.message);
+            setLoading(false);
+            return;
+        }
 
         try {
             if (password !== confirmPassword) {
@@ -50,12 +59,12 @@ export default function LoginPage() {
     };
 
     return (
-        <main className="min-h-screen flex items-center justify-center bg-gray-100">
+        <main className="min-h-screen flex items-center justify-center bg-main-bg dark:bg-dark-main-bg">
             <form
                 onSubmit={handleSubmit}
-                className="w-full max-w-md bg-white p-8 rounded-xl shadow-lg space-y-6"
+                className="w-full max-w-md bg-surface dark:bg-dark-surface p-8 rounded-xl shadow-lg space-y-6"
             >
-                <h1 className="text-2xl font-semibold text-center text-gray-800">
+                <h1 className="text-2xl font-semibold text-center text-txt-primary dark:text-dark-txt-primary">
                     Inscription
                 </h1>
 
@@ -99,7 +108,7 @@ export default function LoginPage() {
                 />
 
                 {error && (
-                    <p className="text-sm text-red-500 text-center">{error}</p>
+                    <p className="text-sm text-error dark:text-dark-error">{error}</p>
                 )}
 
                 <SubmitButton
@@ -110,13 +119,13 @@ export default function LoginPage() {
                     loadingText="Inscription..."
                 />
 
-                <p className="text-sm text-red-500">
+                <p className="text-sm text-error dark:text-dark-error">
                     * Champs obligatoires
                 </p>
 
                 <p className="text-sm text-center text-gray-600">
                     Vous avez déjà un compte ?{' '}
-                    <a href="/login" className="text-blue-600 hover:underline">
+                    <a href="/login" className="text-action dark:text-dark-action hover:underline">
                         Connectez-vous
                     </a>
                 </p>
