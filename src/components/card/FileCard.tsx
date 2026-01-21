@@ -119,9 +119,9 @@ export default function FileCard({ file, downloadFile, editFile, shareFile, dele
 
             <h2
                 className="text-lg font-bold text-gray-900 dark:text-white mb-2 truncate w-full flex items-start justify-start"
-                title={file.name}
+                title={file.fullName}
             >
-                {file.name}
+                {file.fullName}
             </h2>
 
             <div className="w-full flex justify-between items-center text-sm text-gray-500 dark:text-gray-400 font-medium">

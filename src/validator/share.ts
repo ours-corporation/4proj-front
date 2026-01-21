@@ -11,3 +11,8 @@ export const createPublicShareLinkValidator = z.object({
             return date > new Date();
         },{message: "La date d'expiration doit être dans le futur"})
 });
+
+export const createPrivateShareValidator = z.object({
+    email: z.email("Email invalide"),
+    permission: z.enum(['READ', 'WRITE']).default('READ')
+});

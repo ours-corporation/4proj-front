@@ -5,28 +5,24 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="f91a7d97-50ab-473f-bc75-76b22759da4e" name="Changes" comment="feat : file front">
-      <change afterPath="$PROJECT_DIR$/app/partage/public/[id]/page.tsx" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/api/share.ts" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/components/modal/ShareFile.tsx" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/components/modal/UpdateFile.tsx" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/validator/auth.ts" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/validator/file.ts" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/validator/folder.ts" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/validator/share.ts" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.gitignore" beforeDir="false" afterPath="$PROJECT_DIR$/.gitignore" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/app/share/page.tsx" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/app/share/public/[id]/page.tsx" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/components/FoldersShare.tsx" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/components/share/PrivateShare.tsx" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/components/share/PublicShare.tsx" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/folders/page.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/app/folders/page.tsx" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/app/globals.css" beforeDir="false" afterPath="$PROJECT_DIR$/app/globals.css" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/login/page.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/app/login/page.tsx" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/app/partage/public/[id]/page.tsx" beforeDir="false" />
       <change beforePath="$PROJECT_DIR$/app/register/page.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/app/register/page.tsx" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/package-lock.json" beforeDir="false" afterPath="$PROJECT_DIR$/package-lock.json" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/package.json" beforeDir="false" afterPath="$PROJECT_DIR$/package.json" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/api/file.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/api/file.ts" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/components/Folders.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/src/components/Folders.tsx" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/api/folders.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/api/folders.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/api/share.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/api/share.ts" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/components/card/FileCard.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/src/components/card/FileCard.tsx" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/components/card/FolderCard.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/src/components/card/FolderCard.tsx" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/components/input/InputField.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/src/components/input/InputField.tsx" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/components/modal/ShareFile.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/src/components/modal/ShareFile.tsx" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/components/modal/UpdateFile.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/src/components/modal/UpdateFile.tsx" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/components/nav/Nav.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/src/components/nav/Nav.tsx" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/interface/file.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/interface/file.ts" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/interface/folder.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/interface/folder.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/validator/share.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/validator/share.ts" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -48,37 +44,37 @@
     <option name="hideEmptyMiddlePackages" value="true" />
     <option name="showLibraryContents" value="true" />
   </component>
-  <component name="PropertiesComponent"><![CDATA[{
-  "keyToString": {
-    "ModuleVcsDetector.initialDetectionPerformed": "true",
-    "RunOnceActivity.ShowReadmeOnStart": "true",
-    "RunOnceActivity.TerminalTabsStorage.copyFrom.TerminalArrangementManager.252": "true",
-    "RunOnceActivity.git.unshallow": "true",
-    "git-widget-placeholder": "dev-file-card",
-    "js.debugger.nextJs.config.created.client": "true",
-    "js.debugger.nextJs.config.created.server": "true",
-    "last_opened_file_path": "/Users/mathislecomte/Documents/ecole/PGE4/4PROJ/4proj-front/app/folders",
-    "node.js.detected.package.eslint": "true",
-    "node.js.detected.package.tslint": "true",
-    "node.js.selected.package.eslint": "(autodetect)",
-    "node.js.selected.package.tslint": "(autodetect)",
-    "nodejs_interpreter_path": "C:/Users/lecom/AppData/Roaming/JetBrains/WebStorm2025.2/node/versions/24.13.0/node",
-    "nodejs_package_manager_path": "npm",
-    "ts.external.directory.path": "C:\\Users\\lecom\\Documents\\projet\\4proj\\4proj-front\\node_modules\\typescript\\lib",
-    "vue.rearranger.settings.migration": "true"
+  <component name="PropertiesComponent">{
+  &quot;keyToString&quot;: {
+    &quot;ModuleVcsDetector.initialDetectionPerformed&quot;: &quot;true&quot;,
+    &quot;RunOnceActivity.ShowReadmeOnStart&quot;: &quot;true&quot;,
+    &quot;RunOnceActivity.TerminalTabsStorage.copyFrom.TerminalArrangementManager.252&quot;: &quot;true&quot;,
+    &quot;RunOnceActivity.git.unshallow&quot;: &quot;true&quot;,
+    &quot;git-widget-placeholder&quot;: &quot;public-share&quot;,
+    &quot;js.debugger.nextJs.config.created.client&quot;: &quot;true&quot;,
+    &quot;js.debugger.nextJs.config.created.server&quot;: &quot;true&quot;,
+    &quot;last_opened_file_path&quot;: &quot;/Users/mathislecomte/Documents/ecole/PGE4/4PROJ/4proj-front/app/folders&quot;,
+    &quot;node.js.detected.package.eslint&quot;: &quot;true&quot;,
+    &quot;node.js.detected.package.tslint&quot;: &quot;true&quot;,
+    &quot;node.js.selected.package.eslint&quot;: &quot;(autodetect)&quot;,
+    &quot;node.js.selected.package.tslint&quot;: &quot;(autodetect)&quot;,
+    &quot;nodejs_interpreter_path&quot;: &quot;C:/Users/lecom/AppData/Roaming/JetBrains/WebStorm2025.2/node/versions/24.13.0/node&quot;,
+    &quot;nodejs_package_manager_path&quot;: &quot;npm&quot;,
+    &quot;ts.external.directory.path&quot;: &quot;C:\\Users\\lecom\\Documents\\projet\\4proj\\4proj-front\\node_modules\\typescript\\lib&quot;,
+    &quot;vue.rearranger.settings.migration&quot;: &quot;true&quot;
   }
-}]]></component>
+}</component>
   <component name="RecentsManager">
     <key name="CopyFile.RECENT_KEYS">
       <recent name="$PROJECT_DIR$/app/folders" />
       <recent name="$PROJECT_DIR$/app/register" />
     </key>
     <key name="MoveFile.RECENT_KEYS">
+      <recent name="C:\Users\lecom\Documents\projet\4proj\4proj-front\app\partage" />
       <recent name="C:\Users\lecom\Documents\projet\4proj\4proj-front\app\partage\public\[id]" />
       <recent name="$PROJECT_DIR$/src/components/button" />
       <recent name="$PROJECT_DIR$/src/components/input" />
       <recent name="$PROJECT_DIR$/src" />
-      <recent name="$PROJECT_DIR$/components/nav" />
     </key>
   </component>
   <component name="RunManager" selected="npm.Next.js: server-side">
@@ -116,6 +112,11 @@
       <workItem from="1768306770874" duration="7403000" />
       <workItem from="1768464380715" duration="30753000" />
       <workItem from="1768757698838" duration="11689000" />
+      <workItem from="1768938143331" duration="600000" />
+      <workItem from="1768941166982" duration="7168000" />
+      <workItem from="1769022218814" duration="479000" />
+      <workItem from="1769028353266" duration="238000" />
+      <workItem from="1769028686573" duration="2082000" />
     </task>
     <task id="LOCAL-00001" summary="feat : start login">
       <option name="closed" value="true" />

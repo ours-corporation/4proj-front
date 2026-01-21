@@ -11,6 +11,7 @@
   --color-action: #315EFB;
   --color-action-hover: #1E40AF;
   --color-error: #F44336;
+  --color-success: #36ba2d;
 
   --color-dark-main-bg: #1F2123;
   --color-dark-surface: #2C2E33;
@@ -22,6 +23,7 @@
   --color-dark-action: #4C7BFF;
   --color-dark-action-hover: #315EFB;
   --color-dark-error: #EF5350;
+  --color-dark-success: #4CAF50;
 }
 
 :root {

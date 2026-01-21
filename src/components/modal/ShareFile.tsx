@@ -2,10 +2,9 @@ import React, { useState } from 'react';
 import Modal from "@/src/components/modal/Modal";
 import { FileResponse } from "@/src/interface/file";
 import { FolderResponse } from "@/src/interface/folder";
-import InputField from "@/src/components/input/InputField";
-import SubmitButton from "@/src/components/button/SubmitButton";
-import {createPublicShareLinkValidator} from "@/src/validator/share";
-import {createPublicShare} from "@/src/api/share";
+import PublicShare from "@/src/components/share/PublicShare";
+import PrivateShare from "@/src/components/share/PrivateShare";
+
 
 interface ShareFileModalProps {
     isOpen?: boolean;
@@ -61,158 +60,18 @@ export default function ShareFileModal({ isOpen, fileInfo, folderInfo, closeModa
                 </div>
 
                 {visibility === 'public' ? (
-                    <>
-                        <PublicShare
-                            fileInfo={fileInfo}
-                            folderInfo={folderInfo}
-                        />
-                    </>
+                    <PublicShare
+                        fileInfo={fileInfo}
+                        folderInfo={folderInfo}
+                    />
                 ) : (
-                    <p className="text-sm text-gray-500 text-center mt-2">Le fichier sera accessible uniquement aux membres.</p>
+                    <PrivateShare
+                        fileInfo={fileInfo}
+                        folderInfo={folderInfo}
+                    />
                 )}
 
             </div>
         </Modal>
-    );
-}
-
-
-interface PublicShareProps {
-    fileInfo?: FileResponse;
-    folderInfo?: FolderResponse;
-}
-
-interface CreatePublicShareResponse {
-    link: string;
-    token: string;
-    expiresAt?: string;
-}
-
-function PublicShare({ fileInfo, folderInfo }: PublicShareProps) {
-
-    const [ passwordProtected, setPasswordProtected ] = useState(false);
-    const [ password, setPassword ] = useState('');
-    const [ expirationDate, setExpirationDate ] = useState('');
-
-    const [ errorMessage, setErrorMessage ] =  useState("");
-    const [ shareLink, setShareLink ] = useState<string | null>(null);
-
-    async function createPublicShareLink() {
-        const fileId = fileInfo ? fileInfo.id : null;
-        const folderId = folderInfo ? folderInfo.id : null;
-        if (!fileId && !folderId) {
-            setErrorMessage("Aucun fichier ou dossier sélectionné pour le partage.");
-            return;
-        }
-
-        setErrorMessage("");
-
-        // Supposons que createPublicShareLinkValidator est importé
-        const validatorResult = createPublicShareLinkValidator.safeParse({
-            password: passwordProtected ? password : undefined,
-            expiresAt: expirationDate ? new Date(expirationDate).toISOString() : undefined
-        });
-
-        if (!validatorResult.success) {
-            const firstError = validatorResult.error.issues[0];
-            setErrorMessage(firstError.message);
-            return; // <-- AJOUT IMPORTANT : Arrêter l'exécution si la validation échoue
-        }
-
-        const rep = await createPublicShare(fileId ?? undefined, folderId ?? undefined,
-            passwordProtected ? password : undefined,
-            expirationDate ? new Date(expirationDate).toISOString() : undefined);
-
-        if (rep.ok) {
-            try {
-                const data = await rep.json() as CreatePublicShareResponse;
-                const token = data.token;
-                const link = `${window.location.origin}/share/public/${token}`;
-                setShareLink(link);
-                setErrorMessage("");
-            } catch (e) {
-                setErrorMessage("Erreur lors de la création du lien de partage.");
-            }
-        } else {
-            const errorData = await rep.json();
-            setErrorMessage(errorData.error || "Une erreur est survenue lors de la création du lien de partage.");
-        }
-    }
-
-    return (
-        <div>
-            {shareLink ? (
-                <div className="p-4 bg-green-100 dark:bg-green-900 rounded-md">
-                    <h3 className="text-md font-medium mb-2">Lien de partage généré :</h3>
-                    <a
-                        href={shareLink}
-                        target="_blank"
-                        rel="noopener noreferrer"
-                        className="text-action dark:text-dark-action break-all"
-                    >
-                        {shareLink}
-                    </a>
-                </div>
-            ) : (
-                /* CORRECTION SYNTAXE : Ajout du Fragment (<>) pour englober les éléments frères */
-                <>
-                    <h2 className="text-lg font-bold mb-4">Partager le fichier publiquement</h2>
-                    <div className="mt-4 flex items-center justify-between mb-4">
-                        <span className="text-sm font-medium text-txt-primary dark:text-dark-txt-primary">
-                            Activer la protection par mot de passe
-                        </span>
-
-                        <button
-                            type="button"
-                            role="switch"
-                            aria-checked={passwordProtected}
-                            onClick={() => setPasswordProtected(!passwordProtected)}
-                            className={`
-                                relative inline-flex h-6 w-11 items-center rounded-full transition-colors duration-200 ease-in-out focus:outline-none focus:ring-2 focus:ring-action focus:ring-offset-2
-                                ${passwordProtected ? 'bg-action dark:bg-dark-action' : 'bg-gray-200 dark:bg-gray-700'}
-                            `}
-                        >
-                            <span className="sr-only">Activer la protection par mot de passe</span>
-                            <span
-                                className={`
-                                    inline-block h-4 w-4 transform rounded-full bg-white shadow transition duration-200 ease-in-out
-                                    ${passwordProtected ? 'translate-x-6' : 'translate-x-1'}
-                                `}
-                            />
-                        </button>
-                    </div>
-
-                    <div className="flex flex-col gap-4">
-                        <InputField
-                            id="password"
-                            label="Mot de passe"
-                            type="password"
-                            value={password}
-                            onChange={setPassword}
-                            disabled={!passwordProtected}
-                        />
-
-                        <InputField
-                            id="expiration-date"
-                            label="Date d'expiration du lien"
-                            value={expirationDate}
-                            type="datetime-local"
-                            onChange={setExpirationDate}
-                        />
-
-                        {errorMessage && (
-                            <p className="text-sm text-error dark:text-dark-error">{errorMessage}</p>
-                        )}
-
-                        <SubmitButton
-                            id="generate-link"
-                            type="button"
-                            text="Générer le lien de partage"
-                            onClick={() => { createPublicShareLink(); }}
-                        />
-                    </div>
-                </>
-            )}
-        </div>
     );
 }

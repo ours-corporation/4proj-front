@@ -19,17 +19,9 @@ export default function UpdateFileModal({ isOpen, fileInfo, closeModal }: Update
 
     useEffect(() => {
         if (fileInfo?.name) {
-            const lastDotIndex = fileInfo.name.lastIndexOf('.');
-
-            if (lastDotIndex > 0) {
-                // eslint-disable-next-line react-hooks/set-state-in-effect
-                setFileName(fileInfo.name.substring(0, lastDotIndex)); // "mondocument"
-                setFileExtension(fileInfo.name.substring(lastDotIndex)); // ".pdf"
-            } else {
-                // Pas d'extension trouvée
-                setFileName(fileInfo.name);
-                setFileExtension("");
-            }
+            // eslint-disable-next-line react-hooks/set-state-in-effect
+            setFileName(fileInfo.name);
+            setFileExtension('.' + fileInfo.extension);
         }
     }, [fileInfo]);
 

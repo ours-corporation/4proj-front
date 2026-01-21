@@ -31,7 +31,7 @@ export async function getFolderById({ folderId }: { folderId: string }): Promise
         return data;
 
     } catch (error) {
-        throw error; // Relancer l'erreur pour que le composant la détecte
+        throw error;
     }
 }
 

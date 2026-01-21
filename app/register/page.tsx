@@ -44,6 +44,8 @@ export default function LoginPage() {
 
             if (!res.ok) {
                 if(res.status === 401) {
+                    console.log("Unauthorized access - invalid credentials");
+                    console.log(res.json());
                     setError("Les identifiants sont invalides.");
                 } else {
                     setError(`Erreur : ${res.status}`);
