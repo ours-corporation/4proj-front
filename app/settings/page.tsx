@@ -10,6 +10,9 @@ import SubmitButton from "@/src/components/auth/button/SubmitButton";
 import Loading from '@/src/components/Loading';
 import { getMyInformation, updateUser } from "@/src/api/user";
 
+import UpdateUserMailForm from "@/src/components/settings/UpdateUserMailForm";
+import UpdatePasswordForm from "@/src/components/settings/UpdatePasswordForm";
+
 export default function SettingsPage() {
 
     const BASE_URL = process.env.NEXT_PUBLIC_API_URL;
@@ -17,10 +20,11 @@ export default function SettingsPage() {
     const [username, setUsername] = useState("");
     const [email, setEmail] = useState("");
     const [pageLoading, setPageLoading] = useState(false);
-    const [submitLoading, setSubmitLoading] = useState(false); 
-    const [password, setPassword] = useState("");
+    const [oldPassword, setOldPassword] = useState("");
+    const [newPassword, setNewPassword] = useState("");
     const [confirmPassword, setConfirmPassword] = useState("");
-
+    const [submitLoading, setSubmitLoading] = useState(false);
+    const [accountCreationDate, setAccountCreationDate] = useState<String | null>(null);
     const [error, setError] = useState("");
 
     const handleSubmit = async (e: { preventDefault: () => void; }) => {
@@ -47,25 +51,25 @@ export default function SettingsPage() {
             try {
                 const data = await getMyInformation();
                 if (data) {
+                    console.log(data);
                     const email = data.email;
                     setEmail(email);
                     const username = userInfo.username;
                     setUsername(username);
+                    const date = data.createdAt;
+                    setAccountCreationDate(date);
                     /*const updatedUser = await updateUser(username, email);*/
                     console.log("mise a jour réussie ");
                 } else {
                     setError("les informations n'ont pas réussi à être récupéré");
                 }
             } catch (error) {
-                console.error("Error fetching user data:", error);
+                console.log(error);
             }
         }
 
         fetchUserData();
-    }, []);
-
-
-        
+    }, []);    
 
     if (pageLoading) return <Loading />;
 
@@ -83,7 +87,7 @@ export default function SettingsPage() {
             }
             >
                 {userInfo ? userInfo.username : 'Utilisateur'}
-                <p>menbre depuis </p>
+                <p>menbre depuis {accountCreationDate ? accountCreationDate.slice(0,4) : '2025'}</p>
                 <hr></hr>
                 <p>Plan premium 30go</p>
             </GlobalCard> 
@@ -96,100 +100,25 @@ export default function SettingsPage() {
                 </svg>
             }
             >
-                Détails du stockages
-
-                Vidéos
-
-                Documents
-
-                Libre
-            </GlobalCard> 
-
-            <GlobalCard
-            svgIcon={
-                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="size-6">
-                <path stroke-linecap="round" stroke-linejoin="round" d="M15.75 6a3.75 3.75 0 1 1-7.5 0 3.75 3.75 0 0 1 7.5 0ZM4.501 20.118a7.5 7.5 0 0 1 14.998 0A17.933 17.933 0 0 1 12 21.75c-2.676 0-5.216-.584-7.499-1.632Z" />
-                </svg>
-            }
-            >
-                <form onSubmit={handleSubmit}>
-                <h1 className='text-3xl font-bold text-txt-primary dark:text-dark-txt-primary mb-2'> Informations personnelles</h1>
                 
-                <InputField
-                    id="username"
-                    name="username"
-                    label="Nom complet"
-                    value={username}
-                    type="text"
-                    onChange={setUsername}
-                />
-
-                <InputField
-                    id="email"
-                    name="email"
-                    label="Adresse Email"
-                    value={email}
-                    type="email"
-                    onChange={setEmail}
-                />
-
-                {error && (
-                    <p className="text-sm text-red-500 text-center">{error}</p>
-                )}
-
-               <SubmitButton
-                    id="change-button"
-                    type="submit"
-                    text="Enregistrer les modifications"
-                    loading={submitLoading}
-                    loadingText="Enregistrement..."
-                />
-                </form>
+                <p className="text-txt-secondary dark:text-dark-txt-secondary mb-8"> Détails du stockages </p>
+                <ul>
+                    <li>
+                    Vidéos
+                    </li>
+                    <li>
+                    Documents
+                    </li>
+                    <li>
+                    Libre
+                    </li>
+                </ul>
             </GlobalCard> 
 
-            <GlobalCard
-            svgIcon={ <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="size-6">
-  <path stroke-linecap="round" stroke-linejoin="round" d="M16.5 10.5V6.75a4.5 4.5 0 1 0-9 0v3.75m-.75 11.25h10.5a2.25 2.25 0 0 0 2.25-2.25v-6.75a2.25 2.25 0 0 0-2.25-2.25H6.75a2.25 2.25 0 0 0-2.25 2.25v6.75a2.25 2.25 0 0 0 2.25 2.25Z" />
-            </svg>}
-            >
-                <form>
-                <h1 className='text-3xl font-bold text-txt-primary dark:text-dark-txt-primary mb-2'> Sécurité</h1>
-                 <InputField
-                    id="password"
-                    name="password"
-                    label="Mot de passe actuel"
-                    value={password}
-                    type="password"
-                    onChange={setPassword}
-                />
+        <UpdateUserMailForm></UpdateUserMailForm>   
 
-                <InputField
-                    id="password"
-                    name="password"
-                    label="Nouveau mot de passe"
-                    value={password}
-                    type="password"
-                    onChange={setPassword}
-                />
+        <UpdatePasswordForm></UpdatePasswordForm>
 
-                <InputField
-                    id="confirm-password"
-                    name="confirm-password"
-                    label="Confirmer"
-                    value={confirmPassword}
-                    type="password"
-                    onChange={setConfirmPassword}
-                />
-
-               <SubmitButton
-                    id="change-button"
-                    type="submit"
-                    text="Mettre à jour le mot de passe"
-                    loading={submitLoading}
-                    loadingText="Enregistrement..."
-                />
-                </form>
-            </GlobalCard> 
         </Layout>
     );
 
