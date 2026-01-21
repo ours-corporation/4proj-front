@@ -5,16 +5,40 @@ import { useState, useEffect} from "react";
 import InputField from "@/src/components/auth/input/InputField";
 import SubmitButton from "@/src/components/auth/button/SubmitButton";
 import GlobalCard from "../card/GlobalCard";
+import {updatePassword} from "@/src/api/user";
+
 
 export default function UpdateUserMailForm(){
     const [oldPassword, setOldPassword] = useState("");
     const [newPassword, setNewPassword] = useState("");
     const [confirmPassword, setConfirmPassword] = useState("");
-    const [submitLoading, setSubmitLoading] = useState(false);
+    const [loading, setLoading] = useState(false);
+    const [error, setError] = useState("");
 
      const handleSubmitPassword = async (e: { preventDefault: () => void; }) => {
-       console.log("ok");
-    }
+        e.preventDefault();
+        setLoading(true);
+        setError("");
+
+        try{
+            if (newPassword !== confirmPassword) {
+                setError("Les mots de passe ne correspondent pas.");
+                setLoading(false);
+                return;
+            }
+        
+        const res = await updatePassword(oldPassword, newPassword); 
+
+        }
+        catch(err){
+            console.log(err);
+            console.error("update failed");
+        }
+
+        finally{
+            setLoading(false);
+        }
+    };
 
 
     return (
@@ -55,7 +79,7 @@ export default function UpdateUserMailForm(){
                 id="change-button"
                 type="submit"
                 text="Mettre à jour le mot de passe"
-                loading={submitLoading}
+                loading={loading}
                 loadingText="Enregistrement..."
             />
             </form>

@@ -5,15 +5,58 @@ import { useState, useEffect} from "react";
 import InputField from "@/src/components/auth/input/InputField";
 import SubmitButton from "@/src/components/auth/button/SubmitButton";
 import GlobalCard from "../card/GlobalCard";
+import { getMyInformation, updateUser } from "@/src/api/user";
+
 export default function UpdateUserMailForm(){
     const [username, setUsername] = useState("");
     const [email, setEmail] = useState("");
     const [submitLoading, setSubmitLoading] = useState(false); 
     const [error, setError] = useState("");
+    const [accountCreationDate, setAccountCreationDate] = useState<String | null>(null);
 
-     const handleSubmit = async (e: { preventDefault: () => void; }) => {
-       console.log("ok");
-    }
+         const handleSubmit = async (e: { preventDefault: () => void; }) => {
+                 e.preventDefault();
+                 setSubmitLoading(true);
+         
+                 try{
+                     const response = await updateUser(username, email);
+                     console.log("MAJ réussie -> ", response)
+                     return;
+                 }
+         
+                 catch(err){
+                     console.log(err)
+                 }
+         
+                 finally{
+                     setSubmitLoading(false);
+                 }
+             };
+         
+             useEffect(() => {
+                 async function fetchUserData() {
+                     try {
+                         const data = await getMyInformation();
+                         if (data) {
+                             console.log(data);
+                             const email = data.email;
+                             setEmail(email);
+                             const username = data.username;
+                             setUsername(username);
+                             const date = data.createdAt;
+                             setAccountCreationDate(date);
+                             /*const updatedUser = await updateUser(username, email);*/
+                             console.log("mise a jour réussie ");
+                         } else {
+                             setError("les informations n'ont pas réussi à être récupéré");
+                         }
+                     } catch (error) {
+                         console.log(error);
+                     }
+                 }
+         
+                 fetchUserData();
+             }, []);    
 
 
     return (

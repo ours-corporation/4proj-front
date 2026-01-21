@@ -4,74 +4,53 @@ import { useState, useEffect} from "react";
 import Layout from '@/src/components/Layout';
 import {useJwtInformation} from "@/src/hooks/getJwtInformation";
 import GlobalCard from "@/src/components/card/GlobalCard";
-import InputField from "@/src/components/auth/input/InputField";
-import SubmitButton from "@/src/components/auth/button/SubmitButton";
-/*import {useAuth} from "@/src/hooks/useAuth";*/
 import Loading from '@/src/components/Loading';
-import { getMyInformation, updateUser } from "@/src/api/user";
+import { getMyInformation } from "@/src/api/user";
 
 import UpdateUserMailForm from "@/src/components/settings/UpdateUserMailForm";
 import UpdatePasswordForm from "@/src/components/settings/UpdatePasswordForm";
+
+import { useAuth } from '@/src/hooks/useAuth';
 
 export default function SettingsPage() {
 
     const BASE_URL = process.env.NEXT_PUBLIC_API_URL;
     const userInfo = useJwtInformation();
+
+    const loading = useAuth();
+
     const [username, setUsername] = useState("");
     const [email, setEmail] = useState("");
-    const [pageLoading, setPageLoading] = useState(false);
-    const [oldPassword, setOldPassword] = useState("");
-    const [newPassword, setNewPassword] = useState("");
-    const [confirmPassword, setConfirmPassword] = useState("");
-    const [submitLoading, setSubmitLoading] = useState(false);
-    const [accountCreationDate, setAccountCreationDate] = useState<String | null>(null);
+    const [accountCreationDate, setAccountCreationDate] = useState("");
     const [error, setError] = useState("");
 
-    const handleSubmit = async (e: { preventDefault: () => void; }) => {
-        e.preventDefault();
-        setSubmitLoading(true);
+     useEffect(() => {
+                     async function fetchUserData() {
+                         try {
+                             const data = await getMyInformation();
+                             if (data) {
+                                 console.log(data);
+                                 const email = data.email;
+                                 setEmail(email);
+                                 const username = data.username;
+                                 setUsername(username);
+                                 const date = data.createdAt;
+                                 setAccountCreationDate(date);
+                                 console.log("mise a jour réussie ");
+                             } else {
+                                 setError("les informations n'ont pas réussi à être récupéré");
+                             }
+                         } catch (error) {
+                             console.log(error);
+                         }
+                     }
+             
+                     fetchUserData();
+                 }, []);    
 
-        try{
-            const response = await updateUser(username, email);
-            console.log("MAJ réussie -> ", response)
-            return;
-        }
 
-        catch(err){
-            console.log(err)
-        }
 
-        finally{
-            setSubmitLoading(false);
-        }
-    };
-
-    useEffect(() => {
-        async function fetchUserData() {
-            try {
-                const data = await getMyInformation();
-                if (data) {
-                    console.log(data);
-                    const email = data.email;
-                    setEmail(email);
-                    const username = userInfo.username;
-                    setUsername(username);
-                    const date = data.createdAt;
-                    setAccountCreationDate(date);
-                    /*const updatedUser = await updateUser(username, email);*/
-                    console.log("mise a jour réussie ");
-                } else {
-                    setError("les informations n'ont pas réussi à être récupéré");
-                }
-            } catch (error) {
-                console.log(error);
-            }
-        }
-
-        fetchUserData();
-    }, []);    
-
-    if (pageLoading) return <Loading />;
+    if (loading) return <Loading />;
 
     return (
         <Layout currentPage="/settings">
@@ -86,7 +65,7 @@ export default function SettingsPage() {
 
             }
             >
-                {userInfo ? userInfo.username : 'Utilisateur'}
+                {username ? username : 'Utilisateur'}
                 <p>menbre depuis {accountCreationDate ? accountCreationDate.slice(0,4) : '2025'}</p>
                 <hr></hr>
                 <p>Plan premium 30go</p>
