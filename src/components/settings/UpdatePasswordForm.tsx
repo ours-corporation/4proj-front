@@ -31,8 +31,7 @@ export default function UpdateUserMailForm(){
 
         }
         catch(err){
-            console.log(err);
-            console.error("update failed");
+            console.error("error updating the password:", error);
         }
 
         finally{
@@ -48,7 +47,8 @@ export default function UpdateUserMailForm(){
                     </svg>}>
         <form onSubmit={handleSubmitPassword}>
             <h1 className='text-3xl font-bold text-txt-primary dark:text-dark-txt-primary mb-2'> Sécurité</h1>
-                <InputField
+            <div>
+            <InputField
                 id="password"
                 name="password"
                 label="Mot de passe actuel"
@@ -56,7 +56,9 @@ export default function UpdateUserMailForm(){
                 type="password"
                 onChange={setOldPassword}
             />
-
+            </div>
+            <div>
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-4">
             <InputField
                 id="password"
                 name="password"
@@ -74,7 +76,12 @@ export default function UpdateUserMailForm(){
                 type="password"
                 onChange={setConfirmPassword}
             />
-
+            </div>
+            {error && (
+                <p className="text-sm text-red-500 text-center">{error}</p>
+            )}
+            </div>
+            <div>
             <SubmitButton
                 id="change-button"
                 type="submit"
@@ -82,7 +89,8 @@ export default function UpdateUserMailForm(){
                 loading={loading}
                 loadingText="Enregistrement..."
             />
-            </form>
+            </div>
+        </form>
         </GlobalCard> 
         );
 }
