@@ -58,7 +58,7 @@ export default function SettingsPage() {
             <h1 className='text-3xl font-bold text-txt-primary dark:text-dark-txt-primary mb-2'> Paramètres du compte </h1>
             </main>
             <section className = "grid grid-cols-1 md:grid-cols-[30%_70%] gap-6 pr-6 justify-items-center">
-                <div className="w-full bg-surface dark:bg-dark-surface p-6 rounded-[30px] shadow-xl text-white font-sans">
+                <div className="w-full bg-surface dark:bg-dark-surface p-6 rounded-[30px] shadow-xl text-txt-primary dark:text-dark-txt-primary font-sans">
                     <div className="flex justify-center mb-4">
                         <div className="h-20 w-20 bg-main-bg dark:bg-dark-main-bg rounded-2xl flex items-center justify-center">
                             <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" className="size-6">
@@ -77,11 +77,11 @@ export default function SettingsPage() {
                 </div>
                 <UpdateUserMailForm></UpdateUserMailForm>   
 
-                 <div className="w-full bg-[#5F57DE] dark:bg-[#5F57DE] p-6 rounded-[30px] shadow-xl text-white font-sans">
+                 <div className="w-full bg-surface dark:bg-dark-surface p-6 rounded-[30px] shadow-xl text-white font-sans">
                 
                     <div className="flex justify-between items-start mb-5">
                         <div className="grid grid-cols-1">
-                        <h1 className="text-xl font-bold text-txt-primary dark:text-dark-txt-primary mb-8"> Détails du stockages </h1>
+                        <h1 className="text-xl font-bold text-txt-primary dark:text-dark-txt-primary mb-8"> Détails du stockage </h1>
                         <ul>    
                             <li>
                             Vidéos
