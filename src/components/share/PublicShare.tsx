@@ -54,7 +54,7 @@ export default function PublicShare({ fileInfo, folderInfo }: PublicShareProps) 
             try {
                 const data = await rep.json() as CreatePublicShareResponse;
                 const token = data.token;
-                const link = `${window.location.origin}/partage/public/${token}`;
+                const link = `${window.location.origin}/share/public/${token}`;
                 setShareLink(link);
                 setErrorMessage("");
             } catch (e) {

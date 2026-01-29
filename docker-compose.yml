@@ -1,0 +1,26 @@
+services:
+  app-dev:
+    image: node:20-alpine
+    container_name: next_dev
+    working_dir: /app
+    volumes:
+      - ./:/app:cached
+      - /app/node_modules
+      - /app/.next
+    ports:
+      - "3000:3000"
+    environment:
+      - NODE_ENV=development
+      - WATCHPACK_POLLING=true
+    command: sh -c "npm install && npx next dev -H 0.0.0.0"
+
+  app:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: next_prod
+    restart: unless-stopped
+    ports:
+      - "3000:3000"
+    environment:
+      - NODE_ENV=production

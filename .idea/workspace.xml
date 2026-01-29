@@ -5,29 +5,26 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="f91a7d97-50ab-473f-bc75-76b22759da4e" name="Changes" comment="feat : file front">
-      <change afterPath="$PROJECT_DIR$/app/share/page.tsx" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/app/share/public/[id]/page.tsx" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/components/FoldersShare.tsx" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/components/share/PrivateShare.tsx" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/components/share/PublicShare.tsx" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/Dockerfile" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/docker-compose.yml" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/interface/share.ts" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/globals.css" beforeDir="false" afterPath="$PROJECT_DIR$/app/globals.css" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/partage/public/[id]/page.tsx" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/register/page.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/app/register/page.tsx" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/api/folders.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/api/folders.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/app/share/public/[id]/page.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/app/share/public/[id]/page.tsx" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/package-lock.json" beforeDir="false" afterPath="$PROJECT_DIR$/package-lock.json" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/api/share.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/api/share.ts" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/components/card/FileCard.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/src/components/card/FileCard.tsx" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/components/modal/ShareFile.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/src/components/modal/ShareFile.tsx" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/components/modal/UpdateFile.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/src/components/modal/UpdateFile.tsx" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/components/nav/Nav.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/src/components/nav/Nav.tsx" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/interface/file.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/interface/file.ts" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/interface/folder.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/interface/folder.ts" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/validator/share.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/validator/share.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/components/share/PublicShare.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/src/components/share/PublicShare.tsx" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
     <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
     <option name="LAST_RESOLUTION" value="IGNORE" />
+  </component>
+  <component name="FileTemplateManagerImpl">
+    <option name="RECENT_TEMPLATES">
+      <list>
+        <option value="Dockerfile" />
+      </list>
+    </option>
   </component>
   <component name="Git.Settings">
     <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$" />
@@ -48,7 +45,6 @@
   &quot;keyToString&quot;: {
     &quot;ModuleVcsDetector.initialDetectionPerformed&quot;: &quot;true&quot;,
     &quot;RunOnceActivity.ShowReadmeOnStart&quot;: &quot;true&quot;,
-    &quot;RunOnceActivity.TerminalTabsStorage.copyFrom.TerminalArrangementManager.252&quot;: &quot;true&quot;,
     &quot;RunOnceActivity.git.unshallow&quot;: &quot;true&quot;,
     &quot;git-widget-placeholder&quot;: &quot;public-share&quot;,
     &quot;js.debugger.nextJs.config.created.client&quot;: &quot;true&quot;,
@@ -58,9 +54,8 @@
     &quot;node.js.detected.package.tslint&quot;: &quot;true&quot;,
     &quot;node.js.selected.package.eslint&quot;: &quot;(autodetect)&quot;,
     &quot;node.js.selected.package.tslint&quot;: &quot;(autodetect)&quot;,
-    &quot;nodejs_interpreter_path&quot;: &quot;C:/Users/lecom/AppData/Roaming/JetBrains/WebStorm2025.2/node/versions/24.13.0/node&quot;,
     &quot;nodejs_package_manager_path&quot;: &quot;npm&quot;,
-    &quot;ts.external.directory.path&quot;: &quot;C:\\Users\\lecom\\Documents\\projet\\4proj\\4proj-front\\node_modules\\typescript\\lib&quot;,
+    &quot;ts.external.directory.path&quot;: &quot;/Users/mathislecomte/Documents/ecole/PGE4/4PROJ/4proj-front/node_modules/typescript/lib&quot;,
     &quot;vue.rearranger.settings.migration&quot;: &quot;true&quot;
   }
 }</component>
@@ -70,11 +65,11 @@
       <recent name="$PROJECT_DIR$/app/register" />
     </key>
     <key name="MoveFile.RECENT_KEYS">
-      <recent name="C:\Users\lecom\Documents\projet\4proj\4proj-front\app\partage" />
-      <recent name="C:\Users\lecom\Documents\projet\4proj\4proj-front\app\partage\public\[id]" />
       <recent name="$PROJECT_DIR$/src/components/button" />
       <recent name="$PROJECT_DIR$/src/components/input" />
       <recent name="$PROJECT_DIR$/src" />
+      <recent name="$PROJECT_DIR$/components/nav" />
+      <recent name="$PROJECT_DIR$/src/hooks" />
     </key>
   </component>
   <component name="RunManager" selected="npm.Next.js: server-side">
@@ -95,7 +90,7 @@
   <component name="SharedIndexes">
     <attachedChunks>
       <set>
-        <option value="bundled-js-predefined-d6986cc7102b-b598e85cdad2-JavaScript-WS-252.25557.126" />
+        <option value="bundled-js-predefined-d6986cc7102b-09060db00ec0-JavaScript-WS-251.26927.40" />
       </set>
     </attachedChunks>
   </component>
@@ -111,12 +106,8 @@
       <workItem from="1768292102143" duration="8541000" />
       <workItem from="1768306770874" duration="7403000" />
       <workItem from="1768464380715" duration="30753000" />
-      <workItem from="1768757698838" duration="11689000" />
-      <workItem from="1768938143331" duration="600000" />
-      <workItem from="1768941166982" duration="7168000" />
-      <workItem from="1769022218814" duration="479000" />
-      <workItem from="1769028353266" duration="238000" />
-      <workItem from="1769028686573" duration="2082000" />
+      <workItem from="1769522396811" duration="2080000" />
+      <workItem from="1769690625181" duration="2320000" />
     </task>
     <task id="LOCAL-00001" summary="feat : start login">
       <option name="closed" value="true" />
