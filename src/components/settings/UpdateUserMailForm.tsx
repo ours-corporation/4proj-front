@@ -2,8 +2,8 @@
 
 import React from "react";
 import { useState, useEffect} from "react";
-import InputField from "@/src/components/auth/input/InputField";
-import SubmitButton from "@/src/components/auth/button/SubmitButton";
+import InputField from "@/src/components/input/InputField";
+import SubmitButton from "@/src/components/button/SubmitButton";
 import GlobalCard from "../card/GlobalCard";
 import { getMyInformation, updateUser } from "@/src/api/user";
 
@@ -38,15 +38,12 @@ export default function UpdateUserMailForm(){
                      try {
                          const data = await getMyInformation();
                          if (data) {
-                             console.log(data);
                              const email = data.email;
                              setEmail(email);
                              const username = data.username;
                              setUsername(username);
-                             const date = data.createdAt;
+                             const date = data.created_at;
                              setAccountCreationDate(date);
-                             /*const updatedUser = await updateUser(username, email);*/
-                             console.log("mise a jour réussie ");
                          } else {
                              setError("les informations n'ont pas réussi à être récupéré");
                          }
@@ -62,7 +59,7 @@ export default function UpdateUserMailForm(){
     return (
     <GlobalCard
         svgIcon={
-            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="size-6">
+            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" className="w-6 h-6 text-txt-primary dark:text-dark-txt-primary">
             <path stroke-linecap="round" stroke-linejoin="round" d="M15.75 6a3.75 3.75 0 1 1-7.5 0 3.75 3.75 0 0 1 7.5 0ZM4.501 20.118a7.5 7.5 0 0 1 14.998 0A17.933 17.933 0 0 1 12 21.75c-2.676 0-5.216-.584-7.499-1.632Z" />
             </svg>
         }

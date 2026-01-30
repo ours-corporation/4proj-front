@@ -4,7 +4,12 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="f91a7d97-50ab-473f-bc75-76b22759da4e" name="Changes" comment="error" />
+    <list default="true" id="f91a7d97-50ab-473f-bc75-76b22759da4e" name="Changes" comment="error">
+      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/components/settings/UpdatePasswordForm.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/src/components/settings/UpdatePasswordForm.tsx" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/components/settings/UpdateUserMailForm.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/src/components/settings/UpdateUserMailForm.tsx" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/interface/user.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/interface/user.ts" afterDir="false" />
+    </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
     <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
@@ -111,6 +116,7 @@
       <workItem from="1768464380715" duration="30753000" />
       <workItem from="1769522396811" duration="2080000" />
       <workItem from="1769690625181" duration="3961000" />
+      <workItem from="1769760970978" duration="1004000" />
     </task>
     <task id="LOCAL-00001" summary="feat : start login">
       <option name="closed" value="true" />
@@ -175,8 +181,18 @@
     <option name="version" value="3" />
   </component>
   <component name="Vcs.Log.Tabs.Properties">
+    <option name="OPEN_GENERIC_TABS">
+      <map>
+        <entry key="842a0b46-efea-4db5-bf05-dbfe210455d9" value="TOOL_WINDOW" />
+      </map>
+    </option>
     <option name="TAB_STATES">
       <map>
+        <entry key="842a0b46-efea-4db5-bf05-dbfe210455d9">
+          <value>
+            <State />
+          </value>
+        </entry>
         <entry key="MAIN">
           <value>
             <State>
