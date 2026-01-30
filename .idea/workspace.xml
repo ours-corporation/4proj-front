@@ -4,16 +4,7 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="f91a7d97-50ab-473f-bc75-76b22759da4e" name="Changes" comment="feat : file front">
-      <change afterPath="$PROJECT_DIR$/Dockerfile" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/docker-compose.yml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/interface/share.ts" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/share/public/[id]/page.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/app/share/public/[id]/page.tsx" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/package-lock.json" beforeDir="false" afterPath="$PROJECT_DIR$/package-lock.json" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/api/share.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/api/share.ts" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/components/share/PublicShare.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/src/components/share/PublicShare.tsx" afterDir="false" />
-    </list>
+    <list default="true" id="f91a7d97-50ab-473f-bc75-76b22759da4e" name="Changes" comment="feat : file front" />
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
     <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
@@ -29,6 +20,18 @@
   <component name="Git.Settings">
     <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$" />
   </component>
+  <component name="GitHubPullRequestSearchHistory"><![CDATA[{
+  "lastFilter": {
+    "state": "OPEN",
+    "assignee": "le-grand-ours"
+  }
+}]]></component>
+  <component name="GithubPullRequestsUISettings"><![CDATA[{
+  "selectedUrlAndAccountId": {
+    "url": "https://github.com/le-grand-ours/4proj-front.git",
+    "accountId": "65e02317-86f8-4b8d-b1db-ffbd86d14452"
+  }
+}]]></component>
   <component name="KubernetesApiPersistence">{}</component>
   <component name="KubernetesApiProvider">{
   &quot;isMigrated&quot;: true
@@ -107,7 +110,7 @@
       <workItem from="1768306770874" duration="7403000" />
       <workItem from="1768464380715" duration="30753000" />
       <workItem from="1769522396811" duration="2080000" />
-      <workItem from="1769690625181" duration="2320000" />
+      <workItem from="1769690625181" duration="3381000" />
     </task>
     <task id="LOCAL-00001" summary="feat : start login">
       <option name="closed" value="true" />
