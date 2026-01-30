@@ -2,10 +2,10 @@
 
 import React from "react";
 import { useState, useEffect} from "react";
-import InputField from "@/src/components/auth/input/InputField";
-import SubmitButton from "@/src/components/auth/button/SubmitButton";
+import InputField from "@/src/components/input/InputField";
+import SubmitButton from "@/src/components/button/SubmitButton";
 import GlobalCard from "../card/GlobalCard";
-import {updatePassword} from "@/src/api/user";
+import { updatePassword } from "@/src/api/user";
 
 
 export default function UpdateUserMailForm(){
