@@ -4,24 +4,39 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="f91a7d97-50ab-473f-bc75-76b22759da4e" name="Changes" comment="feat : file front">
-      <change afterPath="$PROJECT_DIR$/src/api/file.ts" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/components/preview/imgPreview.tsx" afterDir="false" />
+    <list default="true" id="f91a7d97-50ab-473f-bc75-76b22759da4e" name="Changes" comment="error">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/folders/page.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/app/folders/page.tsx" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/components/Folders.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/src/components/Folders.tsx" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/components/Headers.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/src/components/Headers.tsx" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/components/card/FileCard.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/src/components/card/FileCard.tsx" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/components/modal/Modal.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/src/components/modal/Modal.tsx" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/components/settings/UpdatePasswordForm.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/src/components/settings/UpdatePasswordForm.tsx" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/components/settings/UpdateUserMailForm.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/src/components/settings/UpdateUserMailForm.tsx" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/interface/user.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/interface/user.ts" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
     <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
     <option name="LAST_RESOLUTION" value="IGNORE" />
   </component>
+  <component name="FileTemplateManagerImpl">
+    <option name="RECENT_TEMPLATES">
+      <list>
+        <option value="Dockerfile" />
+      </list>
+    </option>
+  </component>
   <component name="Git.Settings">
     <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$" />
   </component>
+  <component name="GitHubPullRequestSearchHistory">{
+  &quot;lastFilter&quot;: {
+    &quot;state&quot;: &quot;OPEN&quot;,
+    &quot;assignee&quot;: &quot;le-grand-ours&quot;
+  }
+}</component>
+  <component name="GithubPullRequestsUISettings">{
+  &quot;selectedUrlAndAccountId&quot;: {
+    &quot;url&quot;: &quot;https://github.com/le-grand-ours/4proj-front.git&quot;,
+    &quot;accountId&quot;: &quot;65e02317-86f8-4b8d-b1db-ffbd86d14452&quot;
+  }
+}</component>
   <component name="KubernetesApiPersistence">{}</component>
   <component name="KubernetesApiProvider">{
   &quot;isMigrated&quot;: true
@@ -34,35 +49,35 @@
     <option name="hideEmptyMiddlePackages" value="true" />
     <option name="showLibraryContents" value="true" />
   </component>
-  <component name="PropertiesComponent"><![CDATA[{
-  "keyToString": {
-    "ModuleVcsDetector.initialDetectionPerformed": "true",
-    "RunOnceActivity.ShowReadmeOnStart": "true",
-    "RunOnceActivity.git.unshallow": "true",
-    "git-widget-placeholder": "auth-with-github",
-    "js.debugger.nextJs.config.created.client": "true",
-    "js.debugger.nextJs.config.created.server": "true",
-    "last_opened_file_path": "/Users/mathislecomte/Documents/ecole/PGE4/4PROJ/4proj-front/app/folders",
-    "node.js.detected.package.eslint": "true",
-    "node.js.detected.package.tslint": "true",
-    "node.js.selected.package.eslint": "(autodetect)",
-    "node.js.selected.package.tslint": "(autodetect)",
-    "nodejs_package_manager_path": "npm",
-    "ts.external.directory.path": "/Users/mathislecomte/Documents/ecole/PGE4/4PROJ/4proj-front/node_modules/typescript/lib",
-    "vue.rearranger.settings.migration": "true"
+  <component name="PropertiesComponent">{
+  &quot;keyToString&quot;: {
+    &quot;ModuleVcsDetector.initialDetectionPerformed&quot;: &quot;true&quot;,
+    &quot;RunOnceActivity.ShowReadmeOnStart&quot;: &quot;true&quot;,
+    &quot;RunOnceActivity.git.unshallow&quot;: &quot;true&quot;,
+    &quot;git-widget-placeholder&quot;: &quot;public-share&quot;,
+    &quot;js.debugger.nextJs.config.created.client&quot;: &quot;true&quot;,
+    &quot;js.debugger.nextJs.config.created.server&quot;: &quot;true&quot;,
+    &quot;last_opened_file_path&quot;: &quot;/Users/mathislecomte/Documents/ecole/PGE4/4PROJ/4proj-front/app/folders&quot;,
+    &quot;node.js.detected.package.eslint&quot;: &quot;true&quot;,
+    &quot;node.js.detected.package.tslint&quot;: &quot;true&quot;,
+    &quot;node.js.selected.package.eslint&quot;: &quot;(autodetect)&quot;,
+    &quot;node.js.selected.package.tslint&quot;: &quot;(autodetect)&quot;,
+    &quot;nodejs_package_manager_path&quot;: &quot;npm&quot;,
+    &quot;ts.external.directory.path&quot;: &quot;/Users/mathislecomte/Documents/ecole/PGE4/4PROJ/4proj-front/node_modules/typescript/lib&quot;,
+    &quot;vue.rearranger.settings.migration&quot;: &quot;true&quot;
   }
-}]]></component>
+}</component>
   <component name="RecentsManager">
     <key name="CopyFile.RECENT_KEYS">
       <recent name="$PROJECT_DIR$/app/folders" />
       <recent name="$PROJECT_DIR$/app/register" />
     </key>
     <key name="MoveFile.RECENT_KEYS">
+      <recent name="$PROJECT_DIR$/src/components/button" />
+      <recent name="$PROJECT_DIR$/src/components/input" />
       <recent name="$PROJECT_DIR$/src" />
       <recent name="$PROJECT_DIR$/components/nav" />
       <recent name="$PROJECT_DIR$/src/hooks" />
-      <recent name="$PROJECT_DIR$/components" />
-      <recent name="$PROJECT_DIR$/components/auth" />
     </key>
   </component>
   <component name="RunManager" selected="npm.Next.js: server-side">
@@ -99,6 +114,9 @@
       <workItem from="1768292102143" duration="8541000" />
       <workItem from="1768306770874" duration="7403000" />
       <workItem from="1768464380715" duration="30753000" />
+      <workItem from="1769522396811" duration="2080000" />
+      <workItem from="1769690625181" duration="3961000" />
+      <workItem from="1769760970978" duration="1004000" />
     </task>
     <task id="LOCAL-00001" summary="feat : start login">
       <option name="closed" value="true" />
@@ -140,11 +158,60 @@
       <option name="project" value="LOCAL" />
       <updated>1768494576433</updated>
     </task>
-    <option name="localTasksCounter" value="6" />
+    <task id="LOCAL-00006" summary="error">
+      <option name="closed" value="true" />
+      <created>1769760158814</created>
+      <option name="number" value="00006" />
+      <option name="presentableId" value="LOCAL-00006" />
+      <option name="project" value="LOCAL" />
+      <updated>1769760158814</updated>
+    </task>
+    <task id="LOCAL-00007" summary="error">
+      <option name="closed" value="true" />
+      <created>1769760655038</created>
+      <option name="number" value="00007" />
+      <option name="presentableId" value="LOCAL-00007" />
+      <option name="project" value="LOCAL" />
+      <updated>1769760655038</updated>
+    </task>
+    <option name="localTasksCounter" value="8" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
     <option name="version" value="3" />
+  </component>
+  <component name="Vcs.Log.Tabs.Properties">
+    <option name="OPEN_GENERIC_TABS">
+      <map>
+        <entry key="842a0b46-efea-4db5-bf05-dbfe210455d9" value="TOOL_WINDOW" />
+      </map>
+    </option>
+    <option name="TAB_STATES">
+      <map>
+        <entry key="842a0b46-efea-4db5-bf05-dbfe210455d9">
+          <value>
+            <State />
+          </value>
+        </entry>
+        <entry key="MAIN">
+          <value>
+            <State>
+              <option name="FILTERS">
+                <map>
+                  <entry key="branch">
+                    <value>
+                      <list>
+                        <option value="auth-with-github" />
+                      </list>
+                    </value>
+                  </entry>
+                </map>
+              </option>
+            </State>
+          </value>
+        </entry>
+      </map>
+    </option>
   </component>
   <component name="VcsManagerConfiguration">
     <MESSAGE value="feat : start login" />
@@ -152,6 +219,7 @@
     <MESSAGE value="feat : add username / fix : password restriction" />
     <MESSAGE value="feat : auth with github and nav bar" />
     <MESSAGE value="feat : file front" />
-    <option name="LAST_COMMIT_MESSAGE" value="feat : file front" />
+    <MESSAGE value="error" />
+    <option name="LAST_COMMIT_MESSAGE" value="error" />
   </component>
 </project>

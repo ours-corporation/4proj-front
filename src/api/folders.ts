@@ -1,6 +1,6 @@
-import { getJwtToken } from "@/src/hooks/getJwtInformation";
-import { FolderResponse } from "@/src/interface/folder";
-import { FileResponse } from "@/src/interface/file";
+import {getJwtToken} from "@/src/hooks/getJwtInformation";
+import {FolderResponse} from "@/src/interface/folder";
+import {FileResponse} from "@/src/interface/file";
 
 export interface FolderDetailResponse {
     current: FolderResponse;
@@ -13,8 +13,6 @@ export async function getFolderById({ folderId }: { folderId: string }): Promise
     const url = process.env.NEXT_PUBLIC_API_URL;
     const token = getJwtToken(); // Assurez-vous que ceci retourne le token string
 
-    // Gestion du cas où folderId est vide (si besoin d'une racine par défaut)
-    // const targetId = folderId || 'root';
 
     try {
         const rep = await fetch(`${url}/api/folders/${folderId}`, {
@@ -33,7 +31,34 @@ export async function getFolderById({ folderId }: { folderId: string }): Promise
         return data;
 
     } catch (error) {
-        console.error("Erreur fetch:", error);
-        throw error; // Relancer l'erreur pour que le composant la détecte
+        throw error;
+    }
+}
+
+export async function createNewFolderAPI(folderName: string, parentFolderId: number | null): Promise<FolderResponse> {
+    const url = process.env.NEXT_PUBLIC_API_URL;
+    const token = getJwtToken();
+
+    try {
+        const rep = await fetch(`${url}/api/folders`, {
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json",
+                "Authorization": `Bearer ${token}`,
+            },
+            body: JSON.stringify({
+                name: folderName,
+                parent_id: parentFolderId,
+            }),
+        });
+
+        if (!rep.ok) {
+            throw new Error(`Erreur HTTP: ${rep.status}`);
+        }
+
+        return await rep.json();
+
+    } catch (error) {
+        throw error;
     }
 }

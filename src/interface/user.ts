@@ -2,6 +2,7 @@ import { Quota } from "@/src/interface/quota";
 
 export interface User {
     id: number;
+    username: string;
     email: string;
     quota_id: number;
     quota? : Quota;

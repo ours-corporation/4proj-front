@@ -1,6 +1,9 @@
+import ToggleDark from "@/src/components/ToggleDark";
+
 export default function Headers() {
     return (
         <header className="flex items-center w-full px-8 py-5 bg-surface dark:bg-dark-surface justify-between md:justify-end">
+            
             <div className="text-gray-500 md:hidden">
                 <span>
                     <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth="1.5" stroke="currentColor" className="size-6">
@@ -21,6 +24,7 @@ export default function Headers() {
                     placeholder="Rechercher un fichier..."
                 />
             </div>
+            <ToggleDark></ToggleDark>
         </header>
     );
 }

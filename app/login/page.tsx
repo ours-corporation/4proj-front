@@ -2,12 +2,14 @@
 
 import React, {useEffect} from "react";
 import { useState } from "react";
-import InputField from "@/src/components/auth/input/InputField";
-import SubmitButton from "@/src/components/auth/button/SubmitButton";
+import InputField from "@/src/components/input/InputField";
+import SubmitButton from "@/src/components/button/SubmitButton";
 import { login } from "@/src/api/auth";
 import {useRouter} from "next/navigation";
 import { FcGoogle } from "react-icons/fc";
 import { FaGithub } from "react-icons/fa";
+
+import { loginValidatorValidator } from "@/src/validator/auth";
 
 import { GetGoogleClientId, GetGithubClientId } from "@/src/services/envReader"
 import { useNotAuth } from "@/src/hooks/useAuth";
@@ -45,6 +47,14 @@ export default function LoginPage() {
         e.preventDefault();
         setLoading(true);
         setError("");
+
+        const validatorResult = loginValidatorValidator.safeParse({ email, password });
+        if (!validatorResult.success) {
+            const firstError = validatorResult.error.issues[0];
+            setError(firstError.message);
+            setLoading(false);
+            return;
+        }
 
         try {
             const res = await login(email, password);
@@ -101,7 +111,7 @@ export default function LoginPage() {
                 />
 
                 {error && (
-                    <p className="text-sm text-red-500 text-center">{error}</p>
+                    <p className="text-sm text-error dark:text-dark-error">{error}</p>
                 )}
 
                 <SubmitButton
