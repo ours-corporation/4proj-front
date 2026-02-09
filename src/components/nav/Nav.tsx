@@ -1,7 +1,7 @@
 import React from 'react';
 import NavItems from "@/src/components/nav/NavItems";
 import {useJwtInformation} from "@/src/hooks/getJwtInformation";
-
+import LogoutButton from "@/src/components/nav/LogoutButton";
 export default function NavBar({ currentPage }: { currentPage: string }) {
     const userInfo = useJwtInformation();
 
@@ -81,6 +81,11 @@ export default function NavBar({ currentPage }: { currentPage: string }) {
                         </svg>
                     }
                 />
+            </nav>
+                <LogoutButton isActive={currentPage === '/login'}></LogoutButton>
+            <nav>
+
+
             </nav>
 
             <div className="mt-auto pt-4 border-t border-txt-secondary dark:border-dark-txt-secondary">

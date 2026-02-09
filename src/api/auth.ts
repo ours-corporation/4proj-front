@@ -90,3 +90,13 @@ export async function refreshToken()  : Promise<Response> {
         credentials: 'include'
     });
 }
+
+export async function logout(){
+        
+    const url = process.env.NEXT_PUBLIC_API_URL
+
+        return await fetch( url + "/api/logout", {
+            method: "POST",
+            credentials: 'include',
+        });
+}
