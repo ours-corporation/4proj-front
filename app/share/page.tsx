@@ -6,6 +6,8 @@ import Loading from '@/src/components/Loading';
 import Layout from '@/src/components/Layout';
 import Error from "@/src/components/Error";
 import {FolderShareDetailResponse, getReceivedSharesAPI} from "@/src/api/share";
+import Folders from "@/src/components/Folders";
+import {getFolderById} from "@/src/api/folders";
 
 
 export default function ShowShareFolders() {
@@ -29,6 +31,16 @@ export default function ShowShareFolders() {
     }, [folderId]);
 
 
+    async function changeFolderId(newFolderIdNumber: number | null) {
+        const newFolderId = newFolderIdNumber?.toString() ?? '';
+        setFolderId(newFolderId);
+        try {
+            const data = await getFolderById({ folderId: newFolderId });
+            setFolderData(data);
+        } catch (error) {
+            setFolderData(null);
+        }
+    }
 
 
     //--------protection de vérification d'authentification---------
@@ -47,6 +59,11 @@ export default function ShowShareFolders() {
                     </h1>
                 </div>
             </div>
+            <Folders
+                listFolders={folderData?.folders || []}
+                listFiles={folderData?.files || []}
+                changeFolderId={changeFolderId}
+            />
         </Layout>
     );
 }

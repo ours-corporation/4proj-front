@@ -72,6 +72,8 @@ export default function LoginPage() {
             const data = await res.json();
 
             if(data.accessToken) {
+                localStorage.setItem("accessToken", data.accessToken);
+                localStorage.setItem("refreshToken", data.refreshToken);
                 router.push("/dashboard");
             }
 

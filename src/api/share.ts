@@ -32,8 +32,8 @@ export async function createPrivateShareAPI(fileId?: number, folderId?: number, 
 }
 
 export interface FolderShareDetailResponse {
-    folders: FolderShareResponse[];
-    files: FileShareResponse[];
+    folders: FolderResponse[];
+    files: FileResponse[];
 }
 
 export async function getReceivedSharesAPI() : Promise<FolderShareDetailResponse> {
