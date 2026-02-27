@@ -14,13 +14,13 @@ services:
       - WATCHPACK_POLLING=true
     command: sh -c "npm install && npx next dev -H 0.0.0.0"
 
-  app:
-    build:
-      context: .
-      dockerfile: Dockerfile
-    container_name: next_prod
-    restart: unless-stopped
-    ports:
-      - "3000:3000"
-    environment:
-      - NODE_ENV=production
+#  app:
+#    build:
+#      context: .
+#      dockerfile: Dockerfile
+#    container_name: next_prod
+#    restart: unless-stopped
+#    ports:
+#      - "3000:3000"
+#    environment:
+#      - NODE_ENV=production

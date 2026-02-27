@@ -34,7 +34,7 @@ export default function SettingsPage() {
                                  setEmail(email);
                                  const username = data.username;
                                  setUsername(username);
-                                 const date = data.createdAt;
+                                 const date = data.created_at;
                                  setAccountCreationDate(date);
                                  console.log("mise a jour réussie ");
                              } else {
