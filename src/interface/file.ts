@@ -1,4 +1,5 @@
 export interface FileResponse {
+    // --- Champs Communs ---
     id: number;
     name: string;
     extension: string;
@@ -12,6 +13,14 @@ export interface FileResponse {
     deletion_id: number | null;
     createdAt: string;
     updatedAt: string;
+
+    share_id?: number;
+    permission?: 'READ' | 'WRITE';
+    owner?: {
+        id: number;
+        username: string;
+        email: string;
+    };
 }
 
 export interface FileShareResponse {

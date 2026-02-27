@@ -11,7 +11,7 @@ interface FileProps {
     downloadFile?: (fileId: number, fileName: string) => Promise<void>;
     editFile?: (file: FileResponse) => Promise<void>;
     shareFile?: (file: FileResponse) => Promise<void>;
-    deleteFile?: (fileId: number) => void;
+    deleteFile?: (file: FileResponse) => Promise<void>;
 }
 
 export default function FileCard({ file, downloadFile, editFile, shareFile, deleteFile }: FileProps) {
@@ -102,8 +102,9 @@ export default function FileCard({ file, downloadFile, editFile, shareFile, dele
                                     {deleteFile && (
                                         <button
                                             className="w-full text-left px-4 py-2 text-sm text-red-600 hover:bg-red-50 dark:hover:bg-red-900/20"
-                                            onClick={() => {
-                                                deleteFile(file.id);
+                                            onClick={(e) => {
+                                                e.stopPropagation();
+                                                deleteFile(file);
                                                 setOpen(false);
                                             }}
                                         >

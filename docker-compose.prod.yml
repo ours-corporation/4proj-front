@@ -1,0 +1,19 @@
+services:
+  4proj-front:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: 4proj-front
+    restart: unless-stopped
+    ports:
+      - "3000:3000"
+    env_file:
+      - .env
+    environment:
+      - NODE_ENV=production
+    networks:
+      - 4proj-network
+
+networks:
+  4proj-network:
+    external: true

@@ -32,6 +32,8 @@ export default function ShowFolders() {
     const [ addFileOpen, setAddFileOpen ] = useState<boolean>(false);
     const [ file , setFile ] = useState<File | null>(null);
     const [ fileError , setFileError ] = useState<string>("");
+    const [ uploadProgress, setUploadProgress ] = useState<number>(0);
+    const [ isUploading, setIsUploading ] = useState<boolean>(false);
 
 
     useEffect(() => {
@@ -87,15 +89,27 @@ export default function ShowFolders() {
             return;
         }
 
-        const repUploadFile = await uploadFileAPI(file, folderId ? parseInt(folderId) : null);
+        setIsUploading(true);
+        setUploadProgress(0);
 
-        if (repUploadFile.ok) {
-            const data = await getFolderById({ folderId });
-            setFolderData(data);
-            setFile(null);
-            setAddFileOpen(false);
-        } else {
-            console.error("Erreur lors de l'upload du fichier :", repUploadFile.statusText);
+        try {
+            const repUploadFile = await uploadFileAPI(
+                file,
+                folderId ? parseInt(folderId) : null,
+                setUploadProgress,
+            );
+
+            if (repUploadFile.ok) {
+                const data = await getFolderById({ folderId });
+                setFolderData(data);
+                setFile(null);
+                setAddFileOpen(false);
+            } else {
+                console.error("Erreur lors de l'upload du fichier :", repUploadFile.statusText);
+            }
+        } finally {
+            setIsUploading(false);
+            setUploadProgress(0);
         }
     }
 
@@ -211,7 +225,7 @@ export default function ShowFolders() {
                 size="small"
                 title="Ajouter un fichier"
                 isOpen={addFileOpen}
-                onClose={() => setAddFileOpen(false)}
+                onClose={() => { if (!isUploading) setAddFileOpen(false); }}
             >
                 <div className="space-y-6">
                     <InputFile
@@ -227,10 +241,27 @@ export default function ShowFolders() {
                         <p className="text-error dark:text-dark-error text-sm">{fileError}</p>
                     }
 
+                    {isUploading && (
+                        <div className="space-y-2">
+                            <div className="flex justify-between text-sm text-txt-primary dark:text-dark-txt-primary">
+                                <span>Upload en cours...</span>
+                                <span className="font-semibold">{uploadProgress}%</span>
+                            </div>
+                            <div className="w-full bg-main-bg dark:bg-dark-main-bg rounded-full h-2 overflow-hidden">
+                                <div
+                                    className="bg-action dark:bg-dark-action h-2 rounded-full transition-all duration-200 ease-out"
+                                    style={{ width: `${uploadProgress}%` }}
+                                />
+                            </div>
+                        </div>
+                    )}
+
                     <SubmitButton
                         id="add-file-button"
                         type="button"
                         text="Ajouter le fichier"
+                        loading={isUploading}
+                        loadingText="Upload en cours..."
                         onClick={async () => { await uploadFile(); }}
                     />
                 </div>

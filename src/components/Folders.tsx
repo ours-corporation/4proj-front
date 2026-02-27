@@ -14,6 +14,10 @@ import FolderCard from "@/src/components/card/FolderCard";
 import {convertFileSize} from "@/src/utils/convert-file-size";
 import UpdateFileModal from "@/src/components/modal/UpdateFile";
 import ShareFileModal from "@/src/components/modal/ShareFile";
+import DeleteFileModal from "@/src/components/modal/DeleteFile";
+import DeleteFolderModal from "@/src/components/modal/DeleteFolder";
+import RenameFolderModal from "@/src/components/modal/RenameFolder";
+
 
 interface FoldersProps {
     listFolders: FolderResponse[];
@@ -34,7 +38,21 @@ export default function Folders({ listFolders, listFiles, changeFolderId }: Fold
     const [ openShareModal, setOpenShareModal ] = useState<boolean>(false);
     const [ shareFileInfo, setShareFileInfo ] = useState<FileResponse | null>(null);
 
+    //Delete file modal
+    const [ openDeleteModal, setOpenDeleteModal ] = useState<boolean>(false);
+    const [ deleteFileInfo, setDeleteFileInfo ] = useState<FileResponse | null>(null);
+
+    //Rename folder modal
+    const [ openRenameFolderModal, setOpenRenameFolderModal ] = useState<boolean>(false);
+    const [ renameFolderInfo, setRenameFolderInfo ] = useState<FolderResponse | null>(null);
+
+    //Delete folder modal
+    const [ openDeleteFolderModal, setOpenDeleteFolderModal ] = useState<boolean>(false);
+    const [ deleteFolderInfo, setDeleteFolderInfo ] = useState<FolderResponse | null>(null);
+
+
     function setFileInformationAndOpen(file: FileResponse) {
+        console.log(file);
         setSelectedFile(file);
         const fileDownload = async () => {
             const downloadedFile = await downloadFile({ fileId: file.id });
@@ -90,6 +108,40 @@ export default function Folders({ listFolders, listFiles, changeFolderId }: Fold
     async function closeShareFileModal() : Promise<void> {
         setShareFileInfo(null);
         setOpenShareModal(false);
+    }
+
+    //Delete file modal
+    async function openDeleteFileModal(file: FileResponse){
+        if (!file) return;
+        setDeleteFileInfo(file);
+        setOpenDeleteModal(true);
+    }
+
+    async function closeDeleteFileModal() : Promise<void> {
+        setDeleteFileInfo(null);
+        setOpenDeleteModal(false);
+    }
+
+    //Rename folder modal
+    function openRenameFolderModalFn(folder: FolderResponse) {
+        setRenameFolderInfo(folder);
+        setOpenRenameFolderModal(true);
+    }
+
+    function closeRenameFolderModal() {
+        setRenameFolderInfo(null);
+        setOpenRenameFolderModal(false);
+    }
+
+    //Delete folder modal
+    function openDeleteFolderModalFn(folder: FolderResponse) {
+        setDeleteFolderInfo(folder);
+        setOpenDeleteFolderModal(true);
+    }
+
+    function closeDeleteFolderModal() {
+        setDeleteFolderInfo(null);
+        setOpenDeleteFolderModal(false);
     }
 
     const formatDate = (dateString: string) => {
@@ -158,6 +210,8 @@ export default function Folders({ listFolders, listFiles, changeFolderId }: Fold
                     <FolderCard
                         folder={folder}
                         key={folder.id}
+                        renameFolder={openRenameFolderModalFn}
+                        deleteFolder={openDeleteFolderModalFn}
                     />
                 </button>
             ))}
@@ -171,7 +225,7 @@ export default function Folders({ listFolders, listFiles, changeFolderId }: Fold
                         downloadFile={downloadFileById}
                         editFile={openUpdateFileModal}
                         shareFile={openShareFileModal}
-                        deleteFile={undefined}
+                        deleteFile={openDeleteFileModal}
                     />
                 </button>
             ))}
@@ -231,6 +285,24 @@ export default function Folders({ listFolders, listFiles, changeFolderId }: Fold
                 isOpen={openShareModal}
                 fileInfo={shareFileInfo!}
                 closeModal={() => closeShareFileModal()}
+            />
+
+            <DeleteFileModal
+                isOpen={openDeleteModal}
+                fileInfo={deleteFileInfo!}
+                closeModal={() => closeDeleteFileModal()}
+            />
+
+            <RenameFolderModal
+                isOpen={openRenameFolderModal}
+                folderInfo={renameFolderInfo!}
+                closeModal={closeRenameFolderModal}
+            />
+
+            <DeleteFolderModal
+                isOpen={openDeleteFolderModal}
+                folderInfo={deleteFolderInfo!}
+                closeModal={closeDeleteFolderModal}
             />
         </div>
     );
