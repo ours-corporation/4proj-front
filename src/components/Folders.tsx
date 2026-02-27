@@ -35,6 +35,7 @@ export default function Folders({ listFolders, listFiles, changeFolderId }: Fold
     const [ shareFileInfo, setShareFileInfo ] = useState<FileResponse | null>(null);
 
     function setFileInformationAndOpen(file: FileResponse) {
+        console.log(file);
         setSelectedFile(file);
         const fileDownload = async () => {
             const downloadedFile = await downloadFile({ fileId: file.id });

@@ -4,6 +4,8 @@ export async function downloadFile({ fileId }: { fileId: number }): Promise<File
     const url = process.env.NEXT_PUBLIC_API_URL;
     const token = getJwtToken();
 
+    console.log(`${url}/api/files/${fileId}/download`);
+
     try {
         const rep = await fetch(`${url}/api/files/${fileId}/download`, {
             method: "GET",
