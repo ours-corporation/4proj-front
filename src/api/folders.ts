@@ -35,6 +35,46 @@ export async function getFolderById({ folderId }: { folderId: string }): Promise
     }
 }
 
+export async function deleteFolderById(folderId: number, force = false): Promise<void> {
+    const url = process.env.NEXT_PUBLIC_API_URL;
+    const token = getJwtToken();
+
+    const endpoint = force
+        ? `${url}/api/folders/${folderId}/trash`
+        : `${url}/api/folders/${folderId}`;
+
+    const rep = await fetch(endpoint, {
+        method: "DELETE",
+        headers: {
+            "Authorization": `Bearer ${token}`,
+        },
+    });
+
+    if (!rep.ok) {
+        throw new Error(`Erreur HTTP: ${rep.status}`);
+    }
+}
+
+export async function renameFolderById(folderId: number, newName: string): Promise<FolderResponse> {
+    const url = process.env.NEXT_PUBLIC_API_URL;
+    const token = getJwtToken();
+
+    const rep = await fetch(`${url}/api/folders/${folderId}`, {
+        method: "PUT",
+        headers: {
+            "Content-Type": "application/json",
+            "Authorization": `Bearer ${token}`,
+        },
+        body: JSON.stringify({ name: newName }),
+    });
+
+    if (!rep.ok) {
+        throw new Error(`Erreur HTTP: ${rep.status}`);
+    }
+
+    return await rep.json();
+}
+
 export async function createNewFolderAPI(folderName: string, parentFolderId: number | null): Promise<FolderResponse> {
     const url = process.env.NEXT_PUBLIC_API_URL;
     const token = getJwtToken();

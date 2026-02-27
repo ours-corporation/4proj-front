@@ -15,6 +15,8 @@ import {convertFileSize} from "@/src/utils/convert-file-size";
 import UpdateFileModal from "@/src/components/modal/UpdateFile";
 import ShareFileModal from "@/src/components/modal/ShareFile";
 import DeleteFileModal from "@/src/components/modal/DeleteFile";
+import DeleteFolderModal from "@/src/components/modal/DeleteFolder";
+import RenameFolderModal from "@/src/components/modal/RenameFolder";
 
 
 interface FoldersProps {
@@ -39,6 +41,14 @@ export default function Folders({ listFolders, listFiles, changeFolderId }: Fold
     //Delete file modal
     const [ openDeleteModal, setOpenDeleteModal ] = useState<boolean>(false);
     const [ deleteFileInfo, setDeleteFileInfo ] = useState<FileResponse | null>(null);
+
+    //Rename folder modal
+    const [ openRenameFolderModal, setOpenRenameFolderModal ] = useState<boolean>(false);
+    const [ renameFolderInfo, setRenameFolderInfo ] = useState<FolderResponse | null>(null);
+
+    //Delete folder modal
+    const [ openDeleteFolderModal, setOpenDeleteFolderModal ] = useState<boolean>(false);
+    const [ deleteFolderInfo, setDeleteFolderInfo ] = useState<FolderResponse | null>(null);
 
 
     function setFileInformationAndOpen(file: FileResponse) {
@@ -112,6 +122,28 @@ export default function Folders({ listFolders, listFiles, changeFolderId }: Fold
         setOpenDeleteModal(false);
     }
 
+    //Rename folder modal
+    function openRenameFolderModalFn(folder: FolderResponse) {
+        setRenameFolderInfo(folder);
+        setOpenRenameFolderModal(true);
+    }
+
+    function closeRenameFolderModal() {
+        setRenameFolderInfo(null);
+        setOpenRenameFolderModal(false);
+    }
+
+    //Delete folder modal
+    function openDeleteFolderModalFn(folder: FolderResponse) {
+        setDeleteFolderInfo(folder);
+        setOpenDeleteFolderModal(true);
+    }
+
+    function closeDeleteFolderModal() {
+        setDeleteFolderInfo(null);
+        setOpenDeleteFolderModal(false);
+    }
+
     const formatDate = (dateString: string) => {
         return new Date(dateString).toLocaleDateString('fr-FR', {
             day: 'numeric', month: 'short', year: 'numeric', hour: '2-digit', minute: '2-digit'
@@ -178,6 +210,8 @@ export default function Folders({ listFolders, listFiles, changeFolderId }: Fold
                     <FolderCard
                         folder={folder}
                         key={folder.id}
+                        renameFolder={openRenameFolderModalFn}
+                        deleteFolder={openDeleteFolderModalFn}
                     />
                 </button>
             ))}
@@ -257,6 +291,18 @@ export default function Folders({ listFolders, listFiles, changeFolderId }: Fold
                 isOpen={openDeleteModal}
                 fileInfo={deleteFileInfo!}
                 closeModal={() => closeDeleteFileModal()}
+            />
+
+            <RenameFolderModal
+                isOpen={openRenameFolderModal}
+                folderInfo={renameFolderInfo!}
+                closeModal={closeRenameFolderModal}
+            />
+
+            <DeleteFolderModal
+                isOpen={openDeleteFolderModal}
+                folderInfo={deleteFolderInfo!}
+                closeModal={closeDeleteFolderModal}
             />
         </div>
     );
