@@ -11,3 +11,9 @@ services:
       - .env
     environment:
       - NODE_ENV=production
+    networks:
+      - 4proj-network
+
+networks:
+  4proj-network:
+    external: true
