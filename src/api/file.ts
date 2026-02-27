@@ -68,6 +68,26 @@ export function uploadFileAPI(
     });
 }
 
+export async function deleteFileById(fileId: number, force = false): Promise<void> {
+    const url = process.env.NEXT_PUBLIC_API_URL;
+    const token = getJwtToken();
+
+    const endpoint = force
+        ? `${url}/api/files/${fileId}/trash`
+        : `${url}/api/files/${fileId}`;
+
+    const rep = await fetch(endpoint, {
+        method: "DELETE",
+        headers: {
+            "Authorization": `Bearer ${token}`,
+        },
+    });
+
+    if (!rep.ok) {
+        throw new Error(`Erreur HTTP: ${rep.status}`);
+    }
+}
+
 export async function updateFileMetadata(fileId: number, newName: string): Promise<File> {
     const url = process.env.NEXT_PUBLIC_API_URL;
     const token = getJwtToken();

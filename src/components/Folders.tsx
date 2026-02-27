@@ -14,6 +14,8 @@ import FolderCard from "@/src/components/card/FolderCard";
 import {convertFileSize} from "@/src/utils/convert-file-size";
 import UpdateFileModal from "@/src/components/modal/UpdateFile";
 import ShareFileModal from "@/src/components/modal/ShareFile";
+import DeleteFileModal from "@/src/components/modal/DeleteFile";
+
 
 interface FoldersProps {
     listFolders: FolderResponse[];
@@ -33,6 +35,11 @@ export default function Folders({ listFolders, listFiles, changeFolderId }: Fold
     //Share file modal
     const [ openShareModal, setOpenShareModal ] = useState<boolean>(false);
     const [ shareFileInfo, setShareFileInfo ] = useState<FileResponse | null>(null);
+
+    //Delete file modal
+    const [ openDeleteModal, setOpenDeleteModal ] = useState<boolean>(false);
+    const [ deleteFileInfo, setDeleteFileInfo ] = useState<FileResponse | null>(null);
+
 
     function setFileInformationAndOpen(file: FileResponse) {
         console.log(file);
@@ -91,6 +98,18 @@ export default function Folders({ listFolders, listFiles, changeFolderId }: Fold
     async function closeShareFileModal() : Promise<void> {
         setShareFileInfo(null);
         setOpenShareModal(false);
+    }
+
+    //Delete file modal
+    async function openDeleteFileModal(file: FileResponse){
+        if (!file) return;
+        setDeleteFileInfo(file);
+        setOpenDeleteModal(true);
+    }
+
+    async function closeDeleteFileModal() : Promise<void> {
+        setDeleteFileInfo(null);
+        setOpenDeleteModal(false);
     }
 
     const formatDate = (dateString: string) => {
@@ -172,7 +191,7 @@ export default function Folders({ listFolders, listFiles, changeFolderId }: Fold
                         downloadFile={downloadFileById}
                         editFile={openUpdateFileModal}
                         shareFile={openShareFileModal}
-                        deleteFile={undefined}
+                        deleteFile={openDeleteFileModal}
                     />
                 </button>
             ))}
@@ -232,6 +251,12 @@ export default function Folders({ listFolders, listFiles, changeFolderId }: Fold
                 isOpen={openShareModal}
                 fileInfo={shareFileInfo!}
                 closeModal={() => closeShareFileModal()}
+            />
+
+            <DeleteFileModal
+                isOpen={openDeleteModal}
+                fileInfo={deleteFileInfo!}
+                closeModal={() => closeDeleteFileModal()}
             />
         </div>
     );
