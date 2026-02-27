@@ -56,7 +56,7 @@ export default function FileCard({ file, downloadFile, editFile, shareFile, dele
                                     e.stopPropagation();
                                     setOpen(!open);
                                 }}
-                                className="rounded-lg hover:bg-gray-100 dark:hover:bg-gray-700"
+                                className="rounded-lg hover:bg-gray-100 dark:hover:bg-gray-700 w-10"
                             >
                                 ⋯
                             </button>
