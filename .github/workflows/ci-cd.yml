@@ -1,0 +1,39 @@
+name: CI/CD Production
+
+on:
+  push:
+    branches:
+      - user-param
+  workflow_dispatch:
+
+jobs:
+  ci:
+    name: Executions des tests
+    runs-on: vps
+    steps:
+      - name: En attente des tests
+        run: echo "Execution des tests..."
+
+  deploy:
+    name: Déploiement Production
+    runs-on: vps
+    needs: ci
+    concurrency:
+      group: deploy-prod
+      cancel-in-progress: true
+
+    steps:
+      - name: Checkout du code
+        uses: actions/checkout@v4
+
+      - name: Créer le fichier .env à partir des secrets
+        run: echo "${{ secrets.PROD_ENV_FILE }}" > .env
+
+      - name: Déployer avec Docker Compose
+        run: |
+          docker compose -f docker-compose.prod.yml pull || true
+          docker compose -f docker-compose.prod.yml down || true
+          docker compose -f docker-compose.prod.yml up -d --build
+
+      - name: Nettoyage images temporaires
+        run: docker image prune -f || true
