@@ -11,11 +11,11 @@ interface FileProps {
     downloadFile?: (fileId: number, fileName: string) => Promise<void>;
     editFile?: (file: FileResponse) => Promise<void>;
     shareFile?: (file: FileResponse) => Promise<void>;
+    moveFile?: (file: FileResponse) => Promise<void>;
     deleteFile?: (fileId: number) => void;
-    moveFile?: (fileId: number) => Promise<void>;
 }
 
-export default function FileCard({ file, downloadFile, editFile, shareFile, deleteFile, moveFile}: FileProps) {
+export default function FileCard({ file, downloadFile, editFile, shareFile, moveFile ,deleteFile}: FileProps) {
     const hasActions = !!(downloadFile || editFile || shareFile || deleteFile || moveFile);
     const [open, setOpen] = useState(false);
     const menuRef = useRef<HTMLDivElement>(null);
@@ -100,6 +100,21 @@ export default function FileCard({ file, downloadFile, editFile, shareFile, dele
                                             Partager
                                         </button>
                                     )}
+
+                                    {moveFile && (
+                                        <button
+                                            className="w-full text-left px-4 py-2 text-sm hover:bg-gray-100 dark:hover:bg-gray-700"
+                                            onClick={(e) => {
+                                                e.stopPropagation();
+                                                moveFile(file);
+                                                setOpen(false);
+                                            }}
+                                        >
+                                            Déplacer
+                                        </button>
+                                        )
+                                    }
+                                    
                                     {deleteFile && (
                                         <button
                                             className="w-full text-left px-4 py-2 text-sm text-red-600 hover:bg-red-50 dark:hover:bg-red-900/20"
@@ -112,18 +127,6 @@ export default function FileCard({ file, downloadFile, editFile, shareFile, dele
                                         </button>
                                     )}
 
-                                    {moveFile && (
-                                        <button
-                                            className="w-full text-left px-4 py-2 text-sm hover:bg-gray-100 dark:hover:bg-gray-700"
-                                            onClick={() => {
-                                                moveFile(file.id);
-                                                setOpen(false);
-                                            }}
-                                        >
-                                            Déplacer
-                                        </button>
-                                        )
-                                    }
                                 </div>
                             )}
                         </>

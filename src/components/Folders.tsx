@@ -34,6 +34,10 @@ export default function Folders({ listFolders, listFiles, changeFolderId }: Fold
     const [ openShareModal, setOpenShareModal ] = useState<boolean>(false);
     const [ shareFileInfo, setShareFileInfo ] = useState<FileResponse | null>(null);
 
+    //Move File modal
+    const [ openMoveModal, setOpenMoveModal] = useState<boolean>(false);
+    const [ editFilePositionInfo, setPositionFileInfo ] = useState<FileResponse | null>(null);
+
     function setFileInformationAndOpen(file: FileResponse) {
         setSelectedFile(file);
         const fileDownload = async () => {
@@ -90,6 +94,17 @@ export default function Folders({ listFolders, listFiles, changeFolderId }: Fold
     async function closeShareFileModal() : Promise<void> {
         setShareFileInfo(null);
         setOpenShareModal(false);
+    }
+
+    async function openMoveFileModal(file: FileResponse){
+        if (!file) return;
+        setPositionFileInfo(file);
+        setOpenMoveModal(true);
+    }
+
+    async function closeMoveFileModal(){
+        setPositionFileInfo(null);
+        setOpenMoveModal(false);
     }
 
     const formatDate = (dateString: string) => {
@@ -171,6 +186,7 @@ export default function Folders({ listFolders, listFiles, changeFolderId }: Fold
                         downloadFile={downloadFileById}
                         editFile={openUpdateFileModal}
                         shareFile={openShareFileModal}
+                        moveFile={openMoveFileModal}
                         deleteFile={undefined}
                     />
                 </button>
