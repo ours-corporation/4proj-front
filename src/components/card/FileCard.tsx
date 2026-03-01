@@ -12,10 +12,11 @@ interface FileProps {
     editFile?: (file: FileResponse) => Promise<void>;
     shareFile?: (file: FileResponse) => Promise<void>;
     deleteFile?: (fileId: number) => void;
+    moveFile?: (fileId: number) => Promise<void>;
 }
 
-export default function FileCard({ file, downloadFile, editFile, shareFile, deleteFile }: FileProps) {
-    const hasActions = !!(downloadFile || editFile || shareFile || deleteFile);
+export default function FileCard({ file, downloadFile, editFile, shareFile, deleteFile, moveFile}: FileProps) {
+    const hasActions = !!(downloadFile || editFile || shareFile || deleteFile || moveFile);
     const [open, setOpen] = useState(false);
     const menuRef = useRef<HTMLDivElement>(null);
 
@@ -110,6 +111,19 @@ export default function FileCard({ file, downloadFile, editFile, shareFile, dele
                                             Supprimer
                                         </button>
                                     )}
+
+                                    {moveFile && (
+                                        <button
+                                            className="w-full text-left px-4 py-2 text-sm hover:bg-gray-100 dark:hover:bg-gray-700"
+                                            onClick={() => {
+                                                moveFile(file.id);
+                                                setOpen(false);
+                                            }}
+                                        >
+                                            Déplacer
+                                        </button>
+                                        )
+                                    }
                                 </div>
                             )}
                         </>
