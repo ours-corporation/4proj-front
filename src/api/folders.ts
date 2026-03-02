@@ -62,3 +62,27 @@ export async function createNewFolderAPI(folderName: string, parentFolderId: num
         throw error;
     }
 }
+
+export async function getRootFolder():Promise<FolderResponse[]>{
+    const url = process.env.NEXT_PUBLIC_API_URL;
+    const token = getJwtToken();
+    try {
+        const rep = await fetch(`${url}/api/folders`, {
+            method: "GET",
+            headers: {
+                "Content-Type": "application/json",
+                "Authorization": `Bearer ${token}`,
+            },
+        });
+
+        if (!rep.ok) {
+            throw new Error(`Erreur HTTP: ${rep.status}`);
+        }
+
+        const data = await rep.json();
+        return data.folders as FolderResponse[];
+
+    } catch (error) {
+        throw error;
+    }
+}
