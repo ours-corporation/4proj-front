@@ -14,6 +14,7 @@ import FolderCard from "@/src/components/card/FolderCard";
 import {convertFileSize} from "@/src/utils/convert-file-size";
 import UpdateFileModal from "@/src/components/modal/UpdateFile";
 import ShareFileModal from "@/src/components/modal/ShareFile";
+import MoveFileModal from '@/src/components/modal/MoveFile';
 
 interface FoldersProps {
     listFolders: FolderResponse[];
@@ -247,6 +248,11 @@ export default function Folders({ listFolders, listFiles, changeFolderId }: Fold
                 isOpen={openShareModal}
                 fileInfo={shareFileInfo!}
                 closeModal={() => closeShareFileModal()}
+            />
+            <MoveFileModal
+                isOpen={openMoveModal}
+                fileInfo={editFilePositionInfo!}
+                closeModal={() => closeMoveFileModal}
             />
         </div>
     );
