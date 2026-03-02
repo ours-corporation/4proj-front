@@ -252,7 +252,7 @@ export default function Folders({ listFolders, listFiles, changeFolderId }: Fold
             <MoveFileModal
                 isOpen={openMoveModal}
                 fileInfo={editFilePositionInfo!}
-                closeModal={() => closeMoveFileModal}
+                closeModal={() => closeMoveFileModal()}
             />
         </div>
     );

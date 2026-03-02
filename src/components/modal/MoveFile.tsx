@@ -12,12 +12,13 @@ interface MoveFileModalProps {
     closeModal: () => void;
 }
 
-export default function UpdateFileModal({ isOpen, fileInfo, closeModal }: MoveFileModalProps) {
+export default function MoveFileModal({ isOpen, fileInfo, closeModal }: MoveFileModalProps) {
     const [errorMessage, setErrorMessage] = useState<string | null>(null);
     const [fileName, setFileName] = useState<string>("");
 
     async function moveFile(){
-        console.log("ok")
+        console.log("ok");
+        closeModal();
     }
 
     if(!isOpen) return null
