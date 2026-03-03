@@ -11,7 +11,7 @@ import Modal from "@/src/components/modal/Modal";
 import InputField from "@/src/components/input/InputField";
 import InputFile from "@/src/components/input/InputFile";
 import SubmitButton from "@/src/components/button/SubmitButton";
-import { uploadFileAPI } from '@/src/api/file';
+import { uploadFilesAPI } from '@/src/api/file';
 import {FileResponse} from "@/src/interface/file";
 import {loginValidatorValidator} from "@/src/validator/auth";
 import {createNewFolderValidator} from "@/src/validator/folder";
@@ -31,7 +31,7 @@ export default function ShowFolders() {
 
     // Ajout de fichier
     const [ addFileOpen, setAddFileOpen ] = useState<boolean>(false);
-    const [ file , setFile ] = useState<File | null>(null);
+    const [ files , setFiles ] = useState<File[]>([]);
     const [ fileError , setFileError ] = useState<string>("");
     const [ uploadProgress, setUploadProgress ] = useState<number>(0);
     const [ isUploading, setIsUploading ] = useState<boolean>(false);
@@ -83,7 +83,7 @@ export default function ShowFolders() {
     }
 
     async function uploadFile() {
-        const validatorResult = addFileValidator.safeParse({ file: file });
+        const validatorResult = addFileValidator.safeParse({ files });
         if (!validatorResult.success) {
             const firstError = validatorResult.error.issues[0];
             setFileError(firstError.message);
@@ -94,8 +94,8 @@ export default function ShowFolders() {
         setUploadProgress(0);
 
         try {
-            const repUploadFile = await uploadFileAPI(
-                file,
+            const repUploadFile = await uploadFilesAPI(
+                files,
                 folderId ? parseInt(folderId) : null,
                 setUploadProgress,
             );
@@ -103,7 +103,7 @@ export default function ShowFolders() {
             if (repUploadFile.ok) {
                 const data = await getFolderById({ folderId });
                 setFolderData(data);
-                setFile(null);
+                setFiles([]);
                 setAddFileOpen(false);
             } else {
                 console.error("Erreur lors de l'upload du fichier :", repUploadFile.statusText);
@@ -253,8 +253,8 @@ export default function ShowFolders() {
                     <InputFile
                         id="file-upload"
                         label="Sélectionner un fichier"
-                        value={file}
-                        onChange={setFile}
+                        value={files}
+                        onChange={setFiles}
                         accept="*/*"
                         required
                     />
