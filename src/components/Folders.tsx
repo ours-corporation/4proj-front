@@ -1,4 +1,4 @@
-import React, {useState} from 'react';
+import React, {useState, useEffect} from 'react';
 
 import { FolderResponse } from '@/src/interface/folder';
 import {FileResponse} from "@/src/interface/file";
@@ -12,6 +12,8 @@ import VideoPreview from "@/src/components/preview/videoPreview";
 import AudioPreview from "@/src/components/preview/audioPreview";
 import FolderCard from "@/src/components/card/FolderCard";
 import {convertFileSize} from "@/src/utils/convert-file-size";
+import {getFileColor} from "@/src/utils/get-file-color";
+import {getFileSvg} from "@/src/utils/get-file-svg";
 import UpdateFileModal from "@/src/components/modal/UpdateFile";
 import ShareFileModal from "@/src/components/modal/ShareFile";
 import DeleteFileModal from "@/src/components/modal/DeleteFile";
@@ -23,10 +25,19 @@ interface FoldersProps {
     listFolders: FolderResponse[];
     listFiles?: FileResponse[];
     changeFolderId: (newFolderIdNumber: number | null) => Promise<void>;
+    viewMode?: 'grid' | 'list';
 }
 
-export default function Folders({ listFolders, listFiles, changeFolderId }: FoldersProps) {
+export default function Folders({ listFolders, listFiles, changeFolderId, viewMode = 'grid' }: FoldersProps) {
     const [open, setOpen] = useState(false);
+    const [openListMenuId, setOpenListMenuId] = useState<string | null>(null);
+
+    useEffect(() => {
+        if (openListMenuId === null) return;
+        function handleClickOutside() { setOpenListMenuId(null); }
+        document.addEventListener('mousedown', handleClickOutside);
+        return () => document.removeEventListener('mousedown', handleClickOutside);
+    }, [openListMenuId]);
     const [selectedFile, setSelectedFile] = useState<FileResponse | null>(null);
     const [file , setFile] = useState<File | null>(null);
 
@@ -199,36 +210,143 @@ export default function Folders({ listFolders, listFiles, changeFolderId }: Fold
         return <p>Aperçu non disponible pour ce type de fichier.</p>;
     };
 
+    const folderColor = "#F59E0B";
+    const folderBgColor = "#F59E0B20";
+
     return (
+        <>
+        {viewMode === 'grid' ? (
         <div className="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-5 gap-6">
             {listFolders.map((folder) => (
-                <button
+                <div
                     key={folder.id}
                     className="bg-surface dark:bg-dark-surface p-4 rounded-lg shadow-md hover:shadow-lg transition duration-300 cursor-pointer"
                     onClick={() => changeFolderId(folder.id)}
                 >
                     <FolderCard
                         folder={folder}
-                        key={folder.id}
                         renameFolder={openRenameFolderModalFn}
                         deleteFolder={openDeleteFolderModalFn}
                     />
-                </button>
+                </div>
             ))}
             {listFiles && listFiles.map((file) => (
-                <button onClick={() => setFileInformationAndOpen(file)} key={file.id}
+                <div key={file.id}
                     className="bg-white dark:bg-dark-surface p-5 rounded-3xl shadow-sm border border-gray-100 dark:border-gray-700 hover:shadow-md transition-shadow duration-300 w-full max-w-xs cursor-pointer"
+                    onClick={() => setFileInformationAndOpen(file)}
                 >
                     <FileCard
                         file={file}
-                        key={file.id}
                         downloadFile={downloadFileById}
                         editFile={openUpdateFileModal}
                         shareFile={openShareFileModal}
                         deleteFile={openDeleteFileModal}
                     />
-                </button>
+                </div>
             ))}
+        </div>
+        ) : (
+        <div className="flex flex-col divide-y divide-gray-100 dark:divide-gray-800">
+            {listFolders.map((folder) => (
+                <div key={folder.id} className="flex items-center py-3 px-2 hover:bg-gray-50 dark:hover:bg-dark-surface rounded-lg">
+                    <div
+                        className="w-10 h-10 rounded-xl flex items-center justify-center mr-3 flex-shrink-0"
+                        style={{ backgroundColor: folderBgColor, color: folderColor }}
+                    >
+                        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" className="w-6 h-6">
+                            <path d="M19.5 21a3 3 0 0 0 3-3v-4.5a3 3 0 0 0-3-3h-15a3 3 0 0 0-3 3V18a3 3 0 0 0 3 3h15ZM1.5 10.146V6a3 3 0 0 1 3-3h5.379a2.25 2.25 0 0 1 1.59.659l2.122 2.121c.14.141.331.22.53.22H19.5a3 3 0 0 1 3 3v1.146A4.483 4.483 0 0 0 19.5 9h-15a4.483 4.483 0 0 0-3 1.146Z" />
+                        </svg>
+                    </div>
+                    <button className="flex-1 text-left min-w-0 mr-3" onClick={() => changeFolderId(folder.id)}>
+                        <span className="font-medium text-gray-900 dark:text-white truncate block">{folder.name}</span>
+                        <span className="text-xs text-gray-500 dark:text-gray-400">Dossier</span>
+                    </button>
+                    <div className="relative flex-shrink-0">
+                        <button
+                            onClick={(e) => {
+                                e.stopPropagation();
+                                setOpenListMenuId(openListMenuId === `folder-${folder.id}` ? null : `folder-${folder.id}`);
+                            }}
+                            className="p-1 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-700 text-gray-500"
+                        >
+                            ⋯
+                        </button>
+                        {openListMenuId === `folder-${folder.id}` && (
+                            <div className="absolute right-0 w-40 bg-main-bg dark:bg-dark-main-bg rounded-lg shadow-lg border border-gray-200 dark:border-gray-700 z-10">
+                                <button
+                                    className="w-full text-left px-4 py-2 text-sm hover:bg-gray-100 dark:hover:bg-gray-700"
+                                    onClick={(e) => { e.stopPropagation(); openRenameFolderModalFn(folder); setOpenListMenuId(null); }}
+                                >
+                                    Renommer
+                                </button>
+                                <button
+                                    className="w-full text-left px-4 py-2 text-sm text-red-600 hover:bg-red-50 dark:hover:bg-red-900/20"
+                                    onClick={(e) => { e.stopPropagation(); openDeleteFolderModalFn(folder); setOpenListMenuId(null); }}
+                                >
+                                    Supprimer
+                                </button>
+                            </div>
+                        )}
+                    </div>
+                </div>
+            ))}
+            {listFiles && listFiles.map((file) => (
+                <div key={file.id} className="flex items-center py-3 px-2 hover:bg-gray-50 dark:hover:bg-dark-surface rounded-lg">
+                    <div
+                        className="w-10 h-10 rounded-xl flex items-center justify-center mr-3 flex-shrink-0"
+                        style={{ backgroundColor: `${getFileColor(file.mime_type)}20`, color: getFileColor(file.mime_type) }}
+                    >
+                        <img src={getFileSvg(file.mime_type)} alt="File Icon" className="w-6 h-6" />
+                    </div>
+                    <button className="flex-1 text-left min-w-0 mr-3" onClick={() => setFileInformationAndOpen(file)}>
+                        <span className="font-medium text-gray-900 dark:text-white truncate block">{file.fullName}</span>
+                        <span className="text-xs text-gray-500 dark:text-gray-400">
+                            {convertFileSize(file.size_bytes)} · {formatDate(file.updatedAt)}
+                        </span>
+                    </button>
+                    <div className="relative flex-shrink-0">
+                        <button
+                            onClick={(e) => {
+                                e.stopPropagation();
+                                setOpenListMenuId(openListMenuId === `file-${file.id}` ? null : `file-${file.id}`);
+                            }}
+                            className="p-1 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-700 text-gray-500"
+                        >
+                            ⋯
+                        </button>
+                        {openListMenuId === `file-${file.id}` && (
+                            <div className="absolute right-0 w-40 bg-main-bg dark:bg-dark-main-bg rounded-lg shadow-lg border border-gray-200 dark:border-gray-700 z-10">
+                                <button
+                                    className="w-full text-left px-4 py-2 text-sm hover:bg-gray-200 dark:hover:bg-gray-700"
+                                    onClick={(e) => { e.stopPropagation(); downloadFileById(file.id, file.name); setOpenListMenuId(null); }}
+                                >
+                                    Télécharger
+                                </button>
+                                <button
+                                    className="w-full text-left px-4 py-2 text-sm hover:bg-gray-100 dark:hover:bg-gray-700"
+                                    onClick={(e) => { e.stopPropagation(); openUpdateFileModal(file); setOpenListMenuId(null); }}
+                                >
+                                    Renommer
+                                </button>
+                                <button
+                                    className="w-full text-left px-4 py-2 text-sm hover:bg-gray-100 dark:hover:bg-gray-700"
+                                    onClick={(e) => { e.stopPropagation(); openShareFileModal(file); setOpenListMenuId(null); }}
+                                >
+                                    Partager
+                                </button>
+                                <button
+                                    className="w-full text-left px-4 py-2 text-sm text-red-600 hover:bg-red-50 dark:hover:bg-red-900/20"
+                                    onClick={(e) => { e.stopPropagation(); openDeleteFileModal(file); setOpenListMenuId(null); }}
+                                >
+                                    Supprimer
+                                </button>
+                            </div>
+                        )}
+                    </div>
+                </div>
+            ))}
+        </div>
+        )}
 
             {/* Show details modal */}
             <Modal
@@ -304,6 +422,6 @@ export default function Folders({ listFolders, listFiles, changeFolderId }: Fold
                 folderInfo={deleteFolderInfo!}
                 closeModal={closeDeleteFolderModal}
             />
-        </div>
+        </>
     );
 }
