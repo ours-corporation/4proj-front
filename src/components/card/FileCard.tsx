@@ -8,13 +8,14 @@ import { converCreatedAt } from "@/src/utils/conver-created-at";
 
 interface FileProps {
     file: FileResponse;
+    thumbnailUrl?: string;
     downloadFile?: (fileId: number, fileName: string) => Promise<void>;
     editFile?: (file: FileResponse) => Promise<void>;
     shareFile?: (file: FileResponse) => Promise<void>;
     deleteFile?: (file: FileResponse) => Promise<void>;
 }
 
-export default function FileCard({ file, downloadFile, editFile, shareFile, deleteFile }: FileProps) {
+export default function FileCard({ file, thumbnailUrl, downloadFile, editFile, shareFile, deleteFile }: FileProps) {
     const hasActions = !!(downloadFile || editFile || shareFile || deleteFile);
     const [open, setOpen] = useState(false);
     const menuRef = useRef<HTMLDivElement>(null);
@@ -34,17 +35,25 @@ export default function FileCard({ file, downloadFile, editFile, shareFile, dele
         <div className="relative flex flex-col justify-center items-start">
             <div className="w-full flex flex-row justify-between items-start">
                 <div
-                    className="w-20 h-20 rounded-[24px] flex items-center justify-center mb-3"
+                    className="w-20 h-20 rounded-[24px] flex items-center justify-center mb-3 overflow-hidden"
                     style={{
                         backgroundColor: `${getFileColor(file.mime_type)}20`,
                         color: getFileColor(file.mime_type),
                     }}
                 >
-                    <img
-                        src={getFileSvg(file.mime_type)}
-                        alt="File Icon"
-                        className="w-10 h-10"
-                    />
+                    {thumbnailUrl ? (
+                        <img
+                            src={thumbnailUrl}
+                            alt={file.name}
+                            className="w-full h-full object-cover rounded-[24px]"
+                        />
+                    ) : (
+                        <img
+                            src={getFileSvg(file.mime_type)}
+                            alt="File Icon"
+                            className="w-10 h-10"
+                        />
+                    )}
                 </div>
 
                 {/* Burger des actions */}

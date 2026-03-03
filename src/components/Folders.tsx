@@ -6,7 +6,7 @@ import {FileResponse} from "@/src/interface/file";
 import FileCard from "@/src/components/card/FileCard";
 import Modal from "@/src/components/modal/Modal";
 import ImgPreview from "@/src/components/preview/imgPreview";
-import { downloadFile } from '@/src/api/file';
+import { downloadFile, getFileThumbnail } from '@/src/api/file';
 import PdfPreview from "@/src/components/preview/pdfPreview";
 import VideoPreview from "@/src/components/preview/videoPreview";
 import AudioPreview from "@/src/components/preview/audioPreview";
@@ -33,6 +33,29 @@ interface FoldersProps {
 export default function Folders({ listFolders, listFiles, changeFolderId, viewMode = 'grid' }: FoldersProps) {
     const [open, setOpen] = useState(false);
     const [openListMenuId, setOpenListMenuId] = useState<string | null>(null);
+    const [thumbnails, setThumbnails] = useState<Record<number, string>>({});
+
+    useEffect(() => {
+        if (!listFiles) return;
+        const imageFiles = listFiles.filter(f => f.mime_type.startsWith('image/'));
+        if (imageFiles.length === 0) return;
+
+        const objectUrls: string[] = [];
+
+        imageFiles.forEach(f => {
+            getFileThumbnail(f.id, 'small')
+                .then(blob => {
+                    const url = URL.createObjectURL(blob);
+                    objectUrls.push(url);
+                    setThumbnails(prev => ({ ...prev, [f.id]: url }));
+                })
+                .catch(() => {});
+        });
+
+        return () => {
+            objectUrls.forEach(u => URL.revokeObjectURL(u));
+        };
+    }, [listFiles]);
 
     useEffect(() => {
         if (openListMenuId === null) return;
@@ -279,6 +302,7 @@ export default function Folders({ listFolders, listFiles, changeFolderId, viewMo
                 >
                     <FileCard
                         file={file}
+                        thumbnailUrl={thumbnails[file.id]}
                         downloadFile={downloadFileById}
                         editFile={openUpdateFileModal}
                         shareFile={openShareFileModal}
@@ -335,10 +359,14 @@ export default function Folders({ listFolders, listFiles, changeFolderId, viewMo
             {listFiles && listFiles.map((file) => (
                 <div key={file.id} className="flex items-center py-3 px-2 hover:bg-gray-50 dark:hover:bg-dark-surface rounded-lg">
                     <div
-                        className="w-10 h-10 rounded-xl flex items-center justify-center mr-3 flex-shrink-0"
+                        className="w-10 h-10 rounded-xl flex items-center justify-center mr-3 flex-shrink-0 overflow-hidden"
                         style={{ backgroundColor: `${getFileColor(file.mime_type)}20`, color: getFileColor(file.mime_type) }}
                     >
-                        <img src={getFileSvg(file.mime_type)} alt="File Icon" className="w-6 h-6" />
+                        {thumbnails[file.id] ? (
+                            <img src={thumbnails[file.id]} alt={file.name} className="w-full h-full object-cover rounded-xl" />
+                        ) : (
+                            <img src={getFileSvg(file.mime_type)} alt="File Icon" className="w-6 h-6" />
+                        )}
                     </div>
                     <button className="flex-1 text-left min-w-0 mr-3" onClick={() => setFileInformationAndOpen(file)}>
                         <span className="font-medium text-gray-900 dark:text-white truncate block">{file.fullName}</span>

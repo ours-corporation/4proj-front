@@ -135,6 +135,24 @@ export async function deleteFileById(fileId: number, force = false): Promise<voi
     }
 }
 
+export async function getFileThumbnail(fileId: number, size: "small" | "medium" = "medium"): Promise<Blob> {
+    const url = process.env.NEXT_PUBLIC_API_URL;
+    const token = getJwtToken();
+
+    const rep = await fetch(`${url}/api/files/${fileId}/thumbnail?size=${size}`, {
+        method: "GET",
+        headers: {
+            "Authorization": `Bearer ${token}`,
+        },
+    });
+
+    if (!rep.ok) {
+        throw new Error(`Erreur HTTP: ${rep.status}`);
+    }
+
+    return rep.blob();
+}
+
 export async function updateFileMetadata(fileId: number, newName: string): Promise<File> {
     const url = process.env.NEXT_PUBLIC_API_URL;
     const token = getJwtToken();
