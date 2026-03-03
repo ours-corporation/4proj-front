@@ -42,6 +42,7 @@ export default function Folders({ listFolders, listFiles, changeFolderId, viewMo
     }, [openListMenuId]);
     const [selectedFile, setSelectedFile] = useState<FileResponse | null>(null);
     const [file , setFile] = useState<File | null>(null);
+    const [fileLoading, setFileLoading] = useState(false);
 
     //Edit file modal
     const [ openUpdateModal, setOpenUpdateModal ] = useState<boolean>(false);
@@ -65,12 +66,14 @@ export default function Folders({ listFolders, listFiles, changeFolderId, viewMo
 
 
     function setFileInformationAndOpen(file: FileResponse) {
-        console.log(file);
         setSelectedFile(file);
+        setFile(null);
+        setFileLoading(true);
+        setOpen(true);
         const fileDownload = async () => {
             const downloadedFile = await downloadFile({ fileId: file.id });
             setFile(downloadedFile);
-            setOpen(true);
+            setFileLoading(false);
         }
         fileDownload();
     }
@@ -79,6 +82,7 @@ export default function Folders({ listFolders, listFiles, changeFolderId, viewMo
         setOpen(false);
         setSelectedFile(null);
         setFile(null);
+        setFileLoading(false);
     }
 
     async function downloadFileById(fileId: number | null, fileName: string) {
@@ -165,6 +169,18 @@ export default function Folders({ listFolders, listFiles, changeFolderId, viewMo
 
     const renderPreviewContent = () => {
         if (!selectedFile) return null;
+
+        if (fileLoading) {
+            return (
+                <div className="flex flex-col items-center justify-center h-[300px] gap-4 text-gray-400">
+                    <svg className="w-10 h-10 animate-spin" fill="none" viewBox="0 0 24 24">
+                        <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4" />
+                        <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8v4a4 4 0 00-4 4H4z" />
+                    </svg>
+                    <span className="text-sm">Chargement du fichier...</span>
+                </div>
+            );
+        }
 
         const mimeType = selectedFile.mime_type;
 

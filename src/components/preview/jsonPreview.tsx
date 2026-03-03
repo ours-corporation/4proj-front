@@ -23,7 +23,7 @@ function colorizeJson(json: string): React.ReactNode[] {
     });
 }
 
-export default function JsonPreview({ file }: JsonPreviewProps) {
+export default function JsonPreview({ fileInformation, file }: JsonPreviewProps) {
     const [formatted, setFormatted] = useState<string>('');
     const [error, setError] = useState<string>('');
     const [loading, setLoading] = useState(true);
@@ -70,7 +70,7 @@ export default function JsonPreview({ file }: JsonPreviewProps) {
                                 d="M10 20l4-16m4 4l4 4-4 4M6 16l-4-4 4-4"
                             />
                         </svg>
-                        <span className="text-xs text-gray-500 font-mono">{file.name}</span>
+                        <span className="text-xs text-gray-500 font-mono">{fileInformation.name}.{fileInformation.extension}</span>
                     </div>
                     {error && (
                         <span className="text-xs text-red-500 font-medium">{error}</span>
