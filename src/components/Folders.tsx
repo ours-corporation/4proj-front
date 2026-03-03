@@ -10,6 +10,8 @@ import { downloadFile } from '@/src/api/file';
 import PdfPreview from "@/src/components/preview/pdfPreview";
 import VideoPreview from "@/src/components/preview/videoPreview";
 import AudioPreview from "@/src/components/preview/audioPreview";
+import TextPreview from "@/src/components/preview/textPreview";
+import JsonPreview from "@/src/components/preview/jsonPreview";
 import FolderCard from "@/src/components/card/FolderCard";
 import {convertFileSize} from "@/src/utils/convert-file-size";
 import {getFileColor} from "@/src/utils/get-file-color";
@@ -200,6 +202,30 @@ export default function Folders({ listFolders, listFiles, changeFolderId, viewMo
         if (mimeType.startsWith('audio/')) {
             return (
                 <AudioPreview
+                    file={file!}
+                    fileInformation={selectedFile!}
+                    onClose={() => setFileInformationAndClose()}
+                />
+            );
+        }
+
+        if (mimeType === 'text/plain') {
+            console.log("test")
+            console.log(selectedFile);
+            console.log("test 2")
+            console.log(file);
+            return (
+                <TextPreview
+                    file={file!}
+                    fileInformation={selectedFile!}
+                    onClose={() => setFileInformationAndClose()}
+                />
+            );
+        }
+
+        if (mimeType === 'application/json') {
+            return (
+                <JsonPreview
                     file={file!}
                     fileInformation={selectedFile!}
                     onClose={() => setFileInformationAndClose()}
