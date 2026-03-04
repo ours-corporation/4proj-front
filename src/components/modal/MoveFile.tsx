@@ -21,22 +21,9 @@ interface MoveFileModalProps {
 
 export default function MoveFileModal({ isOpen, fileInfo, closeModal }: MoveFileModalProps) {
     const [errorMessage, setErrorMessage] = useState<string | null>(null);
-    const [folders, setFolders] = useState<FolderResponse[] | null>([]);
+    const [subFolders, setSubFolders] = useState<FolderResponse[] | null>([]);
     const [selected, setSelected] = useState< string | null>(null);
-
-
-    /*useEffect(() => {
-        async function fetchFolders() {
-            try {
-                const data = await getRootFolder();
-                setFolders(data);
-            } catch (error) {
-                console.error(error);
-            }
-        }
-
-        fetchFolders();
-    }, []);*/
+    const [folder, setFolder] = useState<FolderResponse | null>();
     
         useEffect(() => {
             const fetchData = async () => {
@@ -44,16 +31,21 @@ export default function MoveFileModal({ isOpen, fileInfo, closeModal }: MoveFile
                 try {
                     if(fileInfo.folder_id){
                         const data = await getFolderById({ folderId : fileInfo.folder_id.toString() });
-                        setFolders(data.folders);
+                        setFolder(data.current);
+                        console.log(data);
+                        console.log(data.current);
+                        console.log(data.current.parent_id);
+                        setSubFolders(data.folders);
                     }
                     
                     else{
                         const data = await getRootFolder();
-                        setFolders(data);
+                        setFolder(null);
+                        setSubFolders(data.folders);
                     }
 
                 } catch {
-                    setFolders(null);
+                    setSubFolders(null);
                 }
             };
     
@@ -63,13 +55,10 @@ export default function MoveFileModal({ isOpen, fileInfo, closeModal }: MoveFile
 
     async function handleSubmitMoveFile(fileId:number, folderId: string|null){ 
         //transférer les donnés 
-        
-        if(folderId){
-            moveFileIntoFolder(fileId, folderId);
-        }
-
+    
+        moveFileIntoFolder(fileId, folderId);
+    
         closeModal();
-
     }
 
     if(!isOpen) return null
@@ -89,8 +78,20 @@ export default function MoveFileModal({ isOpen, fileInfo, closeModal }: MoveFile
                     <div className="flex-grow">
                         <form className="flex flex-col items-center gap-4 w-full">
                             {
-                            
-                             folders!=null ? folders.map((folder)=> (
+                            folder!=null ?
+                            <label key={folder.parent_id} className = "flex gap-2">
+                                    <input
+                                        type="radio"
+                                        name="folder"
+                                        value={folder.parent_id+""}
+                                        checked={selected === folder.parent_id+""}
+                                        onChange={(e) => setSelected(e.target.value)}
+                                    />
+                                    basculer vers le dossier parent
+                                </label> : null
+                            }
+                            {
+                             subFolders!=null ? subFolders.map((folder)=> (
                                 <label key={folder.id} className = "flex gap-2">
                                     <input
                                         type="radio"

@@ -80,9 +80,13 @@ export async function updateFileMetadata(fileId: number, newName: string): Promi
     }
 }
 
-export async function moveFileIntoFolder(fileId:string, folderId: string): Promise<File> {
+export async function moveFileIntoFolder(fileId:number, folderId: string|null): Promise<File> {
     const url = process.env.NEXT_PUBLIC_API_URL;
     const token = getJwtToken();
+    const folderIdToSend = folderId === "null" ? null : Number(folderId);
+    console.log(fileId);
+    console.log(folderId);
+    console.log(JSON.stringify({ folder_id : folderId }));  
      try {
         const rep = await fetch(`${url}/api/files/${fileId}/move`, {
             method: "PUT",
@@ -90,7 +94,7 @@ export async function moveFileIntoFolder(fileId:string, folderId: string): Promi
                 "Content-Type": "application/json",
                 "Authorization": `Bearer ${token}`,
             },
-            body: JSON.stringify({ folder_id : folderId }),
+            body: JSON.stringify({ folder_id : folderIdToSend }),
         });
         if (!rep.ok) {
             throw new Error(`Erreur HTTP: ${rep.status}`);

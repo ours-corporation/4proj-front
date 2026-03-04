@@ -63,7 +63,7 @@ export async function createNewFolderAPI(folderName: string, parentFolderId: num
     }
 }
 
-export async function getRootFolder():Promise<FolderResponse[]>{
+export async function getRootFolder():Promise<FolderDetailResponse>{
     const url = process.env.NEXT_PUBLIC_API_URL;
     const token = getJwtToken();
     try {
@@ -80,7 +80,7 @@ export async function getRootFolder():Promise<FolderResponse[]>{
         }
 
         const data = await rep.json();
-        return data.folders as FolderResponse[];
+        return data as FolderDetailResponse;
 
     } catch (error) {
         throw error;
