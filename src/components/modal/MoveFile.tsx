@@ -5,10 +5,11 @@ import { FolderResponse } from '@/src/interface/folder';
 import InputField from "@/src/components/input/InputField";
 import SubmitButton from "@/src/components/button/SubmitButton";
 
-import { getRootFolder } from '@/src/api/folders';
+import { getFolderById, getRootFolder } from '@/src/api/folders';
 
-import { updateFileMetadata } from "@/src/api/file";
+import { updateFileMetadata, moveFileIntoFolder} from "@/src/api/file";
 import { updateFileValidator } from "@/src/validator/file";
+
 
 interface MoveFileModalProps {
     isOpen?: boolean;
@@ -21,7 +22,6 @@ interface MoveFileModalProps {
 export default function MoveFileModal({ isOpen, fileInfo, closeModal }: MoveFileModalProps) {
     const [errorMessage, setErrorMessage] = useState<string | null>(null);
     const [folders, setFolders] = useState<FolderResponse[]>([]);
-    const [fileName, setFileName] = useState<string>("");
     const [selected, setSelected] = useState< string | null>(null);
 
 
@@ -38,10 +38,15 @@ export default function MoveFileModal({ isOpen, fileInfo, closeModal }: MoveFile
         fetchFolders();
     }, []);
 
-    async function moveFile(){ 
+    async function handleSubmitMoveFile(fileId:number, folderId: string|null){ 
         //transférer les donnés 
-         
+        
+        if(folderId){
+            moveFileIntoFolder(fileId, folderId);
+        }
+
         closeModal();
+
     }
 
     if(!isOpen) return null
@@ -90,7 +95,7 @@ export default function MoveFileModal({ isOpen, fileInfo, closeModal }: MoveFile
                         type="button"
                         text="Mettre à jour"
                         onClick={() => {
-                            moveFile();
+                            handleSubmitMoveFile(fileInfo.id, selected);
                         }}
                     />
                 </div>

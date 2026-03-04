@@ -79,3 +79,27 @@ export async function updateFileMetadata(fileId: number, newName: string): Promi
         throw error;
     }
 }
+
+export async function moveFileIntoFolder(fileId:string, folderId: string): Promise<File> {
+    const url = process.env.NEXT_PUBLIC_API_URL;
+    const token = getJwtToken();
+     try {
+        const rep = await fetch(`${url}/api/files/${fileId}/move`, {
+            method: "PUT",
+            headers: {
+                "Content-Type": "application/json",
+                "Authorization": `Bearer ${token}`,
+            },
+            body: JSON.stringify({ folder_id : folderId }),
+        });
+        if (!rep.ok) {
+            throw new Error(`Erreur HTTP: ${rep.status}`);
+        }
+        const data = await rep.json();
+        return data as File;
+    }
+    catch (error) {
+        throw error;
+    }
+
+}
