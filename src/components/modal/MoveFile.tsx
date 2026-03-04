@@ -21,11 +21,11 @@ interface MoveFileModalProps {
 
 export default function MoveFileModal({ isOpen, fileInfo, closeModal }: MoveFileModalProps) {
     const [errorMessage, setErrorMessage] = useState<string | null>(null);
-    const [folders, setFolders] = useState<FolderResponse[]>([]);
+    const [folders, setFolders] = useState<FolderResponse[] | null>([]);
     const [selected, setSelected] = useState< string | null>(null);
 
 
-    useEffect(() => {
+    /*useEffect(() => {
         async function fetchFolders() {
             try {
                 const data = await getRootFolder();
@@ -36,7 +36,30 @@ export default function MoveFileModal({ isOpen, fileInfo, closeModal }: MoveFile
         }
 
         fetchFolders();
-    }, []);
+    }, []);*/
+    
+        useEffect(() => {
+            const fetchData = async () => {
+                setErrorMessage(null);
+                try {
+                    if(fileInfo.folder_id){
+                        const data = await getFolderById({ folderId : fileInfo.folder_id.toString() });
+                        setFolders(data.folders);
+                    }
+                    
+                    else{
+                        const data = await getRootFolder();
+                        setFolders(data);
+                    }
+
+                } catch {
+                    setFolders(null);
+                }
+            };
+    
+            fetchData();
+    
+        }, [fileInfo?.folder_id]);
 
     async function handleSubmitMoveFile(fileId:number, folderId: string|null){ 
         //transférer les donnés 
@@ -66,7 +89,8 @@ export default function MoveFileModal({ isOpen, fileInfo, closeModal }: MoveFile
                     <div className="flex-grow">
                         <form className="flex flex-col items-center gap-4 w-full">
                             {
-                             folders.map((folder)=> (
+                            
+                             folders!=null ? folders.map((folder)=> (
                                 <label key={folder.id} className = "flex gap-2">
                                     <input
                                         type="radio"
@@ -77,7 +101,7 @@ export default function MoveFileModal({ isOpen, fileInfo, closeModal }: MoveFile
                                     />
                                     {folder.name}
                                 </label>
-                            ))
+                            )) : null
                             }
                         </form>
                     </div>
