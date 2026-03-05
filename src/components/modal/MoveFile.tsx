@@ -2,13 +2,12 @@ import React, { useState, useEffect } from 'react';
 import Modal from "@/src/components/modal/Modal";
 import { FileResponse } from "@/src/interface/file";
 import { FolderResponse } from '@/src/interface/folder';
-import InputField from "@/src/components/input/InputField";
 import SubmitButton from "@/src/components/button/SubmitButton";
 
 import { getFolderById, getRootFolder } from '@/src/api/folders';
 
-import { updateFileMetadata, moveFileIntoFolder} from "@/src/api/file";
-import { updateFileValidator } from "@/src/validator/file";
+import {moveFileIntoFolder} from "@/src/api/file";
+
 
 
 interface MoveFileModalProps {
@@ -72,14 +71,26 @@ export default function MoveFileModal({ isOpen, fileInfo, closeModal }: MoveFile
             title="Déplacer le fichier"
             size="small"
         >
-
-            <div className="flex flex-col">
-                <div className="flex items-end gap-2 w-full">
-                    <div className="flex-grow">
-                        <form className="flex flex-col items-center gap-4 w-full">
+            <div className = "bg-main-bg dark:bg-dark-surface rounded-xl p-4 border border-border-subtle dark:border-dark-border-subtle">
+                <div className="flex flex-col gap-5 w-full">
+                    <div className="flex flex-col gap-4 w-full">
+                        <div className="flex flex-col gap-1">
+                            <p className="text-txt-primary dark:text-dark-txt-primary mb-1">
+                                Fichier
+                            </p>
+                            <p className="font-medium text-txt-secondary dark:text-dark-txt-secondary truncate">
+                                {fileInfo.name +"."+ fileInfo.extension}
+                            </p>
+                        </div>
+                        <div className="w-full h-px bg-border-subtle dark:bg-dark-border-subtle"></div>
+                        
+                        <form className="flex flex-col gap-4 w-full">
+                            <label className="text-txt-primary dark:text-dark-txt-primary mb-1">
+                                Destination
+                            </label>
                             {
                             folder!=null ?
-                            <label key={folder.parent_id} className = "flex gap-2">
+                            <label key={folder.parent_id} className = "flex items-center gap-2">
                                     <input
                                         type="radio"
                                         name="folder"
@@ -87,12 +98,12 @@ export default function MoveFileModal({ isOpen, fileInfo, closeModal }: MoveFile
                                         checked={selected === folder.parent_id+""}
                                         onChange={(e) => setSelected(e.target.value)}
                                     />
-                                    basculer vers le dossier parent
+                                    Remonter au dossier parent
                                 </label> : null
                             }
                             {
-                             subFolders!=null ? subFolders.map((folder)=> (
-                                <label key={folder.id} className = "flex gap-2">
+                            subFolders!=null ? subFolders.map((folder)=> (
+                                <label key={folder.id} className = "flex items-center gap-2">
                                     <input
                                         type="radio"
                                         name="folder"
@@ -107,25 +118,25 @@ export default function MoveFileModal({ isOpen, fileInfo, closeModal }: MoveFile
                         </form>
                     </div>
                 </div>
-
                 <p className="mt-2">
                     {errorMessage && (
                         <span className="text-sm text-red-500">{errorMessage}</span>
                     )}
                 </p>
-
-                <div className="mt-4 flex justify-end w-full">
-                    <SubmitButton
-                        id="update-file-button"
-                        type="button"
-                        text="Mettre à jour"
-                        onClick={() => {
-                            handleSubmitMoveFile(fileInfo.id, selected);
-                        }}
-                    />
-                </div>
-            
             </div>
+
+            <div className="mt-4 flex justify-end w-full">
+                <SubmitButton
+                    id="update-file-button"
+                    type="button"
+                    text="Mettre à jour"
+                    onClick={() => {
+                        handleSubmitMoveFile(fileInfo.id, selected);
+                    }}
+                />
+            </div>
+            
+            
 
         </Modal>
     );
