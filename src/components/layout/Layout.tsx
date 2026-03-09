@@ -2,7 +2,7 @@
 
 import React from "react";
 import NavBar from "@/src/components/nav/Nav";
-import Headers from "@/src/components/Headers";
+import Headers from "@/src/components/layout/Headers";
 
 export default function Layout({ children, currentPage }: { children: React.ReactNode, currentPage: string }) {
     return (

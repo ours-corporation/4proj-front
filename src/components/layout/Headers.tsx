@@ -1,4 +1,5 @@
-import ToggleDark from "@/src/components/ToggleDark";
+import ToggleDark from "@/src/components/layout/ToggleDark";
+import Search from "@/src/components/layout/Search";
 
 export default function Headers() {
     return (
@@ -18,11 +19,7 @@ export default function Headers() {
                         <path strokeLinecap="round" strokeLinejoin="round" d="m21 21-5.197-5.197m0 0A7.5 7.5 0 1 0 5.196 5.196a7.5 7.5 0 0 0 10.607 10.607Z"/>
                     </svg>
                 </div>
-                <input
-                    type="text"
-                    className="block w-full pl-12 pr-4 py-3 bg-input-bg dark:bg-dark-input-bg border-none rounded-full text-txt-secondary dark:text-dark-txt-secondary placeholder-gray-500 focus:ring-2 focus:ring-indigo-500 focus:outline-none transition-all"
-                    placeholder="Rechercher un fichier..."
-                />
+                <Search />
             </div>
             <ToggleDark></ToggleDark>
         </header>

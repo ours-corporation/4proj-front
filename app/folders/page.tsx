@@ -4,7 +4,7 @@ import React, {useState, useEffect} from 'react';
 import { useSearchParams } from 'next/navigation';
 import { useAuth } from '@/src/hooks/useAuth';
 import Loading from '@/src/components/Loading';
-import Layout from '@/src/components/Layout';
+import Layout from '@/src/components/layout/Layout';
 import Error from "@/src/components/Error";
 import Folders from "@/src/components/Folders";
 import {createNewFolderAPI, FolderDetailResponse, getFolderById} from "@/src/api/folders";

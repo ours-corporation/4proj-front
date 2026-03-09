@@ -1,7 +1,7 @@
 'use client';
 
 import { useState, useEffect} from "react";
-import Layout from '@/src/components/Layout';
+import Layout from '@/src/components/layout/Layout';
 import {useJwtInformation} from "@/src/hooks/getJwtInformation";
 import Loading from '@/src/components/Loading';
 import { getMyInformation } from "@/src/api/user";

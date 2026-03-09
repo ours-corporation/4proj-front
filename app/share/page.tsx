@@ -3,7 +3,7 @@
 import React, {useState, useEffect} from 'react';
 import { useAuth } from '@/src/hooks/useAuth';
 import Loading from '@/src/components/Loading';
-import Layout from '@/src/components/Layout';
+import Layout from '@/src/components/layout/Layout';
 import Error from "@/src/components/Error";
 import {FolderShareDetailResponse, getReceivedSharesAPI} from "@/src/api/share";
 import Folders from "@/src/components/Folders";

@@ -3,7 +3,7 @@
 import React, {useEffect, useState} from 'react';
 import { useAuth } from '@/src/hooks/useAuth';
 import Loading from '@/src/components/Loading';
-import Layout from '@/src/components/Layout';
+import Layout from '@/src/components/layout/Layout';
 import Error from "@/src/components/Error";
 import {useJwtInformation} from "@/src/hooks/getJwtInformation";
 import GlobalCard from "@/src/components/card/GlobalCard";
