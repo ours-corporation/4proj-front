@@ -29,9 +29,11 @@ interface FoldersProps {
     listFiles?: FileResponse[];
     changeFolderId: (newFolderIdNumber: number | null) => Promise<void>;
     viewMode?: 'grid' | 'list';
+    onFolderRenamed?: () => void;
+    onFileChanged?: () => void;
 }
 
-export default function Folders({ listFolders, listFiles, changeFolderId, viewMode = 'grid' }: FoldersProps) {
+export default function Folders({ listFolders, listFiles, changeFolderId, viewMode = 'grid', onFolderRenamed, onFileChanged }: FoldersProps) {
     const [open, setOpen] = useState(false);
     const [openListMenuId, setOpenListMenuId] = useState<string | null>(null);
     const [thumbnails, setThumbnails] = useState<Record<number, string>>({});
@@ -454,6 +456,7 @@ export default function Folders({ listFolders, listFiles, changeFolderId, viewMo
                 isOpen={openUpdateModal}
                 fileInfo={editFileInfo!}
                 closeModal={() => closeUploadFileModal()}
+                onSuccess={onFileChanged}
             />
 
             <ShareFileModal
@@ -466,12 +469,14 @@ export default function Folders({ listFolders, listFiles, changeFolderId, viewMo
                 isOpen={openDeleteModal}
                 fileInfo={deleteFileInfo!}
                 closeModal={() => closeDeleteFileModal()}
+                onSuccess={onFileChanged}
             />
 
             <RenameFolderModal
                 isOpen={openRenameFolderModal}
                 folderInfo={renameFolderInfo!}
                 closeModal={closeRenameFolderModal}
+                onSuccess={onFolderRenamed}
             />
 
             <DeleteFolderModal

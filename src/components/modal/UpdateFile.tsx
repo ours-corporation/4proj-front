@@ -10,9 +10,10 @@ interface UpdateFileModalProps {
     isOpen?: boolean;
     fileInfo: FileResponse;
     closeModal: () => void;
+    onSuccess?: () => void;
 }
 
-export default function UpdateFileModal({ isOpen, fileInfo, closeModal }: UpdateFileModalProps) {
+export default function UpdateFileModal({ isOpen, fileInfo, closeModal, onSuccess }: UpdateFileModalProps) {
     const [errorMessage, setErrorMessage] = useState<string | null>(null);
     const [fileName, setFileName] = useState<string>("");
     const [fileExtension, setFileExtension] = useState<string>("");
@@ -39,9 +40,9 @@ export default function UpdateFileModal({ isOpen, fileInfo, closeModal }: Update
         const fullFileName = fileName + fileExtension;
 
         updateFileMetadata(fileInfo.id, fullFileName)
-            .then((updatedFile) => {
-                console.log("Fichier mis à jour avec succès:", updatedFile);
-                closeModal(); // Déplacé ici pour fermer seulement si succès (optionnel mais recommandé)
+            .then(() => {
+                closeModal();
+                onSuccess?.();
             })
             .catch((error) => {
                 console.error("Erreur lors de la mise à jour du fichier:", error);

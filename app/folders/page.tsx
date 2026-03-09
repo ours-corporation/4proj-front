@@ -216,6 +216,14 @@ export default function ShowFolders() {
                 listFiles={folderData?.files || []}
                 changeFolderId={changeFolderId}
                 viewMode={viewMode}
+                onFolderRenamed={async () => {
+                    const data = await getFolderById({ folderId });
+                    setFolderData(data);
+                }}
+                onFileChanged={async () => {
+                    const data = await getFolderById({ folderId });
+                    setFolderData(data);
+                }}
             />
 
             {/* Création de dossier modal */}
