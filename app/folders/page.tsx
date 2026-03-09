@@ -1,6 +1,7 @@
 'use client';
 
 import React, {useState, useEffect} from 'react';
+import { useSearchParams } from 'next/navigation';
 import { useAuth } from '@/src/hooks/useAuth';
 import Loading from '@/src/components/Loading';
 import Layout from '@/src/components/Layout';
@@ -19,7 +20,8 @@ import {addFileValidator} from "@/src/validator/file";
 
 
 export default function ShowFolders() {
-    const [folderId, setFolderId] = useState<string>('');
+    const searchParams = useSearchParams();
+    const [folderId, setFolderId] = useState<string>(searchParams.get('folderId') ?? '');
     const [folderData, setFolderData] = useState<FolderDetailResponse | null>(null);
     const [error, setError] = useState<string | null>(null);
     const [viewMode, setViewMode] = useState<'grid' | 'list'>('grid');

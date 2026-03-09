@@ -8,6 +8,7 @@ import Error from "@/src/components/Error";
 import {useJwtInformation} from "@/src/hooks/getJwtInformation";
 import GlobalCard from "@/src/components/card/GlobalCard";
 import { getMyInformation } from "@/src/api/user";
+import ShowRecentFile from "@/src/components/dashboard/ShowRecentFIle";
 
 
 export default function Dashboard() {
@@ -79,6 +80,7 @@ export default function Dashboard() {
             </div>
             <h1 className="text-xl font-bold text-txt-secondary dark:text-dark-txt-primary mb-2 mt-8">
                 Fichiers Récents
+                <ShowRecentFile />
             </h1>
         </Layout>
     );
