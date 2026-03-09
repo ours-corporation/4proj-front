@@ -22,6 +22,10 @@ import {addFileValidator} from "@/src/validator/file";
 export default function ShowFolders() {
     const searchParams = useSearchParams();
     const [folderId, setFolderId] = useState<string>(searchParams.get('folderId') ?? '');
+
+    useEffect(() => {
+        setFolderId(searchParams.get('folderId') ?? '');
+    }, [searchParams]);
     const [folderData, setFolderData] = useState<FolderDetailResponse | null>(null);
     const [error, setError] = useState<string | null>(null);
     const [viewMode, setViewMode] = useState<'grid' | 'list'>('grid');
