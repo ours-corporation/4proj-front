@@ -21,6 +21,7 @@ import ShareFileModal from "@/src/components/modal/ShareFile";
 import DeleteFileModal from "@/src/components/modal/DeleteFile";
 import DeleteFolderModal from "@/src/components/modal/DeleteFolder";
 import RenameFolderModal from "@/src/components/modal/RenameFolder";
+import { downloadFileService } from "@/src/services/downloadFile";
 
 
 interface FoldersProps {
@@ -109,21 +110,7 @@ export default function Folders({ listFolders, listFiles, changeFolderId, viewMo
     }
 
     async function downloadFileById(fileId: number | null, fileName: string) {
-        if (!fileId) return;
-        if (!fileName) return;
-        try {
-            const downloadedData = await downloadFile({ fileId });
-            const url = window.URL.createObjectURL(downloadedData);
-            const link = document.createElement('a');
-            link.href = url;
-            link.setAttribute('download', fileName);
-            document.body.appendChild(link);
-            link.click();
-            link.remove();
-            window.URL.revokeObjectURL(url);
-        } catch (error) {
-            console.error("Erreur lors du téléchargement :", error);
-        }
+        await downloadFileService(fileId, fileName);
     }
 
     //File edit modal

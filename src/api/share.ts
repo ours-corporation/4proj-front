@@ -50,15 +50,17 @@ export async function getReceivedSharesAPI() : Promise<FolderShareDetailResponse
     return rep.json();
 }
 
+// Public Share
 export async function getPublicShareAPI(uuid: string, password?: string) {
     const baseUrl = process.env.NEXT_PUBLIC_API_URL;
 
-    const response = await fetch(`${baseUrl}/api/shares/public/access/${uuid}`, {
+    const response = await fetch(`${baseUrl}/api/public/access/${uuid}`, {
         method: "POST",
         headers: {
             "Content-Type": "application/json",
         },
         body: password ? JSON.stringify({ password }) : JSON.stringify({}),
+        cache: "no-store",
     });
 
     const data = await response.json();
@@ -78,4 +80,17 @@ export async function getPublicShareAPI(uuid: string, password?: string) {
         return { success: false, error: "LINK_INVALID", status: response.status };
     }
     return { success: false, error: "UNKNOWN_ERROR", message: data.message };
+}
+
+export async function downloadPublicShareAPI(token: string, password?: string): Promise<Response> {
+    const baseUrl = process.env.NEXT_PUBLIC_API_URL;
+
+    return await fetch(`${baseUrl}/api/public/download/${token}`, {
+        method: "POST",
+        headers: {
+            "Content-Type": "application/json",
+        },
+        body: password ? JSON.stringify({ password }) : undefined,
+        cache: "no-store",
+    });
 }
