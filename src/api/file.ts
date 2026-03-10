@@ -1,12 +1,8 @@
 import {getJwtToken} from "@/src/hooks/getJwtInformation";
-import { FileResponse } from "@/src/interface/file";
-import { FileShareItem } from "@/src/interface/share";
 
 export async function downloadFile({ fileId }: { fileId: number }): Promise<File> {
     const url = process.env.NEXT_PUBLIC_API_URL;
     const token = getJwtToken();
-
-    console.log(`${url}/api/files/${fileId}/download`);
 
     try {
         const rep = await fetch(`${url}/api/files/${fileId}/download`, {
@@ -177,6 +173,34 @@ export async function updateFileMetadata(fileId: number, newName: string): Promi
     catch (error) {
         throw error;
     }
+}
+
+export async function moveFileIntoFolder(fileId:number, folderId: string|null): Promise<File> {
+    const url = process.env.NEXT_PUBLIC_API_URL;
+    const token = getJwtToken();
+    const folderIdToSend = folderId === "null" ? null : Number(folderId);
+    console.log(fileId);
+    console.log(folderId);
+    console.log(JSON.stringify({ folder_id : folderId }));
+     try {
+        const rep = await fetch(`${url}/api/files/${fileId}/move`, {
+            method: "PUT",
+            headers: {
+                "Content-Type": "application/json",
+                "Authorization": `Bearer ${token}`,
+            },
+            body: JSON.stringify({ folder_id : folderIdToSend }),
+        });
+        if (!rep.ok) {
+            throw new Error(`Erreur HTTP: ${rep.status}`);
+        }
+        const data = await rep.json();
+        return data as File;
+    }
+    catch (error) {
+        throw error;
+    }
+
 }
 
 export async function getRecentFilesAPI(limit: number = 10): Promise<FileResponse[]> {

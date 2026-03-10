@@ -4,14 +4,16 @@ import { FolderResponse } from '@/src/interface/folder';
 import {FileResponse} from "@/src/interface/file";
 import {useJwtInformation} from "@/src/hooks/getJwtInformation";
 
+
 import FileCard from "@/src/components/card/FileCard";
 import { downloadFile, getFileThumbnail } from '@/src/api/file';
 import FolderCard from "@/src/components/card/FolderCard";
 import {convertFileSize} from "@/src/utils/convert-file-size";
-import {getFileColor} from "@/src/utils/get-file-color";
-import {getFileSvg} from "@/src/utils/get-file-svg";
 import UpdateFileModal from "@/src/components/modal/UpdateFile";
 import ShareFileModal from "@/src/components/modal/ShareFile";
+import MoveFileModal from '@/src/components/modal/MoveFile';
+import {getFileColor} from "@/src/utils/get-file-color";
+import {getFileSvg} from "@/src/utils/get-file-svg";
 import DeleteFileModal from "@/src/components/modal/DeleteFile";
 import DeleteFolderModal from "@/src/components/modal/DeleteFolder";
 import RenameFolderModal from "@/src/components/modal/RenameFolder";
@@ -100,6 +102,10 @@ export default function Folders({ listFolders, listFiles, changeFolderId, viewMo
     const [ shareFolderInfo, setShareFolderInfo ] = useState<FolderResponse | null>(null);
 
 
+    //Move File modal
+    const [ openMoveModal, setOpenMoveModal] = useState<boolean>(false);
+    const [ editFilePositionInfo, setPositionFileInfo ] = useState<FileResponse | null>(null);
+
     function setFileInformationAndOpen(file: FileResponse) {
         setSelectedFile(file);
         setFile(null);
@@ -108,6 +114,7 @@ export default function Folders({ listFolders, listFiles, changeFolderId, viewMo
         const fileDownload = async () => {
             const downloadedFile = await downloadFile({ fileId: file.id });
             setFile(downloadedFile);
+            setOpen(true);
             setFileLoading(false);
         }
         fileDownload();
@@ -117,7 +124,6 @@ export default function Folders({ listFolders, listFiles, changeFolderId, viewMo
         setOpen(false);
         setSelectedFile(null);
         setFile(null);
-        setFileLoading(false);
     }
 
     async function downloadFileById(fileId: number | null, fileName: string) {
@@ -204,6 +210,17 @@ export default function Folders({ listFolders, listFiles, changeFolderId, viewMo
         setOpenShareFolderModal(false);
     }
 
+    async function openMoveFileModal(file: FileResponse){
+        if (!file) return;
+        setPositionFileInfo(file);
+        setOpenMoveModal(true);
+    }
+
+    async function closeMoveFileModal(){
+        setPositionFileInfo(null);
+        setOpenMoveModal(false);
+    }
+
     const formatDate = (dateString: string) => {
         return new Date(dateString).toLocaleDateString('fr-FR', {
             day: 'numeric', month: 'short', year: 'numeric', hour: '2-digit', minute: '2-digit'
@@ -241,9 +258,10 @@ export default function Folders({ listFolders, listFiles, changeFolderId, viewMo
                         file={file}
                         thumbnailUrl={thumbnails[file.id]}
                         downloadFile={downloadFileById}
-                        editFile={!fp(file) || fp(file) === 'WRITE' ? openUpdateFileModal : undefined}
-                        shareFile={!fp(file) ? openShareFileModal : undefined}
-                        deleteFile={!fp(file) ? openDeleteFileModal : undefined}
+                        editFile={openUpdateFileModal}
+                        shareFile={openShareFileModal}
+                        moveFile={openMoveFileModal}
+                        deleteFile={undefined}
                     />
                 </div>
             ))}
@@ -395,13 +413,17 @@ export default function Folders({ listFolders, listFiles, changeFolderId, viewMo
                 isOpen={openUpdateModal}
                 fileInfo={editFileInfo!}
                 closeModal={() => closeUploadFileModal()}
-                onSuccess={onFileChanged}
             />
 
             <ShareFileModal
                 isOpen={openShareModal}
                 fileInfo={shareFileInfo!}
                 closeModal={() => closeShareFileModal()}
+            />
+            <MoveFileModal
+                isOpen={openMoveModal}
+                fileInfo={editFilePositionInfo!}
+                closeModal={() => closeMoveFileModal()}
             />
 
             <DeleteFileModal

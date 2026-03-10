@@ -101,8 +101,7 @@ export default function NavBar({ currentPage }: { currentPage: string }) {
                     }
                 />
             </nav>
-
-            <div className="mt-auto pt-4 border-t border-txt-secondary dark:border-dark-txt-secondary relative" ref={menuRef}>
+            <button className="mt-auto pt-4 border-t border-txt-secondary dark:border-dark-txt-secondary relative" >
                 {menuOpen && (
                     <div className="absolute bottom-full left-0 right-0 mb-2 mx-2 bg-surface dark:bg-dark-surface border border-main-bg dark:border-dark-main-bg rounded-xl shadow-lg overflow-hidden z-50">
                         <a
@@ -152,7 +151,7 @@ export default function NavBar({ currentPage }: { currentPage: string }) {
                         <p className="text-sm font-semibold text-txt-secondary dark:text-dark-txt-secondary truncate">{userInfo.username}</p>
                     </div>
                 </button>
-            </div>
+            </button>
         </aside>
     );
 }
