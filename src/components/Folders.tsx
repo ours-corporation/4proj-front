@@ -225,7 +225,7 @@ export default function Folders({ listFolders, listFiles, changeFolderId, viewMo
                 >
                     <FolderCard
                         folder={folder}
-                        renameFolder={!fp(folder) ? openRenameFolderModalFn : undefined}
+                        renameFolder={!fp(folder) || fp(folder) === 'WRITE' ? openRenameFolderModalFn : undefined}
                         deleteFolder={!fp(folder) ? openDeleteFolderModalFn : undefined}
                         openShares={!fp(folder) ? openFolderDetailsModalFn : undefined}
                         shareFolder={!fp(folder) ? openShareFolderModalFn : undefined}
@@ -292,7 +292,7 @@ export default function Folders({ listFolders, listFiles, changeFolderId, viewMo
                                         Partager
                                     </button>
                                 )}
-                                {!fp(folder) && (
+                                {(!fp(folder) || fp(folder) === 'WRITE') && (
                                 <button
                                     className="w-full text-left px-4 py-2 text-sm hover:bg-gray-100 dark:hover:bg-gray-700"
                                     onClick={(e) => { e.stopPropagation(); openRenameFolderModalFn(folder); setOpenListMenuId(null); }}
