@@ -2,16 +2,10 @@ import React, {useState, useEffect} from 'react';
 
 import { FolderResponse } from '@/src/interface/folder';
 import {FileResponse} from "@/src/interface/file";
+import {useJwtInformation} from "@/src/hooks/getJwtInformation";
 
 import FileCard from "@/src/components/card/FileCard";
-import Modal from "@/src/components/modal/Modal";
-import ImgPreview from "@/src/components/preview/imgPreview";
 import { downloadFile, getFileThumbnail } from '@/src/api/file';
-import PdfPreview from "@/src/components/preview/pdfPreview";
-import VideoPreview from "@/src/components/preview/videoPreview";
-import AudioPreview from "@/src/components/preview/audioPreview";
-import TextPreview from "@/src/components/preview/textPreview";
-import JsonPreview from "@/src/components/preview/jsonPreview";
 import FolderCard from "@/src/components/card/FolderCard";
 import {convertFileSize} from "@/src/utils/convert-file-size";
 import {getFileColor} from "@/src/utils/get-file-color";
@@ -22,6 +16,7 @@ import DeleteFileModal from "@/src/components/modal/DeleteFile";
 import DeleteFolderModal from "@/src/components/modal/DeleteFolder";
 import RenameFolderModal from "@/src/components/modal/RenameFolder";
 import { downloadFileService } from "@/src/services/downloadFile";
+import FileDetailsModal from "@/src/components/modal/FileDetailsModal";
 
 
 interface FoldersProps {
@@ -34,6 +29,7 @@ interface FoldersProps {
 }
 
 export default function Folders({ listFolders, listFiles, changeFolderId, viewMode = 'grid', onFolderRenamed, onFileChanged }: FoldersProps) {
+    const userInfo = useJwtInformation();
     const [open, setOpen] = useState(false);
     const [openListMenuId, setOpenListMenuId] = useState<string | null>(null);
     const [thumbnails, setThumbnails] = useState<Record<number, string>>({});
@@ -177,91 +173,6 @@ export default function Folders({ listFolders, listFiles, changeFolderId, viewMo
         return new Date(dateString).toLocaleDateString('fr-FR', {
             day: 'numeric', month: 'short', year: 'numeric', hour: '2-digit', minute: '2-digit'
         });
-    };
-
-    const renderPreviewContent = () => {
-        if (!selectedFile) return null;
-
-        if (fileLoading) {
-            return (
-                <div className="flex flex-col items-center justify-center h-[300px] gap-4 text-gray-400">
-                    <svg className="w-10 h-10 animate-spin" fill="none" viewBox="0 0 24 24">
-                        <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4" />
-                        <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8v4a4 4 0 00-4 4H4z" />
-                    </svg>
-                    <span className="text-sm">Chargement du fichier...</span>
-                </div>
-            );
-        }
-
-        const mimeType = selectedFile.mime_type;
-
-        if (mimeType.startsWith('image/')) {
-            return (
-                <ImgPreview
-                    file={file!}
-                    fileInformation={selectedFile!}
-                    onClose={() => setFileInformationAndClose()}
-                />
-            );
-        }
-
-        if (mimeType === 'application/pdf') {
-            return (
-                <PdfPreview
-                    file={file!}
-                    fileInformation={selectedFile!}
-                    onClose={() => setFileInformationAndClose()}
-                />
-            );
-        }
-
-        //gestion des vidéos
-        if (mimeType.startsWith('video/')) {
-            return (
-                <VideoPreview
-                    file={file!}
-                    fileInformation={selectedFile!}
-                    onClose={() => setFileInformationAndClose()}
-                />
-            );
-        }
-
-        if (mimeType.startsWith('audio/')) {
-            return (
-                <AudioPreview
-                    file={file!}
-                    fileInformation={selectedFile!}
-                    onClose={() => setFileInformationAndClose()}
-                />
-            );
-        }
-
-        if (mimeType === 'text/plain') {
-            console.log("test")
-            console.log(selectedFile);
-            console.log("test 2")
-            console.log(file);
-            return (
-                <TextPreview
-                    file={file!}
-                    fileInformation={selectedFile!}
-                    onClose={() => setFileInformationAndClose()}
-                />
-            );
-        }
-
-        if (mimeType === 'application/json') {
-            return (
-                <JsonPreview
-                    file={file!}
-                    fileInformation={selectedFile!}
-                    onClose={() => setFileInformationAndClose()}
-                />
-            );
-        }
-
-        return <p>Aperçu non disponible pour ce type de fichier.</p>;
     };
 
     const folderColor = "#F59E0B";
@@ -408,49 +319,14 @@ export default function Folders({ listFolders, listFiles, changeFolderId, viewMo
         )}
 
             {/* Show details modal */}
-            <Modal
+            <FileDetailsModal
                 isOpen={open}
-                title={selectedFile ? selectedFile.name : 'Détails du fichier'}
+                selectedFile={selectedFile}
+                file={file}
+                fileLoading={fileLoading}
+                currentUserId={userInfo.id}
                 onClose={() => setFileInformationAndClose()}
-            >
-                <div className="space-y-6">
-                    {renderPreviewContent()}
-                    <div className="bg-main-bg dark:bg-dark-surface rounded-xl p-4 border border-border-subtle dark:border-dark-border-subtle">
-                        <h3 className="text-xs font-semibold text-txt-primary dark:text-dark-txt-primary uppercase tracking-wider mb-3">
-                            Métadonnées
-                        </h3>
-                        <dl className="grid grid-cols-2 gap-y-4 gap-x-4 text-sm">
-                            <div>
-                                <dt className="text-txt-primary dark:text-dark-txt-primary mb-1">Nom du fichier</dt>
-                                <dd className="font-medium text-txt-secondary dark:text-dark-txt-secondary truncate" title={selectedFile?.name}>
-                                    {selectedFile?.name}
-                                </dd>
-                            </div>
-
-                            <div>
-                                <dt className="text-txt-primary dark:text-dark-txt-primary mb-1">Taille</dt>
-                                <dd className="font-medium text-txt-secondary dark:text-dark-txt-secondary">
-                                    {convertFileSize(selectedFile?.size_bytes)}
-                                </dd>
-                            </div>
-
-                            <div>
-                                <dt className="text-txt-primary dark:text-dark-txt-primary mb-1">Type MIME</dt>
-                                <dd className="inline-flex items-center px-2 py-0.5 rounded text-xs font-medium bg-blue-100 text-blue-800">
-                                    {selectedFile?.mime_type || 'Inconnu'}
-                                </dd>
-                            </div>
-
-                            <div>
-                                <dt className="text-txt-primary dark:text-dark-txt-primary mb-1">Dernière modification</dt>
-                                <dd className="font-medium text-txt-secondary dark:text-dark-txt-secondary">
-                                    {selectedFile ? formatDate(selectedFile.updatedAt) : ''}
-                                </dd>
-                            </div>
-                        </dl>
-                    </div>
-                </div>
-            </Modal>
+            />
 
             <UpdateFileModal
                 isOpen={openUpdateModal}

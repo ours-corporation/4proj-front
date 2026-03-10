@@ -19,19 +19,27 @@ export default function Dashboard() {
     //--------------------------------------------------------------
 
     //--------Space information (to be replaced with API data)---------
-    const [current, setCurrent] = useState(0);
+    const [current, setCurrent] = useState('');
     const [total, setTotal] = useState(0);
     const [percentage, setPercentage] = useState(0);
+
+    function formatBytes(bytes: number): string {
+        if (bytes < 1024) return `${bytes} B`;
+        if (bytes < 1024 ** 2) return `${(bytes / 1024).toFixed(2)} KB`;
+        if (bytes < 1024 ** 3) return `${(bytes / 1024 ** 2).toFixed(2)} MB`;
+        return `${(bytes / 1024 ** 3).toFixed(2)} GB`;
+    }
 
     useEffect(() => {
         async function fetchUserData() {
             try {
                 const data = await getMyInformation();
                 if (data) {
-                    const usedGB = data.used_bytes / (1024 ** 3);
                     const totalGB = data.quota ? data.quota.quota_bytes / (1024 ** 3) : 0;
-                    setCurrent(parseFloat(usedGB.toFixed(2)));
+                    console.log(data);
+                    setCurrent(formatBytes(data.used_bytes));
                     setTotal(parseFloat(totalGB.toFixed(2)));
+                    const usedGB = data.used_bytes / (1024 ** 3);
                     const percent = totalGB > 0 ? (usedGB / totalGB) * 100 : 0;
                     setPercentage(parseFloat(percent.toFixed(2)));
                 } else {
@@ -65,7 +73,7 @@ export default function Dashboard() {
                     <div className="mb-6">
                         <h3 className="text-txt-primary dark:text-dark-txt-primary font-medium text-md mb-1">Espace Utilisé</h3>
                         <div className="flex items-baseline gap-2">
-                            <span className="text-4xl font-bold text-txt-primary dark:text-dark-txt-primary tracking-tight">{current} GB</span>
+                            <span className="text-4xl font-bold text-txt-primary dark:text-dark-txt-primary tracking-tight">{current}</span>
                             <span className="text-txt-secondary dark:text-dark-txt-secondary text-lg font-medium">/ {total} GB</span>
                         </div>
                     </div>
