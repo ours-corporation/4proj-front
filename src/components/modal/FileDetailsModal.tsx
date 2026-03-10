@@ -36,6 +36,7 @@ export default function FileDetailsModal({
     const [pendingShareId, setPendingShareId] = useState<number | null>(null);
     const [expandedShareId, setExpandedShareId] = useState<number | null>(null);
     const [passwordInputs, setPasswordInputs] = useState<Record<number, string>>({});
+    const [copiedShareId, setCopiedShareId] = useState<number | null>(null);
     const isOwner = selectedFile && selectedFile.user_id === parseInt(currentUserId);
 
     useEffect(() => {
@@ -274,11 +275,19 @@ export default function FileDetailsModal({
                                             <p className="text-sm font-semibold text-txt-primary dark:text-dark-txt-primary">Lien public</p>
                                             <p className="text-xs text-txt-secondary dark:text-dark-txt-secondary">
                                                 {share.expiresAt ? `Expire le ${formatDate(share.expiresAt)}` : 'Sans expiration'}
-                                                {share.hasPassword && ' · Protégé'}
                                             </p>
                                         </div>
                                     )}
-                                    <div className="flex items-center gap-1.5 flex-shrink-0">
+                                    <div className="flex flex-col items-end gap-1 flex-shrink-0">
+                                        {isPublic && share.hasPassword && (
+                                            <span className="inline-flex items-center gap-1 text-xs text-gray-500 dark:text-gray-400">
+                                                <svg className="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z" />
+                                                </svg>
+                                                Protégé
+                                            </span>
+                                        )}
+                                        <div className="flex items-center gap-1.5">
                                         <span className={`inline-flex items-center gap-1 text-xs font-semibold px-2 py-0.5 rounded-full ${
                                             share.permission === 'WRITE'
                                                 ? 'bg-amber-100 text-amber-700 dark:bg-amber-900/30 dark:text-amber-400'
@@ -287,9 +296,32 @@ export default function FileDetailsModal({
                                             <span className={`w-1.5 h-1.5 rounded-full ${share.permission === 'WRITE' ? 'bg-amber-500' : 'bg-emerald-500'}`} />
                                             {share.permission === 'WRITE' ? 'Écriture' : 'Lecture'}
                                         </span>
+                                        {isPublic && (
+                                            <button
+                                                onClick={e => {
+                                                    e.stopPropagation();
+                                                    navigator.clipboard.writeText(`${window.location.origin}/share/public/${share.token}`);
+                                                    setCopiedShareId(share.id);
+                                                    setTimeout(() => setCopiedShareId(null), 2000);
+                                                }}
+                                                title="Copier le lien"
+                                                className="p-1 rounded-md text-txt-secondary dark:text-dark-txt-secondary hover:text-blue-600 dark:hover:text-blue-400 hover:bg-blue-100 dark:hover:bg-blue-900/30 transition-colors"
+                                            >
+                                                {copiedShareId === share.id ? (
+                                                    <svg className="w-3.5 h-3.5 text-emerald-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
+                                                    </svg>
+                                                ) : (
+                                                    <svg className="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M8 16H6a2 2 0 01-2-2V6a2 2 0 012-2h8a2 2 0 012 2v2m-6 12h8a2 2 0 002-2v-8a2 2 0 00-2-2h-8a2 2 0 00-2 2v8a2 2 0 002 2z" />
+                                                    </svg>
+                                                )}
+                                            </button>
+                                        )}
                                         <svg className={`w-3.5 h-3.5 text-txt-secondary dark:text-dark-txt-secondary transition-transform ${isExpanded ? 'rotate-180' : ''}`} fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                             <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
                                         </svg>
+                                        </div>
                                     </div>
                                 </button>
 
