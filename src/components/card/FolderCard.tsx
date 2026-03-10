@@ -6,12 +6,14 @@ interface FolderCardProps {
     folder: FolderResponse;
     renameFolder?: (folder: FolderResponse) => void;
     deleteFolder?: (folder: FolderResponse) => void;
+    openShares?: (folder: FolderResponse) => void;
+    shareFolder?: (folder: FolderResponse) => void;
 }
 
-export default function FolderCard({ folder, renameFolder, deleteFolder }: FolderCardProps) {
+export default function FolderCard({ folder, renameFolder, deleteFolder, openShares, shareFolder }: FolderCardProps) {
     const folderColor = "#F59E0B";
     const folderBgColor = "#F59E0B20";
-    const hasActions = !!(renameFolder || deleteFolder);
+    const hasActions = !!(renameFolder || deleteFolder || openShares || shareFolder);
     const [open, setOpen] = useState(false);
     const menuRef = useRef<HTMLDivElement>(null);
 
@@ -59,6 +61,30 @@ export default function FolderCard({ folder, renameFolder, deleteFolder }: Folde
 
                         {open && (
                             <div className="absolute right-0 w-40 bg-main-bg dark:bg-dark-main-bg rounded-lg shadow-lg border border-gray-200 dark:border-gray-700 z-10">
+                                {openShares && (
+                                    <button
+                                        className="w-full text-left px-4 py-2 text-sm hover:bg-gray-100 dark:hover:bg-gray-700"
+                                        onClick={(e) => {
+                                            e.stopPropagation();
+                                            openShares(folder);
+                                            setOpen(false);
+                                        }}
+                                    >
+                                        Droits d&apos;accès
+                                    </button>
+                                )}
+                                {shareFolder && (
+                                    <button
+                                        className="w-full text-left px-4 py-2 text-sm hover:bg-gray-100 dark:hover:bg-gray-700"
+                                        onClick={(e) => {
+                                            e.stopPropagation();
+                                            shareFolder(folder);
+                                            setOpen(false);
+                                        }}
+                                    >
+                                        Partager
+                                    </button>
+                                )}
                                 {renameFolder && (
                                     <button
                                         className="w-full text-left px-4 py-2 text-sm hover:bg-gray-100 dark:hover:bg-gray-700"

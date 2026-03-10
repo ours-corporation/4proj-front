@@ -15,6 +15,7 @@ import ShareFileModal from "@/src/components/modal/ShareFile";
 import DeleteFileModal from "@/src/components/modal/DeleteFile";
 import DeleteFolderModal from "@/src/components/modal/DeleteFolder";
 import RenameFolderModal from "@/src/components/modal/RenameFolder";
+import FolderDetailsModal from "@/src/components/modal/FolderDetailsModal";
 import { downloadFileService } from "@/src/services/downloadFile";
 import FileDetailsModal from "@/src/components/modal/FileDetailsModal";
 
@@ -26,10 +27,14 @@ interface FoldersProps {
     viewMode?: 'grid' | 'list';
     onFolderRenamed?: () => void;
     onFileChanged?: () => void;
+    contextPermission?: 'READ' | 'WRITE' | null;
 }
 
-export default function Folders({ listFolders, listFiles, changeFolderId, viewMode = 'grid', onFolderRenamed, onFileChanged }: FoldersProps) {
+export default function Folders({ listFolders, listFiles, changeFolderId, viewMode = 'grid', onFolderRenamed, onFileChanged, contextPermission }: FoldersProps) {
     const userInfo = useJwtInformation();
+
+    // Permission effective : celle de l'item si définie, sinon celle héritée du contexte (dossier partagé parent)
+    const fp = (item: FolderResponse | FileResponse) => item.permission ?? contextPermission ?? null;
     const [open, setOpen] = useState(false);
     const [openListMenuId, setOpenListMenuId] = useState<string | null>(null);
     const [thumbnails, setThumbnails] = useState<Record<number, string>>({});
@@ -85,6 +90,14 @@ export default function Folders({ listFolders, listFiles, changeFolderId, viewMo
     //Delete folder modal
     const [ openDeleteFolderModal, setOpenDeleteFolderModal ] = useState<boolean>(false);
     const [ deleteFolderInfo, setDeleteFolderInfo ] = useState<FolderResponse | null>(null);
+
+    //Folder details (shares) modal
+    const [ openFolderDetailsModal, setOpenFolderDetailsModal ] = useState<boolean>(false);
+    const [ folderDetailsInfo, setFolderDetailsInfo ] = useState<FolderResponse | null>(null);
+
+    //Share folder modal
+    const [ openShareFolderModal, setOpenShareFolderModal ] = useState<boolean>(false);
+    const [ shareFolderInfo, setShareFolderInfo ] = useState<FolderResponse | null>(null);
 
 
     function setFileInformationAndOpen(file: FileResponse) {
@@ -169,6 +182,28 @@ export default function Folders({ listFolders, listFiles, changeFolderId, viewMo
         setOpenDeleteFolderModal(false);
     }
 
+    //Folder details (shares) modal
+    function openFolderDetailsModalFn(folder: FolderResponse) {
+        setFolderDetailsInfo(folder);
+        setOpenFolderDetailsModal(true);
+    }
+
+    function closeFolderDetailsModal() {
+        setFolderDetailsInfo(null);
+        setOpenFolderDetailsModal(false);
+    }
+
+    //Share folder modal
+    function openShareFolderModalFn(folder: FolderResponse) {
+        setShareFolderInfo(folder);
+        setOpenShareFolderModal(true);
+    }
+
+    function closeShareFolderModal() {
+        setShareFolderInfo(null);
+        setOpenShareFolderModal(false);
+    }
+
     const formatDate = (dateString: string) => {
         return new Date(dateString).toLocaleDateString('fr-FR', {
             day: 'numeric', month: 'short', year: 'numeric', hour: '2-digit', minute: '2-digit'
@@ -190,8 +225,10 @@ export default function Folders({ listFolders, listFiles, changeFolderId, viewMo
                 >
                     <FolderCard
                         folder={folder}
-                        renameFolder={openRenameFolderModalFn}
-                        deleteFolder={openDeleteFolderModalFn}
+                        renameFolder={!fp(folder) ? openRenameFolderModalFn : undefined}
+                        deleteFolder={!fp(folder) ? openDeleteFolderModalFn : undefined}
+                        openShares={!fp(folder) ? openFolderDetailsModalFn : undefined}
+                        shareFolder={!fp(folder) ? openShareFolderModalFn : undefined}
                     />
                 </div>
             ))}
@@ -204,9 +241,9 @@ export default function Folders({ listFolders, listFiles, changeFolderId, viewMo
                         file={file}
                         thumbnailUrl={thumbnails[file.id]}
                         downloadFile={downloadFileById}
-                        editFile={!file.permission || file.permission === 'WRITE' ? openUpdateFileModal : undefined}
-                        shareFile={!file.permission ? openShareFileModal : undefined}
-                        deleteFile={!file.permission ? openDeleteFileModal : undefined}
+                        editFile={!fp(file) || fp(file) === 'WRITE' ? openUpdateFileModal : undefined}
+                        shareFile={!fp(file) ? openShareFileModal : undefined}
+                        deleteFile={!fp(file) ? openDeleteFileModal : undefined}
                     />
                 </div>
             ))}
@@ -239,18 +276,38 @@ export default function Folders({ listFolders, listFiles, changeFolderId, viewMo
                         </button>
                         {openListMenuId === `folder-${folder.id}` && (
                             <div className="absolute right-0 w-40 bg-main-bg dark:bg-dark-main-bg rounded-lg shadow-lg border border-gray-200 dark:border-gray-700 z-10">
+                                {!fp(folder) && (
+                                    <button
+                                        className="w-full text-left px-4 py-2 text-sm hover:bg-gray-100 dark:hover:bg-gray-700"
+                                        onClick={(e) => { e.stopPropagation(); openFolderDetailsModalFn(folder); setOpenListMenuId(null); }}
+                                    >
+                                        Droits d&apos;accès
+                                    </button>
+                                )}
+                                {!fp(folder) && (
+                                    <button
+                                        className="w-full text-left px-4 py-2 text-sm hover:bg-gray-100 dark:hover:bg-gray-700"
+                                        onClick={(e) => { e.stopPropagation(); openShareFolderModalFn(folder); setOpenListMenuId(null); }}
+                                    >
+                                        Partager
+                                    </button>
+                                )}
+                                {!fp(folder) && (
                                 <button
                                     className="w-full text-left px-4 py-2 text-sm hover:bg-gray-100 dark:hover:bg-gray-700"
                                     onClick={(e) => { e.stopPropagation(); openRenameFolderModalFn(folder); setOpenListMenuId(null); }}
                                 >
                                     Renommer
                                 </button>
+                                )}
+                                {!fp(folder) && (
                                 <button
                                     className="w-full text-left px-4 py-2 text-sm text-red-600 hover:bg-red-50 dark:hover:bg-red-900/20"
                                     onClick={(e) => { e.stopPropagation(); openDeleteFolderModalFn(folder); setOpenListMenuId(null); }}
                                 >
                                     Supprimer
                                 </button>
+                                )}
                             </div>
                         )}
                     </div>
@@ -292,7 +349,7 @@ export default function Folders({ listFolders, listFiles, changeFolderId, viewMo
                                 >
                                     Télécharger
                                 </button>
-                                {(!file.permission || file.permission === 'WRITE') && (
+                                {(!fp(file) || fp(file) === 'WRITE') && (
                                     <button
                                         className="w-full text-left px-4 py-2 text-sm hover:bg-gray-100 dark:hover:bg-gray-700"
                                         onClick={(e) => { e.stopPropagation(); openUpdateFileModal(file); setOpenListMenuId(null); }}
@@ -300,7 +357,7 @@ export default function Folders({ listFolders, listFiles, changeFolderId, viewMo
                                         Renommer
                                     </button>
                                 )}
-                                {!file.permission && (
+                                {!fp(file) && (
                                     <>
                                         <button
                                             className="w-full text-left px-4 py-2 text-sm hover:bg-gray-100 dark:hover:bg-gray-700"
@@ -365,6 +422,18 @@ export default function Folders({ listFolders, listFiles, changeFolderId, viewMo
                 isOpen={openDeleteFolderModal}
                 folderInfo={deleteFolderInfo!}
                 closeModal={closeDeleteFolderModal}
+            />
+
+            <FolderDetailsModal
+                isOpen={openFolderDetailsModal}
+                folder={folderDetailsInfo}
+                onClose={closeFolderDetailsModal}
+            />
+
+            <ShareFileModal
+                isOpen={openShareFolderModal}
+                folderInfo={shareFolderInfo!}
+                closeModal={closeShareFolderModal}
             />
         </>
     );

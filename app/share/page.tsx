@@ -13,6 +13,8 @@ import {getFolderById} from "@/src/api/folders";
 export default function ShowShareFolders() {
     const [folderId, setFolderId] = useState<string>('');
     const [folderData, setFolderData] = useState<FolderShareDetailResponse | null>(null);
+    const [breadcrumbs, setBreadcrumbs] = useState<{ id: number | null; name: string }[]>([]);
+    const [contextPermission, setContextPermission] = useState<'READ' | 'WRITE' | null>(null);
     const [error, setError] = useState<string | null>(null);
     const [viewMode, setViewMode] = useState<'grid' | 'list'>('grid');
 
@@ -35,9 +37,22 @@ export default function ShowShareFolders() {
     async function changeFolderId(newFolderIdNumber: number | null) {
         const newFolderId = newFolderIdNumber?.toString() ?? '';
         setFolderId(newFolderId);
+        if (!newFolderId) {
+            setBreadcrumbs([]);
+            setContextPermission(null);
+            return;
+        }
+        // Si on est à la racine, on capture la permission du dossier cliqué
+        if (!folderId) {
+            const clickedFolder = folderData?.folders.find(f => f.id === newFolderIdNumber);
+            if (clickedFolder?.permission) {
+                setContextPermission(clickedFolder.permission);
+            }
+        }
         try {
             const data = await getFolderById({ folderId: newFolderId });
             setFolderData(data);
+            setBreadcrumbs(data.breadcrumbs);
         } catch (error) {
             setFolderData(null);
         }
@@ -58,6 +73,40 @@ export default function ShowShareFolders() {
                     <h1 className="text-3xl font-bold text-txt-primary dark:text-dark-txt-primary">
                         Vos Fichiers Partagés
                     </h1>
+                    <nav className="text-sm text-txt-secondary dark:text-dark-txt-secondary mt-1" aria-label="Breadcrumb">
+                        <ol className="list-none p-0 inline-flex">
+                            <li className="flex items-center">
+                                <button
+                                    onClick={() => changeFolderId(null)}
+                                    className="hover:underline focus:outline-none cursor-pointer"
+                                >
+                                    Partagés
+                                </button>
+                                {breadcrumbs.slice(1).map((crumb) => (
+                                    <span key={crumb.id} className="flex items-center">
+                                        <svg
+                                            className="size-4 mx-2 text-txt-secondary dark:text-dark-txt-secondary"
+                                            fill="currentColor"
+                                            viewBox="0 0 20 20"
+                                            xmlns="http://www.w3.org/2000/svg"
+                                        >
+                                            <path
+                                                fillRule="evenodd"
+                                                d="M7.293 14.707a1 1 0 010-1.414L10.586 10 7.293 6.707a1 1 0 011.414-1.414l4 4a1 1 0 010 1.414l-4 4a1 1 0 01-1.414 0z"
+                                                clipRule="evenodd"
+                                            />
+                                        </svg>
+                                        <button
+                                            onClick={() => changeFolderId(crumb.id)}
+                                            className="hover:underline focus:outline-none cursor-pointer"
+                                        >
+                                            {crumb.name}
+                                        </button>
+                                    </span>
+                                ))}
+                            </li>
+                        </ol>
+                    </nav>
                 </div>
                 <div className="flex items-center bg-surface dark:bg-dark-surface rounded-lg p-1 space-x-1">
                     <button
@@ -85,6 +134,7 @@ export default function ShowShareFolders() {
                 listFiles={folderData?.files || []}
                 changeFolderId={changeFolderId}
                 viewMode={viewMode}
+                contextPermission={contextPermission}
             />
         </Layout>
     );

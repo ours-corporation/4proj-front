@@ -1,6 +1,7 @@
 import {getJwtToken} from "@/src/hooks/getJwtInformation";
 import {FolderResponse} from "@/src/interface/folder";
 import {FileResponse} from "@/src/interface/file";
+import { FileShareItem } from "@/src/interface/share";
 
 export interface FolderDetailResponse {
     current: FolderResponse;
@@ -73,6 +74,24 @@ export async function renameFolderById(folderId: number, newName: string): Promi
     }
 
     return await rep.json();
+}
+
+export async function getFolderShares(folderId: number): Promise<FileShareItem[]> {
+    const url = process.env.NEXT_PUBLIC_API_URL;
+    const token = getJwtToken();
+
+    const rep = await fetch(`${url}/api/folders/${folderId}/shares`, {
+        method: "GET",
+        headers: {
+            "Authorization": `Bearer ${token}`,
+        },
+    });
+
+    if (!rep.ok) {
+        throw new Error(`Erreur HTTP: ${rep.status}`);
+    }
+
+    return rep.json();
 }
 
 export async function createNewFolderAPI(folderName: string, parentFolderId: number | null): Promise<FolderResponse> {
