@@ -1,5 +1,6 @@
 import {getJwtToken} from "@/src/hooks/getJwtInformation";
 import { FileResponse } from "@/src/interface/file";
+import { FileShareItem } from "@/src/interface/share";
 
 export async function downloadFile({ fileId }: { fileId: number }): Promise<File> {
     const url = process.env.NEXT_PUBLIC_API_URL;
@@ -183,6 +184,24 @@ export async function getRecentFilesAPI(limit: number = 10): Promise<FileRespons
     const token = getJwtToken();
 
     const rep = await fetch(`${url}/api/files/recent?limit=${limit}`, {
+        method: "GET",
+        headers: {
+            "Authorization": `Bearer ${token}`,
+        },
+    });
+
+    if (!rep.ok) {
+        throw new Error(`Erreur HTTP: ${rep.status}`);
+    }
+
+    return rep.json();
+}
+
+export async function getFileShares(fileId: number): Promise<FileShareItem[]> {
+    const url = process.env.NEXT_PUBLIC_API_URL;
+    const token = getJwtToken();
+
+    const rep = await fetch(`${url}/api/files/${fileId}/shares`, {
         method: "GET",
         headers: {
             "Authorization": `Bearer ${token}`,

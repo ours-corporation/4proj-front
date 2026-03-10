@@ -1,3 +1,20 @@
+export interface ShareRecipient {
+    id: number;
+    username: string;
+    email: string;
+}
+
+export interface FileShareItem {
+    id: number;
+    shareType: 'public' | 'private';
+    recipient: ShareRecipient | null;
+    token: string;
+    hasPassword: boolean;
+    expiresAt: string | null;
+    permission: 'READ' | 'WRITE';
+    createdAt: string;
+}
+
 export interface PublicShareResponse {
     error: string;
     protected: boolean;

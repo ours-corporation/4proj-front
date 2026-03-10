@@ -94,3 +94,42 @@ export async function downloadPublicShareAPI(token: string, password?: string): 
         cache: "no-store",
     });
 }
+
+export async function updateShareAPI(
+    shareId: number,
+    permission?: 'READ' | 'WRITE',
+    password?: string | null,
+    expiresAt?: string | null,
+): Promise<void> {
+    const url = process.env.NEXT_PUBLIC_API_URL;
+    const token = getJwtToken();
+
+    const rep = await fetch(`${url}/api/shares/${shareId}`, {
+        method: "PUT",
+        headers: {
+            "Content-Type": "application/json",
+            "Authorization": `Bearer ${token}`,
+        },
+        body: JSON.stringify({ permission, password, expiresAt }),
+    });
+
+    if (!rep.ok) {
+        throw new Error(`Erreur HTTP: ${rep.status}`);
+    }
+}
+
+export async function deleteShareAPI(shareId: number): Promise<void> {
+    const url = process.env.NEXT_PUBLIC_API_URL;
+    const token = getJwtToken();
+
+    const rep = await fetch(`${url}/api/shares/${shareId}`, {
+        method: "DELETE",
+        headers: {
+            "Authorization": `Bearer ${token}`,
+        },
+    });
+
+    if (!rep.ok) {
+        throw new Error(`Erreur HTTP: ${rep.status}`);
+    }
+}
