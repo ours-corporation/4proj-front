@@ -204,9 +204,9 @@ export default function Folders({ listFolders, listFiles, changeFolderId, viewMo
                         file={file}
                         thumbnailUrl={thumbnails[file.id]}
                         downloadFile={downloadFileById}
-                        editFile={openUpdateFileModal}
-                        shareFile={openShareFileModal}
-                        deleteFile={openDeleteFileModal}
+                        editFile={!file.permission || file.permission === 'WRITE' ? openUpdateFileModal : undefined}
+                        shareFile={!file.permission ? openShareFileModal : undefined}
+                        deleteFile={!file.permission ? openDeleteFileModal : undefined}
                     />
                 </div>
             ))}
@@ -292,24 +292,30 @@ export default function Folders({ listFolders, listFiles, changeFolderId, viewMo
                                 >
                                     Télécharger
                                 </button>
-                                <button
-                                    className="w-full text-left px-4 py-2 text-sm hover:bg-gray-100 dark:hover:bg-gray-700"
-                                    onClick={(e) => { e.stopPropagation(); openUpdateFileModal(file); setOpenListMenuId(null); }}
-                                >
-                                    Renommer
-                                </button>
-                                <button
-                                    className="w-full text-left px-4 py-2 text-sm hover:bg-gray-100 dark:hover:bg-gray-700"
-                                    onClick={(e) => { e.stopPropagation(); openShareFileModal(file); setOpenListMenuId(null); }}
-                                >
-                                    Partager
-                                </button>
-                                <button
-                                    className="w-full text-left px-4 py-2 text-sm text-red-600 hover:bg-red-50 dark:hover:bg-red-900/20"
-                                    onClick={(e) => { e.stopPropagation(); openDeleteFileModal(file); setOpenListMenuId(null); }}
-                                >
-                                    Supprimer
-                                </button>
+                                {(!file.permission || file.permission === 'WRITE') && (
+                                    <button
+                                        className="w-full text-left px-4 py-2 text-sm hover:bg-gray-100 dark:hover:bg-gray-700"
+                                        onClick={(e) => { e.stopPropagation(); openUpdateFileModal(file); setOpenListMenuId(null); }}
+                                    >
+                                        Renommer
+                                    </button>
+                                )}
+                                {!file.permission && (
+                                    <>
+                                        <button
+                                            className="w-full text-left px-4 py-2 text-sm hover:bg-gray-100 dark:hover:bg-gray-700"
+                                            onClick={(e) => { e.stopPropagation(); openShareFileModal(file); setOpenListMenuId(null); }}
+                                        >
+                                            Partager
+                                        </button>
+                                        <button
+                                            className="w-full text-left px-4 py-2 text-sm text-red-600 hover:bg-red-50 dark:hover:bg-red-900/20"
+                                            onClick={(e) => { e.stopPropagation(); openDeleteFileModal(file); setOpenListMenuId(null); }}
+                                        >
+                                            Supprimer
+                                        </button>
+                                    </>
+                                )}
                             </div>
                         )}
                     </div>
