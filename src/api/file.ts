@@ -122,8 +122,8 @@ export async function deleteFileById(fileId: number, force = false): Promise<voi
     const token = getJwtToken();
 
     const endpoint = force
-        ? `${url}/api/files/${fileId}/trash`
-        : `${url}/api/files/${fileId}`;
+        ? `${url}/api/files/${fileId}`
+        : `${url}/api/files/${fileId}/trash`;
 
     const rep = await fetch(endpoint, {
         method: "DELETE",

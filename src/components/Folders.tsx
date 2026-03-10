@@ -264,7 +264,7 @@ export default function Folders({ listFolders, listFiles, changeFolderId, viewMo
                         <span className="font-medium text-gray-900 dark:text-white truncate block">{folder.name}</span>
                         <span className="text-xs text-gray-500 dark:text-gray-400">Dossier</span>
                     </button>
-                    <div className="relative flex-shrink-0">
+                    <div className="relative flex-shrink-0" onMouseDown={e => e.stopPropagation()}>
                         <button
                             onClick={(e) => {
                                 e.stopPropagation();
@@ -331,7 +331,7 @@ export default function Folders({ listFolders, listFiles, changeFolderId, viewMo
                             {convertFileSize(file.size_bytes)} · {formatDate(file.updatedAt)}
                         </span>
                     </button>
-                    <div className="relative flex-shrink-0">
+                    <div className="relative flex-shrink-0" onMouseDown={e => e.stopPropagation()}>
                         <button
                             onClick={(e) => {
                                 e.stopPropagation();
