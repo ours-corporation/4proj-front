@@ -89,6 +89,10 @@ export default function Folders({ listFolders, listFiles, changeFolderId, viewMo
     const [ openRenameFolderModal, setOpenRenameFolderModal ] = useState<boolean>(false);
     const [ renameFolderInfo, setRenameFolderInfo ] = useState<FolderResponse | null>(null);
 
+    //Move folder modal
+    const [ openMoveFolderModal, setOpenMoveFolderModal ] = useState<boolean>(false);
+    const [ moveFolderInfo, setMoveFolderInfo ] = useState<FolderResponse | null>(null);
+
     //Delete folder modal
     const [ openDeleteFolderModal, setOpenDeleteFolderModal ] = useState<boolean>(false);
     const [ deleteFolderInfo, setDeleteFolderInfo ] = useState<FolderResponse | null>(null);
@@ -177,6 +181,18 @@ export default function Folders({ listFolders, listFiles, changeFolderId, viewMo
         setOpenRenameFolderModal(false);
     }
 
+
+    //Move folder modal
+    function openMoveFolderModalFn(folder: FolderResponse) {
+        setMoveFolderInfo(folder);
+        setOpenMoveFolderModal(true);
+    }
+
+    function closeMoveFolderModal() {
+        setMoveFolderInfo(null);
+        setOpenMoveFolderModal(false);
+    }
+
     //Delete folder modal
     function openDeleteFolderModalFn(folder: FolderResponse) {
         setDeleteFolderInfo(folder);
@@ -246,6 +262,7 @@ export default function Folders({ listFolders, listFiles, changeFolderId, viewMo
                         deleteFolder={!fp(folder) ? openDeleteFolderModalFn : undefined}
                         openShares={!fp(folder) ? openFolderDetailsModalFn : undefined}
                         shareFolder={!fp(folder) ? openShareFolderModalFn : undefined}
+                        moveFolder={!fp(folder) ? openMoveFolderModalFn : undefined}
                     />
                 </div>
             ))}
@@ -318,6 +335,16 @@ export default function Folders({ listFolders, listFiles, changeFolderId, viewMo
                                     Renommer
                                 </button>
                                 )}
+
+                                {(!fp(folder)) && (
+                                <button
+                                    className="w-full text-left px-4 py-2 text-sm hover:bg-gray-100 dark:hover:bg-gray-700"
+                                    onClick={(e) => { e.stopPropagation(); openMoveFolderModalFn(folder); setOpenListMenuId(null); }}
+                                >
+                                    Déplacer
+                                </button>
+                                )}
+
                                 {!fp(folder) && (
                                 <button
                                     className="w-full text-left px-4 py-2 text-sm text-red-600 hover:bg-red-50 dark:hover:bg-red-900/20"

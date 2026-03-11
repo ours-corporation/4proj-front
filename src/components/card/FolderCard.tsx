@@ -8,9 +8,10 @@ interface FolderCardProps {
     deleteFolder?: (folder: FolderResponse) => void;
     openShares?: (folder: FolderResponse) => void;
     shareFolder?: (folder: FolderResponse) => void;
+    moveFolder?: (folder: FolderResponse) => void;
 }
 
-export default function FolderCard({ folder, renameFolder, deleteFolder, openShares, shareFolder }: FolderCardProps) {
+export default function FolderCard({ folder, renameFolder, deleteFolder, openShares, shareFolder, moveFolder }: FolderCardProps) {
     const folderColor = "#F59E0B";
     const folderBgColor = "#F59E0B20";
     const hasActions = !!(renameFolder || deleteFolder || openShares || shareFolder);
@@ -97,6 +98,21 @@ export default function FolderCard({ folder, renameFolder, deleteFolder, openSha
                                         Renommer
                                     </button>
                                 )}
+
+                                {moveFolder && (
+                                    <button
+                                        className="w-full text-left px-4 py-2 text-sm hover:bg-gray-100 dark:hover:bg-gray-700"
+                                        onClick={(e) => {
+                                            e.stopPropagation();
+                                            moveFolder(folder);
+                                            setOpen(false);
+                                        }}
+                                    >
+                                        Déplacer
+                                    </button>
+                                    )
+                                }
+
                                 {deleteFolder && (
                                     <button
                                         className="w-full text-left px-4 py-2 text-sm text-red-600 hover:bg-red-50 dark:hover:bg-red-900/20"

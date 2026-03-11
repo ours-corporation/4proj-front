@@ -10,6 +10,19 @@ export interface FolderDetailResponse {
     files: FileResponse[];
 }
 
+
+export interface FolderMovingResponse {
+    moved: {
+        type: "folder";
+        id: number;
+    }[];
+    failed: {
+        type: "folder";
+        id: number;
+        error: string;
+    }[];
+}
+
 export async function getFolderById({ folderId }: { folderId: string }): Promise<FolderDetailResponse> {
     const url = process.env.NEXT_PUBLIC_API_URL;
     const token = getJwtToken(); // Assurez-vous que ceci retourne le token string
@@ -144,4 +157,42 @@ export async function getRootFolder():Promise<FolderDetailResponse>{
     } catch (error) {
         throw error;
     }
+}
+
+
+export async function moveFolderIntoFolder(movingFolderId:string|null, destinationFolderId: string|null): Promise<FolderMovingResponse> {
+    const url = process.env.NEXT_PUBLIC_API_URL;
+    const token = getJwtToken();
+    const movingFolderIdToSend = movingFolderId === "null" ? null : Number(movingFolderId);
+    const destinationFolderIdToSend = destinationFolderId === "null" ? null : Number(destinationFolderId);
+     try {
+        const rep = await fetch(`${url}/api/items/move`, {
+            method: "PUT",
+            headers: {
+                "Content-Type": "application/json",
+                "Authorization": `Bearer ${token}`,
+            },
+            body: JSON.stringify(
+                { items : [
+                    {
+                        type: "folder", 
+                        id: movingFolderId
+                    }
+
+                ],
+                "destination_folder_id": destinationFolderId
+                }
+            ),
+        });
+
+        if (!rep.ok) {
+            throw new Error(`Erreur HTTP: ${rep.status}`);
+        }
+        const data = await rep.json();
+        return data as FolderMovingResponse;
+    }
+    catch (error) {
+        throw error;
+    }
+
 }
