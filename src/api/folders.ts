@@ -160,10 +160,9 @@ export async function getRootFolder():Promise<FolderDetailResponse>{
 }
 
 
-export async function moveFolderIntoFolder(movingFolderId:string|null, destinationFolderId: string|null): Promise<FolderMovingResponse> {
+export async function moveFolderIntoFolder(movingFolderId:number, destinationFolderId: string|null): Promise<FolderMovingResponse> {
     const url = process.env.NEXT_PUBLIC_API_URL;
     const token = getJwtToken();
-    const movingFolderIdToSend = movingFolderId === "null" ? null : Number(movingFolderId);
     const destinationFolderIdToSend = destinationFolderId === "null" ? null : Number(destinationFolderId);
      try {
         const rep = await fetch(`${url}/api/items/move`, {

@@ -18,6 +18,7 @@ import DeleteFileModal from "@/src/components/modal/DeleteFile";
 import DeleteFolderModal from "@/src/components/modal/DeleteFolder";
 import RenameFolderModal from "@/src/components/modal/RenameFolder";
 import FolderDetailsModal from "@/src/components/modal/FolderDetailsModal";
+import MoveFolderModal from "@/src/components/modal/MoveFolderModal";
 import { downloadFileService } from "@/src/services/downloadFile";
 import FileDetailsModal from "@/src/components/modal/FileDetailsModal";
 
@@ -471,6 +472,12 @@ export default function Folders({ listFolders, listFiles, changeFolderId, viewMo
                 isOpen={openDeleteFolderModal}
                 folderInfo={deleteFolderInfo!}
                 closeModal={closeDeleteFolderModal}
+            />
+
+            <MoveFolderModal
+                isOpen={openMoveFolderModal}
+                folderInfo={moveFolderInfo!}
+                closeModal={closeMoveFolderModal}
             />
 
             <FolderDetailsModal
