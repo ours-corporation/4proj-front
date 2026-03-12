@@ -15,8 +15,8 @@ interface MoveFolderModalProps {
 export default function MoveFolderModal({ isOpen, folderInfo, closeModal, onSuccess }: MoveFolderModalProps) {
     const [folderName, setFolderName] = useState<string>("");
     const [errorMessage, setErrorMessage] = useState<string | null>(null);
-    const [folder, setFolder] = useState<FolderResponse | null>();
-    const [subFolders, setSubFolders] = useState<FolderResponse[] | null>([]);
+    const [folder, setFolder] = useState<FolderResponse | null>(null);
+    const [subFolders, setSubFolders] = useState<FolderResponse[]>([]);
     const [selected, setSelected] = useState< string | null>(null);
 
     useEffect(() => {
@@ -27,8 +27,8 @@ export default function MoveFolderModal({ isOpen, folderInfo, closeModal, onSucc
             const fetchData = async () => {
                 setErrorMessage(null);
                 try {
-                    if(folderInfo.id){
-                        const data = await getFolderById({ folderId : folderInfo.id.toString() });
+                    if(folderInfo.parent_id){
+                        const data = await getFolderById({ folderId : folderInfo.parent_id.toString()});
                         setFolder(data.current);
                         setSubFolders(data.folders);
                     }
@@ -40,24 +40,20 @@ export default function MoveFolderModal({ isOpen, folderInfo, closeModal, onSucc
                     }
 
                 } catch {
-                    setSubFolders(null);
+                    setSubFolders([]);
                 }
             };
     
             fetchData();
-    }, [folderInfo,folderInfo?.id]);
+    }, [folderInfo]);
 
-    async function handleMoving(){
-
-         if (!folderName.trim()) {
-            setErrorMessage("Le nom du dossier ne peut pas être vide.");
-            return;
-        }
+    async function handleSubmitMoveFolder (movingFolderId:number|null, destinationFolderId: string|null){
 
         try {
-            await moveFolderIntoFolder(folderName.trim(), folderInfo.id.toString());
+            await moveFolderIntoFolder(movingFolderId, destinationFolderId);
             closeModal();
             onSuccess?.();
+
         } catch {
             setErrorMessage("Une erreur est survenue lors du renommage.");
         }
@@ -91,7 +87,7 @@ export default function MoveFolderModal({ isOpen, folderInfo, closeModal, onSucc
                                 Destination
                             </label>
                             {
-                            folder!=null ?
+                            folder?.id!=null ?
                             <label key={folder.parent_id} className = "flex items-center gap-2">
                                     <input
                                         type="radio"
@@ -104,7 +100,10 @@ export default function MoveFolderModal({ isOpen, folderInfo, closeModal, onSucc
                                 </label> : null
                             }
                             {
-                            subFolders!=null ? subFolders.map((folder)=> (
+                            subFolders!=null ? subFolders
+                            .filter((folder) => folder.id !== folderInfo.id) //vérifie de ne pas afficher le folder lui même
+                            .map((folder)=> (
+                                
                                 <label key={folder.id} className = "flex items-center gap-2">
                                     <input
                                         type="radio"
@@ -133,7 +132,7 @@ export default function MoveFolderModal({ isOpen, folderInfo, closeModal, onSucc
                     type="button"
                     text="Mettre à jour"
                     onClick={() => {
-                        handleSubmitMoveFile(fileInfo.id, selected);
+                        handleSubmitMoveFolder(folderInfo.id, selected);
                     }}
                 />
             </div>
