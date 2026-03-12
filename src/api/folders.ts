@@ -145,3 +145,27 @@ export async function getRootFolder():Promise<FolderDetailResponse>{
         throw error;
     }
 }
+
+export async function restoreFolder(folderId:number){
+    const url = process.env.NEXT_PUBLIC_API_URL;
+    const token = getJwtToken();
+        try {
+        const rep = await fetch(`${url}/api/folders/${folderId}/restore`, {
+            method: "PUT",
+            headers: {
+                "Content-Type": "application/json",
+                "Authorization": `Bearer ${token}`,
+            },
+        });
+
+        if (!rep.ok) {
+            throw new Error(`Erreur HTTP: ${rep.status}`);
+        }
+
+        const data = await rep.json();
+        return data as FolderDetailResponse;
+
+    } catch (error) {
+        throw error;
+    }
+}

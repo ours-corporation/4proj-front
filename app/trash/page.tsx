@@ -8,10 +8,14 @@ import { getTrashAPI, TrashResponse } from '@/src/api/trash';
 import Folders from '@/src/components/Folders';
 import Modal from "@/src/components/modal/Modal";
 import DeleteTrashModal from "@/src/components/modal/DeleteTrash";
+import {restoreFolder} from "@/src/api/folders";
+import { FolderResponse } from '@/src/interface/folder';
+
 
 export default function TrashPage() {
     const [trashData, setTrashData] = useState<TrashResponse | null>(null);
     const [loading, setLoading] = useState(true);
+    const [error, setError] = useState<string | null>(null);
     const [viewMode, setViewMode] = useState<'grid' | 'list'>('grid');
     const [cleanTrashOpen, setCleanTrashOpen] = useState<boolean>(false);
 
@@ -29,6 +33,20 @@ export default function TrashPage() {
     const folders = trashData?.folders ?? [];
     const files = trashData?.files ?? [];
     const total = folders.length + files.length;
+
+    async function restoreFolderFromTrash(folder:FolderResponse){
+        setLoading(true);
+        setError(null);
+        
+        try{
+            await restoreFolder(folder.id);
+        }
+        catch {
+            setError("Une erreur est survenue lors de la restauration.");
+        } finally {
+            setLoading(false);
+        }
+    }
 
     return (
         <Layout currentPage="/trash">
@@ -94,6 +112,9 @@ export default function TrashPage() {
                     changeFolderId={async () => {}}
                     viewMode={viewMode}
                     contextPermission="READ"
+
+                    isTrash={true}
+                    restoreFolder={restoreFolderFromTrash}
                 />
             )}
             <DeleteTrashModal

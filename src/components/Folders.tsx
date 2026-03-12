@@ -30,9 +30,12 @@ interface FoldersProps {
     onFolderRenamed?: () => void;
     onFileChanged?: () => void;
     contextPermission?: 'READ' | 'WRITE' | null;
+
+    isTrash?: boolean;                                   
+    restoreFolder?: (folder: FolderResponse) => void;    
 }
 
-export default function Folders({ listFolders, listFiles, changeFolderId, viewMode = 'grid', onFolderRenamed, onFileChanged, contextPermission }: FoldersProps) {
+export default function Folders({ listFolders, listFiles, changeFolderId, viewMode = 'grid', onFolderRenamed, onFileChanged, contextPermission, isTrash, restoreFolder }: FoldersProps) {
     const userInfo = useJwtInformation();
 
     // Permission effective : celle de l'item si définie, sinon celle héritée du contexte (dossier partagé parent)
@@ -242,6 +245,8 @@ export default function Folders({ listFolders, listFiles, changeFolderId, viewMo
                 >
                     <FolderCard
                         folder={folder}
+                        isTrash={isTrash}                          
+                        restoreFolder={isTrash ? restoreFolder : undefined} 
                         renameFolder={!fp(folder) || fp(folder) === 'WRITE' ? openRenameFolderModalFn : undefined}
                         deleteFolder={!fp(folder) ? openDeleteFolderModalFn : undefined}
                         openShares={!fp(folder) ? openFolderDetailsModalFn : undefined}
@@ -278,7 +283,7 @@ export default function Folders({ listFolders, listFiles, changeFolderId, viewMo
                             <path d="M19.5 21a3 3 0 0 0 3-3v-4.5a3 3 0 0 0-3-3h-15a3 3 0 0 0-3 3V18a3 3 0 0 0 3 3h15ZM1.5 10.146V6a3 3 0 0 1 3-3h5.379a2.25 2.25 0 0 1 1.59.659l2.122 2.121c.14.141.331.22.53.22H19.5a3 3 0 0 1 3 3v1.146A4.483 4.483 0 0 0 19.5 9h-15a4.483 4.483 0 0 0-3 1.146Z" />
                         </svg>
                     </div>
-                    <button className="flex-1 text-left min-w-0 mr-3" onClick={() => changeFolderId(folder.id)}>
+                    <button className="flex-1 text-left min-w-0 mr-3" onClick={() => !isTrash && changeFolderId(folder.id)}>
                         <span className="font-medium text-gray-900 dark:text-white truncate block">{folder.name}</span>
                         <span className="text-xs text-gray-500 dark:text-gray-400">Dossier</span>
                     </button>
@@ -294,6 +299,15 @@ export default function Folders({ listFolders, listFiles, changeFolderId, viewMo
                         </button>
                         {openListMenuId === `folder-${folder.id}` && (
                             <div className="absolute right-0 w-40 bg-main-bg dark:bg-dark-main-bg rounded-lg shadow-lg border border-gray-200 dark:border-gray-700 z-10">
+                                {isTrash && restoreFolder && (
+                                    <button
+                                        className="w-full text-left px-4 py-2 text-sm text-green-600 hover:bg-green-50 dark:hover:bg-green-900/20"
+                                        onClick={(e) => { e.stopPropagation(); restoreFolder(folder); setOpenListMenuId(null); }}
+                                    >
+                                        Restaurer
+                                    </button>
+                                )}
+                                
                                 {!fp(folder) && (
                                     <button
                                         className="w-full text-left px-4 py-2 text-sm hover:bg-gray-100 dark:hover:bg-gray-700"
