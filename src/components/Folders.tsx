@@ -35,7 +35,7 @@ interface FoldersProps {
     restoreFolder?: (folder: FolderResponse) => void;    
 }
 
-export default function Folders({ listFolders, listFiles, changeFolderId, viewMode = 'grid', onFolderRenamed, onFileChanged, contextPermission, isTrash, restoreFolder }: FoldersProps) {
+export default function Folders({ listFolders, listFiles, changeFolderId, viewMode = 'grid', onFolderRenamed, onFileChanged, contextPermission, isTrash, restoreFolder}: FoldersProps) {
     const userInfo = useJwtInformation();
 
     // Permission effective : celle de l'item si définie, sinon celle héritée du contexte (dossier partagé parent)
@@ -248,7 +248,7 @@ export default function Folders({ listFolders, listFiles, changeFolderId, viewMo
                         isTrash={isTrash}                          
                         restoreFolder={isTrash ? restoreFolder : undefined} 
                         renameFolder={!fp(folder) || fp(folder) === 'WRITE' ? openRenameFolderModalFn : undefined}
-                        deleteFolder={!fp(folder) ? openDeleteFolderModalFn : undefined}
+                        deleteFolder={!fp(folder) || isTrash ? openDeleteFolderModalFn : undefined}
                         openShares={!fp(folder) ? openFolderDetailsModalFn : undefined}
                         shareFolder={!fp(folder) ? openShareFolderModalFn : undefined}
                     />
@@ -332,7 +332,7 @@ export default function Folders({ listFolders, listFiles, changeFolderId, viewMo
                                     Renommer
                                 </button>
                                 )}
-                                {!fp(folder) && (
+                                {!fp(folder) || isTrash && (
                                 <button
                                     className="w-full text-left px-4 py-2 text-sm text-red-600 hover:bg-red-50 dark:hover:bg-red-900/20"
                                     onClick={(e) => { e.stopPropagation(); openDeleteFolderModalFn(folder); setOpenListMenuId(null); }}
