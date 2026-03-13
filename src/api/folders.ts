@@ -41,8 +41,8 @@ export async function deleteFolderById(folderId: number, force = false): Promise
     const token = getJwtToken();
 
     const endpoint = force
-        ? `${url}/api/folders/${folderId}/trash`
-        : `${url}/api/folders/${folderId}`;
+        ? `${url}/api/folders/${folderId}`
+        : `${url}/api/folders/${folderId}/trash`;
 
     const rep = await fetch(endpoint, {
         method: "DELETE",
