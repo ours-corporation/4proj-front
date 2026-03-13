@@ -43,6 +43,7 @@ export default function Search() {
             setLoading(true);
             try {
                 const data = await searchAPI({ q: query, ...filters });
+                
                 setResults(data);
                 setOpen(true);
             } catch {
@@ -177,7 +178,7 @@ export default function Search() {
                             {results.folders.map((folder) => (
                                 <Link
                                     key={`folder-${folder.id}`}
-                                    href={`/folders?folderId=${folder.id}`}
+                                    href={filters.trash ? `/trash` : `/folders?folderId=${folder.id}`}
                                     onClick={() => { setOpen(false); setQuery(""); }}
                                     className="flex items-center gap-3 px-4 py-3 hover:bg-main-bg dark:hover:bg-dark-main-bg transition-colors"
                                 >
@@ -196,7 +197,7 @@ export default function Search() {
                             {/* Fichiers */}
                             {results.files.map((file) => {
                                 const color = getFileColor(file.mime_type);
-                                const href = file.folder_id ? `/folders?folderId=${file.folder_id}` : "/folders";
+                                const href = filters.trash ? `/trash` : file.folder_id ? `/folders?folderId=${file.folder_id}` : "/folders";
                                 return (
                                     <Link
                                         key={`file-${file.id}`}
