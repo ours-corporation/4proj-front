@@ -266,7 +266,7 @@ export default function Folders({ listFolders, listFiles, changeFolderId, viewMo
                         editFile={openUpdateFileModal}
                         shareFile={openShareFileModal}
                         moveFile={openMoveFileModal}
-                        deleteFile={undefined}
+                        deleteFile={openDeleteFileModal}
                     />
                 </div>
             ))}

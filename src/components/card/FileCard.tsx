@@ -13,7 +13,7 @@ interface FileProps {
     editFile?: (file: FileResponse) => Promise<void>;
     shareFile?: (file: FileResponse) => Promise<void>;
     moveFile?: (file: FileResponse) => Promise<void>;
-    deleteFile?: (fileId: number) => void;
+    deleteFile?: (file: FileResponse) => void;
 }
 
 export default function FileCard({ file, thumbnailUrl, downloadFile, editFile, shareFile, moveFile, deleteFile }: FileProps) {
