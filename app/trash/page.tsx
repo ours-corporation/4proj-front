@@ -9,8 +9,9 @@ import Folders from '@/src/components/Folders';
 import Modal from "@/src/components/modal/Modal";
 import DeleteTrashModal from "@/src/components/modal/DeleteTrash";
 import {restoreFolder} from "@/src/api/folders";
+import { restoreFile } from '@/src/api/file';
 import { FolderResponse } from '@/src/interface/folder';
-
+import { FileResponse } from '@/src/interface/file';
 
 export default function TrashPage() {
     const [trashData, setTrashData] = useState<TrashResponse | null>(null);
@@ -45,6 +46,21 @@ export default function TrashPage() {
         
         try{
             await restoreFolder(folder.id);
+            await fetchTrash();
+        }
+        catch {
+            setError("Une erreur est survenue lors de la restauration.");
+        } finally {
+            setLoading(false);
+        }
+    }
+
+    async function restoreFileFromTrash(file:FileResponse){
+        setLoading(true);
+        setError(null);
+        
+        try{
+            await restoreFile(file.id);
             await fetchTrash();
         }
         catch {
@@ -133,6 +149,7 @@ export default function TrashPage() {
 
                     isTrash={true}
                     restoreFolder={restoreFolderFromTrash}
+                    restoreFile={restoreFileFromTrash}
                 />
             )}
             <DeleteTrashModal

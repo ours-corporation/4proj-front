@@ -33,9 +33,10 @@ interface FoldersProps {
 
     isTrash?: boolean;                                   
     restoreFolder?: (folder: FolderResponse) => void;    
+    restoreFile?: (folder: FileResponse) => void;   
 }
 
-export default function Folders({ listFolders, listFiles, changeFolderId, viewMode = 'grid', onFolderRenamed, onFileChanged, contextPermission, isTrash, restoreFolder}: FoldersProps) {
+export default function Folders({ listFolders, listFiles, changeFolderId, viewMode = 'grid', onFolderRenamed, onFileChanged, contextPermission, isTrash, restoreFolder, restoreFile}: FoldersProps) {
     const userInfo = useJwtInformation();
 
     // Permission effective : celle de l'item si définie, sinon celle héritée du contexte (dossier partagé parent)
@@ -259,15 +260,17 @@ export default function Folders({ listFolders, listFiles, changeFolderId, viewMo
                     className="bg-white dark:bg-dark-surface p-5 rounded-3xl shadow-sm border border-gray-100 dark:border-gray-700 hover:shadow-md transition-shadow duration-300 w-full max-w-xs cursor-pointer"
                     onClick={() => setFileInformationAndOpen(file)}
                 >
-                    <FileCard
-                        file={file}
-                        thumbnailUrl={thumbnails[file.id]}
-                        downloadFile={downloadFileById}
-                        editFile={openUpdateFileModal}
-                        shareFile={openShareFileModal}
-                        moveFile={openMoveFileModal}
-                        deleteFile={openDeleteFileModal}
-                    />
+                <FileCard
+                    file={file}
+                    thumbnailUrl={thumbnails[file.id]}
+                    isTrash={isTrash}    
+                    restoreFile={isTrash ? restoreFile : undefined} 
+                    downloadFile={!fp(file) ? downloadFileById : undefined}
+                    editFile={!fp(file) || fp(file) === 'WRITE' ? openUpdateFileModal : undefined}
+                    shareFile={!fp(file) ? openShareFileModal : undefined}
+                    moveFile={!fp(file) ? openMoveFileModal : undefined}
+                    deleteFile={!fp(file) || isTrash ? openDeleteFileModal : undefined}
+                />
                 </div>
             ))}
         </div>
