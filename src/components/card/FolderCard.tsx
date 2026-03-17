@@ -1,9 +1,12 @@
 import React, { useState, useRef, useEffect } from 'react';
 import { FolderResponse } from "@/src/interface/folder";
 import { converCreatedAt } from "@/src/utils/conver-created-at";
+import { downloadFolder } from '@/src/api/folders';
+
 
 interface FolderCardProps {
     folder: FolderResponse;
+    downloadFolder?: (folderId: number, folderName: string) => Promise<void>;
     renameFolder?: (folder: FolderResponse) => void;
     deleteFolder?: (folder: FolderResponse) => void;
     openShares?: (folder: FolderResponse) => void;
@@ -14,10 +17,10 @@ interface FolderCardProps {
     emptyTrash?: () => void;
 }
 
-export default function FolderCard({ folder, renameFolder, deleteFolder, openShares, shareFolder, isTrash, restoreFolder }: FolderCardProps) {
+export default function FolderCard({ folder, downloadFolder, renameFolder, deleteFolder, openShares, shareFolder, isTrash, restoreFolder }: FolderCardProps) {
     const folderColor = "#F59E0B";
     const folderBgColor = "#F59E0B20";
-    const hasActions = !!(renameFolder || deleteFolder || openShares || shareFolder || (isTrash && restoreFolder));
+    const hasActions = !!(downloadFolder || renameFolder || deleteFolder || openShares || shareFolder || (isTrash && restoreFolder));
     const [open, setOpen] = useState(false);
     const menuRef = useRef<HTMLDivElement>(null);
 
@@ -65,6 +68,20 @@ export default function FolderCard({ folder, renameFolder, deleteFolder, openSha
 
                         {open && (
                             <div className="absolute right-0 w-40 bg-main-bg dark:bg-dark-main-bg rounded-lg shadow-lg border border-gray-200 dark:border-gray-700 z-10">
+                                
+                                   {downloadFolder && (
+                                        <button
+                                            className="w-full text-left px-4 py-2 text-sm hover:bg-gray-200 dark:hover:bg-gray-700"
+                                            onClick={(e) => {
+                                                e.stopPropagation();
+                                                downloadFolder(folder.id, folder.name);
+                                                setOpen(false);
+                                            }}
+                                        >
+                                            Télécharger
+                                        </button>
+                                    )}
+                                
                                 {isTrash && restoreFolder && (
                                     <button
                                         className="w-full text-left px-4 py-2 text-sm text-green-600 hover:bg-green-50 dark:hover:bg-green-900/20"

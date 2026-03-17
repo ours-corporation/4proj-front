@@ -2,6 +2,7 @@ import {getJwtToken} from "@/src/hooks/getJwtInformation";
 import {FolderResponse} from "@/src/interface/folder";
 import {FileResponse} from "@/src/interface/file";
 import { FileShareItem } from "@/src/interface/share";
+import Folders from "../components/Folders";
 
 export interface FolderDetailResponse {
     current: FolderResponse;
@@ -164,6 +165,31 @@ export async function restoreFolder(folderId:number){
 
         const data = await rep.json();
         return data as FolderDetailResponse;
+
+    } catch (error) {
+        throw error;
+    }
+}
+
+export async function downloadFolder({ folderId }: { folderId: number }): Promise<File> {
+    const url = process.env.NEXT_PUBLIC_API_URL;
+    const token = getJwtToken();
+
+    try {
+        const rep = await fetch(`${url}/api/folders/${folderId}/download`, {
+            method: "GET",
+            headers: {
+                "Content-Type": "application/zip",
+                "Authorization": `Bearer ${token}`,
+            },
+        });
+
+        if (!rep.ok) {
+            throw new Error(`Erreur HTTP: ${rep.status}`);
+        }
+
+        const blob = await rep.blob();
+        return new File([blob], "downloaded_folder", {type: blob.type});
 
     } catch (error) {
         throw error;

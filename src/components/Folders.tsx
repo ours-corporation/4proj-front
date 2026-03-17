@@ -19,6 +19,7 @@ import DeleteFolderModal from "@/src/components/modal/DeleteFolder";
 import RenameFolderModal from "@/src/components/modal/RenameFolder";
 import FolderDetailsModal from "@/src/components/modal/FolderDetailsModal";
 import { downloadFileService } from "@/src/services/downloadFile";
+import { downloadFolderService } from '../services/downloadFolder';
 import FileDetailsModal from "@/src/components/modal/FileDetailsModal";
 
 
@@ -134,6 +135,10 @@ export default function Folders({ listFolders, listFiles, changeFolderId, viewMo
         await downloadFileService(fileId, fileName);
     }
 
+    async function downloadFolderById(folderId: number | null, folderName: string){
+        await downloadFolderService(folderId, folderName);
+    }
+
     //File edit modal
     async function openUpdateFileModal(file: FileResponse){
         if (!file) return;
@@ -246,7 +251,8 @@ export default function Folders({ listFolders, listFiles, changeFolderId, viewMo
                 >
                     <FolderCard
                         folder={folder}
-                        isTrash={isTrash}                          
+                        isTrash={isTrash}         
+                        downloadFolder={!fp(folder) ? downloadFolderById : undefined}                 
                         restoreFolder={isTrash ? restoreFolder : undefined} 
                         renameFolder={!fp(folder) || fp(folder) === 'WRITE' ? openRenameFolderModalFn : undefined}
                         deleteFolder={!fp(folder) || isTrash ? openDeleteFolderModalFn : undefined}
