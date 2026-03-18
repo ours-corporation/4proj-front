@@ -10,6 +10,8 @@ import { getFileSvg } from "@/src/utils/get-file-svg";
 import { convertFileSize } from "@/src/utils/convert-file-size";
 import {downloadFileService} from "@/src/services/downloadFile";
 
+import{downloadPublicFileService} from "@/src/services/downloadPublicFile";
+
 type ApiResult = Awaited<ReturnType<typeof getPublicShareAPI>>;
 
 interface ShowPublicShareProps {
@@ -26,7 +28,7 @@ export default function ShowPublicShare({ shareId, initialResult }: ShowPublicSh
     async function downloadFileById() {
         const share = result.data as PublicShareResponse;
         const file = share.data;
-        await downloadFileService(file.id, file.name)
+        await downloadPublicFileService(shareId, password)
     }
 
     const handleSubmit = async () => {

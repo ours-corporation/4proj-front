@@ -252,7 +252,8 @@ export default function Folders({ listFolders, listFiles, changeFolderId, viewMo
                     <FolderCard
                         folder={folder}
                         isTrash={isTrash}         
-                        downloadFolder={!fp(folder) ? downloadFolderById : undefined}                 
+                        //downloadFolder={!fp(folder) || fp(folder) === 'WRITE' ? downloadFolderById : undefined}  
+                        downloadFolder={downloadFolderById}               
                         restoreFolder={isTrash ? restoreFolder : undefined} 
                         renameFolder={!fp(folder) || fp(folder) === 'WRITE' ? openRenameFolderModalFn : undefined}
                         deleteFolder={!fp(folder) || isTrash ? openDeleteFolderModalFn : undefined}
@@ -270,8 +271,9 @@ export default function Folders({ listFolders, listFiles, changeFolderId, viewMo
                     file={file}
                     thumbnailUrl={thumbnails[file.id]}
                     isTrash={isTrash}    
-                    restoreFile={isTrash ? restoreFile : undefined} 
-                    downloadFile={!fp(file) ? downloadFileById : undefined}
+                    restoreFile={!fp(file) || isTrash ? restoreFile : undefined} 
+                    //downloadFile={!fp(file) || fp(file) === 'WRITE' ? downloadFileById : undefined}
+                    downloadFile={downloadFileById}
                     editFile={!fp(file) || fp(file) === 'WRITE' ? openUpdateFileModal : undefined}
                     shareFile={!fp(file) ? openShareFileModal : undefined}
                     moveFile={!fp(file) ? openMoveFileModal : undefined}
