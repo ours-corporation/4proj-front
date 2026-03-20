@@ -11,6 +11,7 @@ import VideoPreview from '@/src/components/preview/videoPreview';
 import AudioPreview from '@/src/components/preview/audioPreview';
 import TextPreview from '@/src/components/preview/textPreview';
 import JsonPreview from '@/src/components/preview/jsonPreview';
+import MarkdownPrev from '@/src/components/preview/markdownPreview'
 
 interface FileDetailsModalProps {
     isOpen: boolean;
@@ -91,6 +92,10 @@ export default function FileDetailsModal({
         }
         if (mimeType === 'application/json') {
             return <JsonPreview file={file!} fileInformation={selectedFile} onClose={handleClose} />;
+        }
+
+        if (mimeType === 'text/markdown') {
+            return <MarkdownPrev file={file!} fileInformation={selectedFile} onClose={handleClose} />;
         }
 
         return <p>Aperçu non disponible pour ce type de fichier.</p>;
