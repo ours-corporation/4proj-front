@@ -37,7 +37,7 @@ export default function ShowPublicShare({ shareId, initialResult }: ShowPublicSh
         const share = result.data as PublicShareResponse;
         const file = share.data;
         await downloadPublicFileService(shareId, file.name, password);
-        
+
     }
 
     const handleSubmit = async () => {
@@ -103,6 +103,7 @@ export default function ShowPublicShare({ shareId, initialResult }: ShowPublicSh
         const svgSrc = getFileSvg(file.mime_type);
 
         return (
+
             <div className="min-h-screen bg-main-bg dark:bg-dark-main-bg flex items-center justify-center p-4">
                 <div className="w-full max-w-md bg-surface dark:bg-dark-surface rounded-2xl border border-border-subtle dark:border-dark-border-subtle p-8 flex flex-col gap-6 shadow-sm">
                     <div className="flex items-center gap-4">
@@ -125,6 +126,7 @@ export default function ShowPublicShare({ shareId, initialResult }: ShowPublicSh
                         </div>
                     </div>
 
+                    
                     <div className="flex gap-3">
                         <span className="px-3 py-1 rounded-full text-xs font-medium bg-main-bg dark:bg-dark-main-bg text-txt-secondary dark:text-dark-txt-secondary border border-border-subtle dark:border-dark-border-subtle">
                             {convertFileSize(file.size_bytes)}
@@ -134,7 +136,7 @@ export default function ShowPublicShare({ shareId, initialResult }: ShowPublicSh
                         </span>
                     </div>
                    
-                        <button
+                    <button
                         onClick= {result.data.type == "file" ? downloadFileById : downloadFolderById}
                         className="w-full flex items-center justify-center gap-2 px-4 py-2.5 rounded-xl bg-action dark:bg-dark-action text-white font-medium text-sm hover:opacity-90 transition-opacity"
                     >
@@ -143,7 +145,7 @@ export default function ShowPublicShare({ shareId, initialResult }: ShowPublicSh
                         </svg>
                         Télécharger
                     </button>
-
+                    
                     
                 </div>
             </div>

@@ -1,7 +1,7 @@
 import React, { useState, useRef, useEffect } from 'react';
 import { FolderResponse } from "@/src/interface/folder";
 import { converCreatedAt } from "@/src/utils/conver-created-at";
-import { downloadFolder } from '@/src/api/folders';
+//import { downloadFolder } from '@/src/api/folders';
 
 
 interface FolderCardProps {
@@ -10,14 +10,16 @@ interface FolderCardProps {
     renameFolder?: (folder: FolderResponse) => void;
     deleteFolder?: (folder: FolderResponse) => void;
     openShares?: (folder: FolderResponse) => void;
-    shareFolder?: (folder: FolderResponse) => void;
+    shareFolder?: (folder: FolderResponse) => void; 
 
     isTrash?: boolean;
     restoreFolder?: (folder: FolderResponse) => void;
     emptyTrash?: () => void;
+
+    moveFolder?: (folder: FolderResponse) => void;
 }
 
-export default function FolderCard({ folder, downloadFolder, renameFolder, deleteFolder, openShares, shareFolder, isTrash, restoreFolder }: FolderCardProps) {
+export default function FolderCard({ folder, downloadFolder, renameFolder, deleteFolder, openShares, shareFolder, moveFolder, isTrash, restoreFolder }: FolderCardProps) {
     const folderColor = "#F59E0B";
     const folderBgColor = "#F59E0B20";
     const hasActions = !!(downloadFolder || renameFolder || deleteFolder || openShares || shareFolder || (isTrash && restoreFolder));
@@ -131,6 +133,21 @@ export default function FolderCard({ folder, downloadFolder, renameFolder, delet
                                         Renommer
                                     </button>
                                 )}
+
+                                {moveFolder && (
+                                    <button
+                                        className="w-full text-left px-4 py-2 text-sm hover:bg-gray-100 dark:hover:bg-gray-700"
+                                        onClick={(e) => {
+                                            e.stopPropagation();
+                                            moveFolder(folder);
+                                            setOpen(false);
+                                        }}
+                                    >
+                                        Déplacer
+                                    </button>
+                                    )
+                                }
+
                                 {deleteFolder && (
                                     <button
                                         className="w-full text-left px-4 py-2 text-sm text-red-600 hover:bg-red-50 dark:hover:bg-red-900/20"

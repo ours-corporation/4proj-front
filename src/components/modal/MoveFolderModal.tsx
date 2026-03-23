@@ -1,35 +1,34 @@
 import React, { useState, useEffect } from 'react';
 import Modal from "@/src/components/modal/Modal";
-import { FileResponse } from "@/src/interface/file";
-import { FolderResponse } from '@/src/interface/folder';
+import { FolderResponse } from "@/src/interface/folder";
+import InputField from "@/src/components/input/InputField";
 import SubmitButton from "@/src/components/button/SubmitButton";
+import{moveFolderIntoFolder, getFolderById, getRootFolder} from "@/src/api/folders"
 
-import { getFolderById, getRootFolder } from '@/src/api/folders';
-
-import {moveFileIntoFolder} from "@/src/api/file";
-
-
-
-interface MoveFileModalProps {
+interface MoveFolderModalProps {
     isOpen?: boolean;
-    fileInfo: FileResponse;
+    folderInfo: FolderResponse;
     closeModal: () => void;
+    onSuccess?: () => void;
 }
 
-
-
-export default function MoveFileModal({ isOpen, fileInfo, closeModal }: MoveFileModalProps) {
+export default function MoveFolderModal({ isOpen, folderInfo, closeModal, onSuccess }: MoveFolderModalProps) {
+    const [folderName, setFolderName] = useState<string>("");
     const [errorMessage, setErrorMessage] = useState<string | null>(null);
-    const [subFolders, setSubFolders] = useState<FolderResponse[] | null>([]);
+    const [folder, setFolder] = useState<FolderResponse | null>(null);
+    const [subFolders, setSubFolders] = useState<FolderResponse[]>([]);
     const [selected, setSelected] = useState< string | null>(null);
-    const [folder, setFolder] = useState<FolderResponse | null>();
-    
-        useEffect(() => {
+
+    useEffect(() => {
+            if (folderInfo?.name) {
+                setFolderName(folderInfo.name);
+            }
+
             const fetchData = async () => {
                 setErrorMessage(null);
                 try {
-                    if(fileInfo.folder_id){
-                        const data = await getFolderById({ folderId : fileInfo.folder_id.toString() });
+                    if(folderInfo.parent_id){
+                        const data = await getFolderById({ folderId : folderInfo.parent_id.toString()});
                         setFolder(data.current);
                         setSubFolders(data.folders);
                     }
@@ -41,42 +40,44 @@ export default function MoveFileModal({ isOpen, fileInfo, closeModal }: MoveFile
                     }
 
                 } catch {
-                    setSubFolders(null);
+                    setSubFolders([]);
                 }
             };
     
             fetchData();
-    
-        }, [fileInfo?.folder_id]);
+    }, [folderInfo]);
 
-    async function handleSubmitMoveFile(fileId:number, folderId: string|null){ 
-        //transférer les donnés 
-    
-        moveFileIntoFolder(fileId, folderId);
-    
-        closeModal();
+    async function handleSubmitMoveFolder (movingFolderId:number|null, destinationFolderId: string|null){
+
+        try {
+            await moveFolderIntoFolder(movingFolderId, destinationFolderId);
+            closeModal();
+            onSuccess?.();
+
+        } catch {
+            setErrorMessage("Une erreur est survenue lors du renommage.");
+        }
     }
 
-    if(!isOpen) return null
 
-
+    if (!isOpen) return null;
 
     return (
-        <Modal
+         <Modal
             isOpen={isOpen}
             onClose={closeModal}
-            title="Déplacer le fichier"
-            size="small"
-        >
+            title="Déplacer le dossier"
+            size="small">
+
             <div className = "bg-main-bg dark:bg-dark-surface rounded-xl p-4 border border-border-subtle dark:border-dark-border-subtle">
                 <div className="flex flex-col gap-5 w-full">
                     <div className="flex flex-col gap-4 w-full">
                         <div className="flex flex-col gap-1">
                             <p className="text-txt-primary dark:text-dark-txt-primary mb-1">
-                                Fichier
+                                Dossier
                             </p>
                             <p className="font-medium text-txt-secondary dark:text-dark-txt-secondary truncate">
-                                {fileInfo.name +"."+ fileInfo.extension}
+                                {folderName}
                             </p>
                         </div>
                         <div className="w-full h-px bg-border-subtle dark:bg-dark-border-subtle"></div>
@@ -86,7 +87,7 @@ export default function MoveFileModal({ isOpen, fileInfo, closeModal }: MoveFile
                                 Destination
                             </label>
                             {
-                            folder!=null ?
+                            folder?.id!=null ?
                             <label key={folder.parent_id} className = "flex items-center gap-2">
                                     <input
                                         type="radio"
@@ -99,7 +100,10 @@ export default function MoveFileModal({ isOpen, fileInfo, closeModal }: MoveFile
                                 </label> : null
                             }
                             {
-                            subFolders!=null ? subFolders.map((folder)=> (
+                            subFolders!=null ? subFolders
+                            .filter((folder) => folder.id !== folderInfo.id) //vérifie de ne pas afficher le folder lui même
+                            .map((folder)=> (
+                                
                                 <label key={folder.id} className = "flex items-center gap-2">
                                     <input
                                         type="radio"
@@ -128,13 +132,12 @@ export default function MoveFileModal({ isOpen, fileInfo, closeModal }: MoveFile
                     type="button"
                     text="Mettre à jour"
                     onClick={() => {
-                        handleSubmitMoveFile(fileInfo.id, selected);
+                        handleSubmitMoveFolder(folderInfo.id, selected);
                     }}
                 />
             </div>
-            
-            
 
         </Modal>
+
     );
 }

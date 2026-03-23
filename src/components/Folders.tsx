@@ -18,6 +18,7 @@ import DeleteFileModal from "@/src/components/modal/DeleteFile";
 import DeleteFolderModal from "@/src/components/modal/DeleteFolder";
 import RenameFolderModal from "@/src/components/modal/RenameFolder";
 import FolderDetailsModal from "@/src/components/modal/FolderDetailsModal";
+import MoveFolderModal from "@/src/components/modal/MoveFolderModal";
 import { downloadFileService } from "@/src/services/downloadFile";
 import { downloadFolderService } from '../services/downloadFolder';
 import FileDetailsModal from "@/src/components/modal/FileDetailsModal";
@@ -93,6 +94,10 @@ export default function Folders({ listFolders, listFiles, changeFolderId, viewMo
     //Rename folder modal
     const [ openRenameFolderModal, setOpenRenameFolderModal ] = useState<boolean>(false);
     const [ renameFolderInfo, setRenameFolderInfo ] = useState<FolderResponse | null>(null);
+
+    //Move folder modal
+    const [ openMoveFolderModal, setOpenMoveFolderModal ] = useState<boolean>(false);
+    const [ moveFolderInfo, setMoveFolderInfo ] = useState<FolderResponse | null>(null);
 
     //Delete folder modal
     const [ openDeleteFolderModal, setOpenDeleteFolderModal ] = useState<boolean>(false);
@@ -186,6 +191,18 @@ export default function Folders({ listFolders, listFiles, changeFolderId, viewMo
         setOpenRenameFolderModal(false);
     }
 
+
+    //Move folder modal
+    function openMoveFolderModalFn(folder: FolderResponse) {
+        setMoveFolderInfo(folder);
+        setOpenMoveFolderModal(true);
+    }
+
+    function closeMoveFolderModal() {
+        setMoveFolderInfo(null);
+        setOpenMoveFolderModal(false);
+    }
+
     //Delete folder modal
     function openDeleteFolderModalFn(folder: FolderResponse) {
         setDeleteFolderInfo(folder);
@@ -259,6 +276,7 @@ export default function Folders({ listFolders, listFiles, changeFolderId, viewMo
                         deleteFolder={!fp(folder) || isTrash ? openDeleteFolderModalFn : undefined}
                         openShares={!fp(folder) ? openFolderDetailsModalFn : undefined}
                         shareFolder={!fp(folder) ? openShareFolderModalFn : undefined}
+                        moveFolder={!fp(folder) || fp(folder) === 'WRITE' ? openMoveFolderModalFn : undefined}
                     />
                 </div>
             ))}
@@ -276,7 +294,7 @@ export default function Folders({ listFolders, listFiles, changeFolderId, viewMo
                     downloadFile={downloadFileById}
                     editFile={!fp(file) || fp(file) === 'WRITE' ? openUpdateFileModal : undefined}
                     shareFile={!fp(file) ? openShareFileModal : undefined}
-                    moveFile={!fp(file) ? openMoveFileModal : undefined}
+                    moveFile={!fp(file) || fp(file) === 'WRITE' ? openMoveFileModal : undefined}
                     deleteFile={!fp(file) || isTrash ? openDeleteFileModal : undefined}
                 />
                 </div>
@@ -343,6 +361,16 @@ export default function Folders({ listFolders, listFiles, changeFolderId, viewMo
                                     Renommer
                                 </button>
                                 )}
+
+                                {(!fp(folder)) && (
+                                <button
+                                    className="w-full text-left px-4 py-2 text-sm hover:bg-gray-100 dark:hover:bg-gray-700"
+                                    onClick={(e) => { e.stopPropagation(); openMoveFolderModalFn(folder); setOpenListMenuId(null); }}
+                                >
+                                    Déplacer
+                                </button>
+                                )}
+
                                 {!fp(folder) || isTrash && (
                                 <button
                                     className="w-full text-left px-4 py-2 text-sm text-red-600 hover:bg-red-50 dark:hover:bg-red-900/20"
@@ -469,6 +497,12 @@ export default function Folders({ listFolders, listFiles, changeFolderId, viewMo
                 isOpen={openDeleteFolderModal}
                 folderInfo={deleteFolderInfo!}
                 closeModal={closeDeleteFolderModal}
+            />
+
+            <MoveFolderModal
+                isOpen={openMoveFolderModal}
+                folderInfo={moveFolderInfo!}
+                closeModal={closeMoveFolderModal}
             />
 
             <FolderDetailsModal

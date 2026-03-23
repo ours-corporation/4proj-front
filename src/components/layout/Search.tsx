@@ -197,7 +197,7 @@ export default function Search() {
                             {/* Fichiers */}
                             {results.files.map((file) => {
                                 const color = getFileColor(file.mime_type);
-                                const href = filters.trash ? `/trash` : file.folder_id ? `/folders?folderId=${file.folder_id}` : "/folders";
+                                const href = filters.trash? `/trash` : file.folder_id ? `/folders?folderId=${file.folder_id}` : "/folders";
                                 return (
                                     <Link
                                         key={`file-${file.id}`}
