@@ -29,8 +29,7 @@ export default function ShowShareFolders() {
     }
     
     useEffect(() => {
-
-        fetchShareData();
+        if(!folderId){fetchShareData();}
 
     }, [folderId]);
 
