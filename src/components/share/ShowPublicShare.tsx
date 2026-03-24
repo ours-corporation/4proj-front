@@ -3,12 +3,15 @@
 import React, { useState } from "react";
 import InputField from "@/src/components/input/InputField";
 import SubmitButton from "@/src/components/button/SubmitButton";
-import { getPublicShareAPI, downloadPublicShareAPI } from "@/src/api/share";
+import { getPublicShareAPI} from "@/src/api/share";
 import { PublicShareResponse } from "@/src/interface/share";
 import { getFileColor } from "@/src/utils/get-file-color";
 import { getFileSvg } from "@/src/utils/get-file-svg";
 import { convertFileSize } from "@/src/utils/convert-file-size";
 import {downloadFileService} from "@/src/services/downloadFile";
+
+import { downloadPublicFileService } from "@/src/services/downloadPublicFile";
+import{downloadPublicFolderService} from "@/src/services/downloadPublicFolder";
 
 type ApiResult = Awaited<ReturnType<typeof getPublicShareAPI>>;
 
@@ -23,10 +26,18 @@ export default function ShowPublicShare({ shareId, initialResult }: ShowPublicSh
     const [loading, setLoading] = useState(false);
     const [error, setError] = useState<string | null>(null);
 
+    async function downloadFolderById() {
+        const share = result.data as PublicShareResponse;
+        const file = share.data;
+        await downloadPublicFolderService(shareId, file.name, password);
+        
+    }
+
     async function downloadFileById() {
         const share = result.data as PublicShareResponse;
         const file = share.data;
-        await downloadFileService(file.id, file.name)
+        await downloadPublicFileService(shareId, file.name, password);
+
     }
 
     const handleSubmit = async () => {
@@ -92,6 +103,7 @@ export default function ShowPublicShare({ shareId, initialResult }: ShowPublicSh
         const svgSrc = getFileSvg(file.mime_type);
 
         return (
+
             <div className="min-h-screen bg-main-bg dark:bg-dark-main-bg flex items-center justify-center p-4">
                 <div className="w-full max-w-md bg-surface dark:bg-dark-surface rounded-2xl border border-border-subtle dark:border-dark-border-subtle p-8 flex flex-col gap-6 shadow-sm">
                     <div className="flex items-center gap-4">
@@ -114,6 +126,7 @@ export default function ShowPublicShare({ shareId, initialResult }: ShowPublicSh
                         </div>
                     </div>
 
+                    
                     <div className="flex gap-3">
                         <span className="px-3 py-1 rounded-full text-xs font-medium bg-main-bg dark:bg-dark-main-bg text-txt-secondary dark:text-dark-txt-secondary border border-border-subtle dark:border-dark-border-subtle">
                             {convertFileSize(file.size_bytes)}
@@ -122,9 +135,9 @@ export default function ShowPublicShare({ shareId, initialResult }: ShowPublicSh
                             {file.mime_type}
                         </span>
                     </div>
-
+                   
                     <button
-                        onClick={downloadFileById}
+                        onClick= {result.data.type == "file" ? downloadFileById : downloadFolderById}
                         className="w-full flex items-center justify-center gap-2 px-4 py-2.5 rounded-xl bg-action dark:bg-dark-action text-white font-medium text-sm hover:opacity-90 transition-opacity"
                     >
                         <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="w-4 h-4">
@@ -132,6 +145,8 @@ export default function ShowPublicShare({ shareId, initialResult }: ShowPublicSh
                         </svg>
                         Télécharger
                     </button>
+                    
+                    
                 </div>
             </div>
         );

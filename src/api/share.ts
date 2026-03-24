@@ -82,17 +82,43 @@ export async function getPublicShareAPI(uuid: string, password?: string) {
     return { success: false, error: "UNKNOWN_ERROR", message: data.message };
 }
 
-export async function downloadPublicShareAPI(token: string, password?: string): Promise<Response> {
+
+export async function downloadPublicFolderShareAPI(token: string, password?: string): Promise<Response> {
     const baseUrl = process.env.NEXT_PUBLIC_API_URL;
 
     return await fetch(`${baseUrl}/api/public/download/${token}`, {
+        method: "POST",
+        headers: {
+            "Content-Type": "application/zip",
+        },
+        body: password ? JSON.stringify({ password }) : undefined,
+        cache: "no-store",
+    });
+}
+
+export async function downloadPublicFileShareAPI(token: string, password?: string): Promise<File> {
+    const baseUrl = process.env.NEXT_PUBLIC_API_URL;
+    try{
+        const rep = await fetch(`${baseUrl}/api/public/stream/${token}`, {
         method: "POST",
         headers: {
             "Content-Type": "application/json",
         },
         body: password ? JSON.stringify({ password }) : undefined,
         cache: "no-store",
-    });
+        });
+
+        if (!rep.ok) {
+            throw new Error(`Erreur HTTP: ${rep.status}`);
+        }
+        const blob = await rep.blob();
+        return new File([blob], "downloaded_file", {type: blob.type});
+    }
+     
+    catch (error) {
+        throw error;
+    }
+    
 }
 
 export async function updateShareAPI(

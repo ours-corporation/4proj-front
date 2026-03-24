@@ -13,10 +13,12 @@ interface FileProps {
     editFile?: (file: FileResponse) => Promise<void>;
     shareFile?: (file: FileResponse) => Promise<void>;
     moveFile?: (file: FileResponse) => Promise<void>;
-    deleteFile?: (fileId: number) => void;
+    deleteFile?: (file: FileResponse) => void;
+    isTrash?: boolean;
+    restoreFile?: (file: FileResponse) => void
 }
 
-export default function FileCard({ file, thumbnailUrl, downloadFile, editFile, shareFile, moveFile, deleteFile }: FileProps) {
+export default function FileCard({ file, thumbnailUrl, downloadFile, editFile, shareFile, moveFile, deleteFile, isTrash, restoreFile}: FileProps) {
     const hasActions = !!(downloadFile || editFile || shareFile || deleteFile);
     const [open, setOpen] = useState(false);
     const menuRef = useRef<HTMLDivElement>(null);
@@ -73,6 +75,19 @@ export default function FileCard({ file, thumbnailUrl, downloadFile, editFile, s
 
                             {open && (
                                 <div className="absolute right-0 w-40 bg-main-bg dark:bg-dark-main-bg rounded-lg shadow-lg border border-gray-200 dark:border-gray-700 z-10">
+                                    {isTrash && restoreFile && (
+                                        <button
+                                            className="w-full text-left px-4 py-2 text-sm text-green-600 hover:bg-green-50 dark:hover:bg-green-900/20"
+                                            onClick={(e) => {
+                                                e.stopPropagation();
+                                                restoreFile(file);
+                                                setOpen(false);
+                                            }}
+                                        >
+                                            Restaurer
+                                        </button>
+                                    )}
+                                    
                                     {downloadFile && (
                                         <button
                                             className="w-full text-left px-4 py-2 text-sm hover:bg-gray-200 dark:hover:bg-gray-700"

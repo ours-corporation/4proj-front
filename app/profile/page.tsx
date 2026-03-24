@@ -1,15 +1,22 @@
 'use client';
 
-import { useState, useEffect} from "react";
+import { useState, useEffect, useRef} from "react";
 import Layout from '@/src/components/layout/Layout';
 import {useJwtInformation} from "@/src/hooks/getJwtInformation";
 import Loading from '@/src/components/Loading';
-import { getMyInformation } from "@/src/api/user";
+import { getMyInformation, getMyProfilePicture} from "@/src/api/user";
 
 import UpdateUserMailForm from "@/src/components/settings/UpdateUserMailForm";
 import UpdatePasswordForm from "@/src/components/settings/UpdatePasswordForm";
 
+import Modal from "@/src/components/modal/Modal"
+import InputFile from "@/src/components/input/InputFile";
+import SubmitButton from "@/src/components/button/SubmitButton";
+
+import {updateProfilePicture} from "@/src/api/user";
+
 import { useAuth } from '@/src/hooks/useAuth';
+
 
 export default function SettingsPage() {
 
@@ -18,38 +25,68 @@ export default function SettingsPage() {
 
     const loading = useAuth();
 
+    const [profilePictureOpenModal, setProfilePictureOpenModal] = useState(false);
     const [username, setUsername] = useState("");
     const [email, setEmail] = useState("");
     const [accountCreationDate, setAccountCreationDate] = useState("");
     const [error, setError] = useState("");
 
+    const [ uploadProgress, setUploadProgress ] = useState<number>(0);
+
+    const [ ProfilePictureError, setProfilePictureError ] = useState<string>("");
+    
+    const [choosedProfilePicture, setChoosedProfilePicture] = useState<File[]>([]);
+    //sélection du fichier pour la pp
+    const [profilePicture, setProfilePicture] = useState<string>("");
+
+
+    
+
+     async function fetchUserProfilePic(){
+        try{
+            // suppresion de la potentiel url précédente
+            if (profilePicture) {
+                URL.revokeObjectURL(profilePicture);
+            }
+            const url = await getMyProfilePicture();
+            if (url) {
+                setProfilePicture(url);
+            }
+        } catch (error) {
+            console.log(error);
+        }
+    }
+
      useEffect(() => {
-                     async function fetchUserData() {
-                         try {
-                             const data = await getMyInformation();
-                             if (data) {
-                                 console.log(data);
-                                 const email = data.email;
-                                 setEmail(email);
-                                 const username = data.username;
-                                 setUsername(username);
-                                 const date = data.created_at;
-                                 setAccountCreationDate(date);
-                                 console.log("mise a jour réussie ");
-                             } else {
-                                 setError("les informations n'ont pas réussi à être récupéré");
-                             }
-                         } catch (error) {
-                             console.log(error);
-                         }
-                     }
+        async function fetchUserData() {
+            try {
+                const data = await getMyInformation();
+                if (data) {
+                    const email = data.email;
+                    setEmail(email);
+                    const username = data.username;
+                    setUsername(username);
+                    const date = data.created_at;
+                    setAccountCreationDate(date);
 
-                     fetchUserData();
-                 }, []);
+                } else {
+                    setProfilePictureError("les informations n'ont pas réussi à être récupéré");
+                }
+            } catch (error) {
+                console.log(error);
+            }
+        }
 
-    const initials = username
-        ? username.split(" ").map((w) => w[0]).join("").toUpperCase().slice(0, 2)
-        : "?";
+        fetchUserData();
+        fetchUserProfilePic();
+
+            return () => {
+            if (profilePicture) {
+                URL.revokeObjectURL(profilePicture);
+            }
+        };
+    }, [profilePicture]);
+
 
     const memberYear = accountCreationDate ? accountCreationDate.slice(0, 4) : "2025";
 
@@ -68,19 +105,37 @@ export default function SettingsPage() {
                 {/* Carte profil */}
                 <div className="w-full bg-surface dark:bg-dark-surface p-6 rounded-[30px] shadow-xl text-txt-primary dark:text-dark-txt-primary font-sans">
                     {/* Avatar avec initiales */}
-                    <div className="flex flex-col items-center mb-6">
-                        <div className="h-20 w-20 bg-main-bg dark:bg-dark-main-bg rounded-2xl flex items-center justify-center mb-4">
-                            <span className="text-2xl font-bold text-txt-primary dark:text-dark-txt-primary select-none">
-                                {initials}
-                            </span>
+                  <div className="flex flex-col items-center mb-6">
+    
+                    <div className="relative h-20 w-20 mb-4">
+                        <div className="h-20 w-20 bg-main-bg dark:bg-dark-main-bg rounded-2xl flex items-center justify-center overflow-hidden">
+                            {!profilePicture
+                                ? <span className="text-2xl font-bold text-txt-primary dark:text-dark-txt-primary select-none">
+                                    {username ? username.split(" ").map((w) => w[0]).join("").toUpperCase().slice(0, 2) : "?"}
+                                </span>
+                                : <img className="w-full h-full object-cover rounded-2xl" src={profilePicture} />
+                            }
                         </div>
-                        <h2 className="text-xl font-bold text-txt-primary dark:text-dark-txt-primary text-center leading-tight">
-                            {username || "Utilisateur"}
-                        </h2>
-                        <p className="text-sm text-txt-primary/60 dark:text-dark-txt-primary/60 mt-1">
-                            Membre depuis {memberYear}
-                        </p>
+
+                        {/* Bouton en badge overlay */}
+                        <button
+                            onClick={() => setProfilePictureOpenModal(true)}
+                            className="absolute -bottom-2 -right-2 w-7 h-7 bg-action dark:bg-dark-action rounded-full flex items-center justify-center shadow-md hover:opacity-90 transition-opacity"
+                        >
+                            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth="1.5" stroke="white" className="size-4">
+                                <path strokeLinecap="round" strokeLinejoin="round" d="m16.862 4.487 1.687-1.688a1.875 1.875 0 1 1 2.652 2.652L6.832 19.82a4.5 4.5 0 0 1-1.897 1.13l-2.685.8.8-2.685a4.5 4.5 0 0 1 1.13-1.897L16.863 4.487Zm0 0L19.5 7.125" />
+                            </svg>
+                        </button>
                     </div>
+
+                    {/* Ces éléments ne changent pas */}
+                    <h2 className="text-xl font-bold text-txt-primary dark:text-dark-txt-primary text-center leading-tight">
+                        {username || "Utilisateur"}
+                    </h2>
+                    <p className="text-sm text-txt-primary/60 dark:text-dark-txt-primary/60 mt-1">
+                        Membre depuis {memberYear}
+                    </p>
+                </div>
 
                     {/* Séparateur */}
                     <div className="border-t border-txt-primary/10 dark:border-dark-txt-primary/10 mb-4" />
@@ -130,6 +185,35 @@ export default function SettingsPage() {
 
                 <UpdatePasswordForm />
             </section>
+
+             <Modal
+                size="small"
+                title="modifier l'image de profile"
+                isOpen={profilePictureOpenModal}
+                onClose={() => {  setProfilePictureOpenModal(false); }}
+            >
+                <div className="space-y-6">
+                    <InputFile
+                        id="file-upload"
+                        label="Sélectionner une image de profil"
+                        value={choosedProfilePicture}
+                        onChange={(files) => setChoosedProfilePicture([files[files.length - 1]])} //récupère toujours la dernière image pour écrasé la précédente
+                        accept="image/*"
+                        required
+                    />
+
+                    { ProfilePictureError &&
+                        <p className="text-error dark:text-dark-error text-sm">{ProfilePictureError}</p>
+                    }
+
+                    <SubmitButton
+                        id="add-file-button"
+                        type="button"
+                        text="choisir l'image"
+                        onClick={async () => { await updateProfilePicture(choosedProfilePicture[0]); await fetchUserProfilePic(); setProfilePictureOpenModal(false); }}
+                    />
+                </div>
+            </Modal>
         </Layout>
     );
 

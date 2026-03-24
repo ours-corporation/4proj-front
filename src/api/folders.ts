@@ -2,12 +2,26 @@ import {getJwtToken} from "@/src/hooks/getJwtInformation";
 import {FolderResponse} from "@/src/interface/folder";
 import {FileResponse} from "@/src/interface/file";
 import { FileShareItem } from "@/src/interface/share";
+import Folders from "../components/Folders";
 
 export interface FolderDetailResponse {
     current: FolderResponse;
     breadcrumbs: { id: number | null; name: string }[];
     folders: FolderResponse[];
     files: FileResponse[];
+}
+
+
+export interface FolderMovingResponse {
+    moved: {
+        type: "folder";
+        id: number;
+    }[];
+    failed: {
+        type: "folder";
+        id: number;
+        error: string;
+    }[];
 }
 
 export async function getFolderById({ folderId }: { folderId: string }): Promise<FolderDetailResponse> {
@@ -41,8 +55,8 @@ export async function deleteFolderById(folderId: number, force = false): Promise
     const token = getJwtToken();
 
     const endpoint = force
-        ? `${url}/api/folders/${folderId}/trash`
-        : `${url}/api/folders/${folderId}`;
+        ? `${url}/api/folders/${folderId}`
+        : `${url}/api/folders/${folderId}/trash`;
 
     const rep = await fetch(endpoint, {
         method: "DELETE",
@@ -142,6 +156,93 @@ export async function getRootFolder():Promise<FolderDetailResponse>{
         return data as FolderDetailResponse;
 
     } catch (error) {
+        throw error;
+    }
+}
+
+export async function restoreFolder(folderId:number){
+    const url = process.env.NEXT_PUBLIC_API_URL;
+    const token = getJwtToken();
+        try {
+        const rep = await fetch(`${url}/api/folders/${folderId}/restore`, {
+            method: "PUT",
+            headers: {
+                "Content-Type": "application/json",
+                "Authorization": `Bearer ${token}`,
+            },
+        });
+
+        if (!rep.ok) {
+            throw new Error(`Erreur HTTP: ${rep.status}`);
+        }
+
+        const data = await rep.json();
+        return data as FolderDetailResponse;
+
+    } catch (error) {
+        throw error;
+    }
+}
+
+export async function downloadFolder({ folderId }: { folderId: number }): Promise<File> {
+    const url = process.env.NEXT_PUBLIC_API_URL;
+    const token = getJwtToken();
+
+    try {
+        const rep = await fetch(`${url}/api/folders/${folderId}/download`, {
+            method: "GET",
+            headers: {
+                "Content-Type": "application/zip",
+                "Authorization": `Bearer ${token}`,
+            },
+        });
+
+        if (!rep.ok) {
+            throw new Error(`Erreur HTTP: ${rep.status}`);
+        }
+
+        const blob = await rep.blob();
+        return new File([blob], "downloaded_folder", {type: blob.type});
+
+    } catch (error) {
+        throw error;
+    }
+}
+
+export async function moveFolderIntoFolder(movingFolderId:number|null, destinationFolderId: string|null): Promise<FolderMovingResponse> {
+    const url = process.env.NEXT_PUBLIC_API_URL;
+    const token = getJwtToken();
+    
+    const destinationFolderIdIdToSend = destinationFolderId === "null" ? null : Number(destinationFolderId);
+
+     try {
+        const rep = await fetch(`${url}/api/items/move`, {
+            method: "PUT",
+            headers: {
+                "Content-Type": "application/json",
+                "Authorization": `Bearer ${token}`,
+            },
+         body: JSON.stringify(
+                { items : [
+                    {
+                        type: "folder", 
+                        id: movingFolderId
+                    }
+
+                ],
+                "destination_folder_id": destinationFolderIdIdToSend
+                }
+            ),
+        });
+
+
+        if (!rep.ok) {
+            throw new Error(`Erreur HTTP: ${rep.status}`);
+        }
+        const data = await rep.json();
+        return data as FolderMovingResponse;
+    }
+    catch (error) {
         throw error;
     }
 }

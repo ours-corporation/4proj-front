@@ -7,6 +7,8 @@ export const getFileColor = (mimeType: string): string => {
         return MimeColors[mimeType];
     }
 
+    if (!mimeType) return DEFAULT_COLOR;
+
     if (mimeType.startsWith('image/')) return '#2ECC71'; // Vert générique
     if (mimeType.startsWith('video/')) return '#C0392B'; // Rouge vidéo
     if (mimeType.startsWith('audio/')) return '#F1C40F'; // Jaune audio

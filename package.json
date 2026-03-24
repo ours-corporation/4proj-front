@@ -9,6 +9,7 @@
     "lint": "eslint"
   },
   "dependencies": {
+    "@uiw/react-markdown-preview": "^5.1.5",
     "cookie": "^1.1.1",
     "date-fns": "^4.1.0",
     "jwt-decode": "^4.0.0",

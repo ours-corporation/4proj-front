@@ -3,11 +3,32 @@ import NavItems from "@/src/components/nav/NavItems";
 import {useJwtInformation} from "@/src/hooks/getJwtInformation";
 import { useRouter } from 'next/navigation';
 
+import { getMyProfilePicture } from '@/src/api/user';
+import { profile } from 'console';
+
 export default function NavBar({ currentPage }: { currentPage: string }) {
     const userInfo = useJwtInformation();
     const router = useRouter();
     const [menuOpen, setMenuOpen] = useState(false);
     const menuRef = useRef<HTMLDivElement>(null);
+
+    const [profilePicture, setProfilePicture] = useState<string>("");
+
+
+    async function fetchUserProfilePic(){
+        try{
+            // suppresion de la potentiel url précédente
+            if (profilePicture) {
+                URL.revokeObjectURL(profilePicture);
+            }
+            const url = await getMyProfilePicture();
+            if (url) {
+                setProfilePicture(url);
+            }
+        } catch (error) {
+            console.log(error);
+        }
+    }
 
     useEffect(() => {
         function handleClickOutside(event: MouseEvent) {
@@ -18,6 +39,15 @@ export default function NavBar({ currentPage }: { currentPage: string }) {
         document.addEventListener('mousedown', handleClickOutside);
         return () => document.removeEventListener('mousedown', handleClickOutside);
     }, []);
+
+        useEffect(() => {
+            fetchUserProfilePic();
+            return () => {
+                if (profilePicture) {
+                    URL.revokeObjectURL(profilePicture);
+                }
+            };
+        }, [profilePicture]);
 
     function handleLogout() {
         localStorage.removeItem('accessToken');
@@ -144,8 +174,8 @@ export default function NavBar({ currentPage }: { currentPage: string }) {
                 >
                     <img
                         className="h-10 w-10 rounded-full border-2 border-transparent hover:border-action dark:hover:border-dark-action transition-all cursor-pointer object-cover"
-                        src="https://images.unsplash.com/photo-1599566150163-29194dcaad36?ixlib=rb-1.2.1&auto=format&fit=crop&w=100&q=80"
-                        alt="Jean Dupont"
+                        src={profilePicture ? profilePicture : "https://images.unsplash.com/photo-1599566150163-29194dcaad36?ixlib=rb-1.2.1&auto=format&fit=crop&w=100&q=80"}
+                        alt="image de profil"
                     />
                     <div className="flex-1 min-w-0">
                         <p className="text-sm font-semibold text-txt-secondary dark:text-dark-txt-secondary truncate">{userInfo.username}</p>
