@@ -291,7 +291,7 @@ export default function Folders({ listFolders, listFiles, changeFolderId, viewMo
                     isTrash={isTrash}    
                     restoreFile={!fp(file) || isTrash ? restoreFile : undefined} 
                     //downloadFile={!fp(file) || fp(file) === 'WRITE' ? downloadFileById : undefined}
-                    downloadFile={downloadFileById}
+                    downloadFile={!isTrash ? downloadFileById : undefined}
                     editFile={!fp(file) || fp(file) === 'WRITE' ? openUpdateFileModal : undefined}
                     shareFile={!fp(file) ? openShareFileModal : undefined}
                     moveFile={!fp(file) || fp(file) === 'WRITE' ? openMoveFileModal : undefined}
