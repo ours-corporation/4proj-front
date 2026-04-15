@@ -17,10 +17,6 @@ export default function NavBar({ currentPage }: { currentPage: string }) {
 
     async function fetchUserProfilePic(){
         try{
-            // suppresion de la potentiel url précédente
-            if (profilePicture) {
-                URL.revokeObjectURL(profilePicture);
-            }
             const url = await getMyProfilePicture();
             if (url) {
                 setProfilePicture(url);
@@ -40,14 +36,17 @@ export default function NavBar({ currentPage }: { currentPage: string }) {
         return () => document.removeEventListener('mousedown', handleClickOutside);
     }, []);
 
-        useEffect(() => {
-            fetchUserProfilePic();
-            return () => {
-                if (profilePicture) {
-                    URL.revokeObjectURL(profilePicture);
-                }
-            };
-        }, [profilePicture]);
+    useEffect(() => {
+        fetchUserProfilePic();
+    }, []);
+
+    useEffect (()=> {
+        return () => {
+            if (profilePicture) {
+                URL.revokeObjectURL(profilePicture);
+            }
+        };
+    }, [profilePicture])
 
     function handleLogout() {
         localStorage.removeItem('accessToken');

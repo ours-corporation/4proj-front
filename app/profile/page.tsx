@@ -52,8 +52,12 @@ export default function SettingsPage() {
             if (url) {
                 setProfilePicture(url);
             }
-        } catch (error) {
-            console.log(error);
+        } catch (error: any) {
+            // 404 = pas de photo, c'est normal, on ignore
+            if (error?.message?.includes('404') || error?.status === 404) {
+                return;
+            }
+            console.error(error);
         }
     }
 
