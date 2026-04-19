@@ -10,16 +10,17 @@ interface FolderCardProps {
     renameFolder?: (folder: FolderResponse) => void;
     deleteFolder?: (folder: FolderResponse) => void;
     openShares?: (folder: FolderResponse) => void;
-    shareFolder?: (folder: FolderResponse) => void; 
+    shareFolder?: (folder: FolderResponse) => void;
 
     isTrash?: boolean;
     restoreFolder?: (folder: FolderResponse) => void;
     emptyTrash?: () => void;
 
     moveFolder?: (folder: FolderResponse) => void;
+    isDropTarget?: boolean;
 }
 
-export default function FolderCard({ folder, downloadFolder, renameFolder, deleteFolder, openShares, shareFolder, moveFolder, isTrash, restoreFolder }: FolderCardProps) {
+export default function FolderCard({ folder, downloadFolder, renameFolder, deleteFolder, openShares, shareFolder, moveFolder, isTrash, restoreFolder, isDropTarget }: FolderCardProps) {
     const folderColor = "#F59E0B";
     const folderBgColor = "#F59E0B20";
     const hasActions = !!(downloadFolder || renameFolder || deleteFolder || openShares || shareFolder || (isTrash && restoreFolder));
@@ -37,7 +38,14 @@ export default function FolderCard({ folder, downloadFolder, renameFolder, delet
     }, []);
 
     return (
-        <div className="relative flex flex-col justify-center items-start cursor-pointer hover:opacity-80 transition-opacity">
+        <div
+            className={`relative flex flex-col justify-center items-start cursor-grab active:cursor-grabbing hover:opacity-80 transition-opacity rounded-xl ${isDropTarget ? 'ring-2 ring-blue-500 bg-blue-50 dark:bg-blue-900/20' : ''}`}
+            draggable={true}
+            onDragStart={(e) => {
+                e.dataTransfer.setData('application/json', JSON.stringify({ type: 'folder', id: folder.id }));
+                e.dataTransfer.effectAllowed = 'move';
+            }}
+        >
             <div className="w-full flex flex-row justify-between items-start">
                 <div
                     className="w-20 h-20 rounded-[24px] flex items-center justify-center mb-3"

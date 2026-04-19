@@ -35,7 +35,14 @@ export default function FileCard({ file, thumbnailUrl, downloadFile, editFile, s
     }, []);
 
     return (
-        <div className="relative flex flex-col justify-center items-start">
+        <div
+            className="relative flex flex-col justify-center items-start cursor-grab active:cursor-grabbing"
+            draggable={true}
+            onDragStart={(e) => {
+                e.dataTransfer.setData('application/json', JSON.stringify({ type: 'file', id: file.id }));
+                e.dataTransfer.effectAllowed = 'move';
+            }}
+        >
             <div className="w-full flex flex-row justify-between items-start">
                 <div
                     className="w-20 h-20 rounded-[24px] flex items-center justify-center mb-3 overflow-hidden"

@@ -6,7 +6,7 @@ import {useJwtInformation} from "@/src/hooks/getJwtInformation";
 
 
 import FileCard from "@/src/components/card/FileCard";
-import { downloadFile, getFileThumbnail } from '@/src/api/file';
+import { downloadFile, getFileThumbnail, moveFileIntoFolder } from '@/src/api/file';
 import FolderCard from "@/src/components/card/FolderCard";
 import {convertFileSize} from "@/src/utils/convert-file-size";
 import UpdateFileModal from "@/src/components/modal/UpdateFile";
@@ -19,6 +19,7 @@ import DeleteFolderModal from "@/src/components/modal/DeleteFolder";
 import RenameFolderModal from "@/src/components/modal/RenameFolder";
 import FolderDetailsModal from "@/src/components/modal/FolderDetailsModal";
 import MoveFolderModal from "@/src/components/modal/MoveFolderModal";
+import { moveFolderIntoFolder } from '@/src/api/folders';
 import { downloadFileService } from "@/src/services/downloadFile";
 import { downloadFolderService } from '../services/downloadFolder';
 import FileDetailsModal from "@/src/components/modal/FileDetailsModal";
@@ -46,6 +47,7 @@ export default function Folders({ listFolders, listFiles, changeFolderId, viewMo
     const [open, setOpen] = useState(false);
     const [openListMenuId, setOpenListMenuId] = useState<string | null>(null);
     const [thumbnails, setThumbnails] = useState<Record<number, string>>({});
+    const [hoveredFolderId, setHoveredFolderId] = useState<number | null>(null);
 
     useEffect(() => {
         if (!listFiles) return;
@@ -192,6 +194,23 @@ export default function Folders({ listFolders, listFiles, changeFolderId, viewMo
     }
 
 
+    //Drag and drop
+    async function handleDrop(e: React.DragEvent, targetFolderId: number) {
+        e.preventDefault();
+        setHoveredFolderId(null);
+        try {
+            const data = JSON.parse(e.dataTransfer.getData('application/json')) as { type: 'file' | 'folder'; id: number };
+            if (data.type === 'file') {
+                await moveFileIntoFolder(data.id, targetFolderId.toString());
+                onFileChanged?.();
+            } else if (data.type === 'folder' && data.id !== targetFolderId) {
+                await moveFolderIntoFolder(data.id, targetFolderId.toString());
+                onFolderRenamed?.();
+            }
+        } catch {
+        }
+    }
+
     //Move folder modal
     function openMoveFolderModalFn(folder: FolderResponse) {
         setMoveFolderInfo(folder);
@@ -265,13 +284,18 @@ export default function Folders({ listFolders, listFiles, changeFolderId, viewMo
                     key={folder.id}
                     className="bg-surface dark:bg-dark-surface p-4 rounded-lg shadow-md hover:shadow-lg transition duration-300 cursor-pointer"
                     onClick={() => changeFolderId(folder.id)}
+                    onDragOver={(e) => e.preventDefault()}
+                    onDragEnter={(e) => { e.preventDefault(); setHoveredFolderId(folder.id); }}
+                    onDragLeave={(e) => { if (!e.currentTarget.contains(e.relatedTarget as Node)) setHoveredFolderId(null); }}
+                    onDrop={(e) => handleDrop(e, folder.id)}
                 >
                     <FolderCard
                         folder={folder}
-                        isTrash={isTrash}         
-                        //downloadFolder={!fp(folder) || fp(folder) === 'WRITE' ? downloadFolderById : undefined}  
-                        downloadFolder={downloadFolderById}               
-                        restoreFolder={isTrash ? restoreFolder : undefined} 
+                        isTrash={isTrash}
+                        isDropTarget={hoveredFolderId === folder.id}
+                        //downloadFolder={!fp(folder) || fp(folder) === 'WRITE' ? downloadFolderById : undefined}
+                        downloadFolder={downloadFolderById}
+                        restoreFolder={isTrash ? restoreFolder : undefined}
                         renameFolder={!fp(folder) || fp(folder) === 'WRITE' ? openRenameFolderModalFn : undefined}
                         deleteFolder={!fp(folder) || isTrash ? openDeleteFolderModalFn : undefined}
                         openShares={!fp(folder) ? openFolderDetailsModalFn : undefined}
@@ -303,7 +327,19 @@ export default function Folders({ listFolders, listFiles, changeFolderId, viewMo
         ) : (
         <div className="flex flex-col divide-y divide-gray-100 dark:divide-gray-800">
             {listFolders.map((folder) => (
-                <div key={folder.id} className="flex items-center py-3 px-2 hover:bg-gray-50 dark:hover:bg-dark-surface rounded-lg">
+                <div
+                    key={folder.id}
+                    className={`flex items-center py-3 px-2 rounded-lg transition-colors ${hoveredFolderId === folder.id ? 'ring-2 ring-blue-500 bg-blue-50 dark:bg-blue-900/20' : 'hover:bg-gray-50 dark:hover:bg-dark-surface'}`}
+                    draggable={true}
+                    onDragStart={(e) => {
+                        e.dataTransfer.setData('application/json', JSON.stringify({ type: 'folder', id: folder.id }));
+                        e.dataTransfer.effectAllowed = 'move';
+                    }}
+                    onDragOver={(e) => e.preventDefault()}
+                    onDragEnter={(e) => { e.preventDefault(); setHoveredFolderId(folder.id); }}
+                    onDragLeave={(e) => { if (!e.currentTarget.contains(e.relatedTarget as Node)) setHoveredFolderId(null); }}
+                    onDrop={(e) => handleDrop(e, folder.id)}
+                >
                     <div
                         className="w-10 h-10 rounded-xl flex items-center justify-center mr-3 flex-shrink-0"
                         style={{ backgroundColor: folderBgColor, color: folderColor }}
@@ -362,7 +398,7 @@ export default function Folders({ listFolders, listFiles, changeFolderId, viewMo
                                 </button>
                                 )}
 
-                                {(!fp(folder)) && (
+                                {(!fp(folder) || fp(folder) === 'WRITE') && (
                                 <button
                                     className="w-full text-left px-4 py-2 text-sm hover:bg-gray-100 dark:hover:bg-gray-700"
                                     onClick={(e) => { e.stopPropagation(); openMoveFolderModalFn(folder); setOpenListMenuId(null); }}
@@ -385,7 +421,15 @@ export default function Folders({ listFolders, listFiles, changeFolderId, viewMo
                 </div>
             ))}
             {listFiles && listFiles.map((file) => (
-                <div key={file.id} className="flex items-center py-3 px-2 hover:bg-gray-50 dark:hover:bg-dark-surface rounded-lg">
+                <div
+                    key={file.id}
+                    className="flex items-center py-3 px-2 hover:bg-gray-50 dark:hover:bg-dark-surface rounded-lg cursor-grab active:cursor-grabbing"
+                    draggable={true}
+                    onDragStart={(e) => {
+                        e.dataTransfer.setData('application/json', JSON.stringify({ type: 'file', id: file.id }));
+                        e.dataTransfer.effectAllowed = 'move';
+                    }}
+                >
                     <div
                         className="w-10 h-10 rounded-xl flex items-center justify-center mr-3 flex-shrink-0 overflow-hidden"
                         style={{ backgroundColor: `${getFileColor(file.mime_type)}20`, color: getFileColor(file.mime_type) }}
