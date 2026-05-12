@@ -86,7 +86,6 @@ export default function StoragePage() {
                         </h3>
                         <StorageChart
                             categories={categories}
-                            usedBytes={usedBytes}
                             totalBytes={totalBytes}
                         />
                     </GlobalCard>
