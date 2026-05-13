@@ -1,9 +1,7 @@
 import {getJwtToken} from "@/src/hooks/getJwtInformation";
 
-//
 import { FileResponse } from "../interface/file";
 import { FileShareItem } from "../interface/share";
-
 
 export async function downloadFile({ fileId }: { fileId: number }): Promise<File> {
     const url = process.env.NEXT_PUBLIC_API_URL;

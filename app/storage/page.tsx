@@ -1,58 +1,18 @@
 'use client';
 
-import React, { useEffect, useState } from 'react';
 import { useAuth } from '@/src/hooks/useAuth';
 import Loading from '@/src/components/Loading';
 import Layout from '@/src/components/layout/Layout';
 import GlobalCard from '@/src/components/card/GlobalCard';
-import StorageChart, { StorageCategoryData } from '@/src/components/storage/StorageChart';
-import { getMyInformation } from '@/src/api/user';
-import { getStorageStatsAPI } from '@/src/api/file';
+import StorageChart from '@/src/components/storage/StorageChart';
 import { convertFileSize } from '@/src/utils/convert-file-size';
-
-// Données de remplacement utilisées tant que l'endpoint /api/files/storage-stats n'est pas disponible
-const MOCK_CATEGORIES: StorageCategoryData[] = [
-    { label: 'Images',    bytes: 2.1  * 1024 ** 3, color: '#2ECC71' },
-    { label: 'Vidéos',   bytes: 8.4  * 1024 ** 3, color: '#C0392B' },
-    { label: 'Documents', bytes: 1.2  * 1024 ** 3, color: '#315EFB' },
-    { label: 'Audio',     bytes: 0.8  * 1024 ** 3, color: '#F1C40F' },
-    { label: 'Archives',  bytes: 0.5  * 1024 ** 3, color: '#9B59B6' },
-    { label: 'Autres',    bytes: 0.3  * 1024 ** 3, color: '#95A5A6' },
-];
+import { useStorageData } from '@/src/hooks/useStorageData';
 
 export default function StoragePage() {
-    const loading = useAuth();
+    const authLoading = useAuth();
+    const { usedBytes, totalBytes, categories, isMock, loading } = useStorageData();
 
-    const [usedBytes, setUsedBytes]   = useState(0);
-    const [totalBytes, setTotalBytes] = useState(30 * 1024 ** 3);
-    const [categories, setCategories] = useState<StorageCategoryData[]>([]);
-    const [isMock, setIsMock]         = useState(false);
-    const [dataLoading, setDataLoading] = useState(true);
-
-    useEffect(() => {
-        async function load() {
-            try {
-                const user = await getMyInformation();
-                if (user) {
-                    setUsedBytes(user.used_bytes ?? 0);
-                    setTotalBytes(user.quota?.quota_bytes ?? 30 * 1024 ** 3);
-                }
-            } catch (_) {}
-
-            try {
-                const stats = await getStorageStatsAPI();
-                setCategories(stats);
-            } catch (_) {
-                setCategories(MOCK_CATEGORIES);
-                setIsMock(true);
-            } finally {
-                setDataLoading(false);
-            }
-        }
-        load();
-    }, []);
-
-    if (loading || dataLoading) return <Loading />;
+    if (authLoading || loading) return <Loading />;
 
     const freeBytes = Math.max(0, totalBytes - usedBytes);
     const usedPct   = totalBytes > 0 ? ((usedBytes / totalBytes) * 100).toFixed(1) : '0';
@@ -71,7 +31,6 @@ export default function StoragePage() {
             )}
 
             <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
-                {/* Graphique */}
                 <div className="lg:col-span-2">
                     <GlobalCard
                         svgIcon={
@@ -84,14 +43,10 @@ export default function StoragePage() {
                         <h3 className="text-txt-primary dark:text-dark-txt-primary font-semibold text-lg mb-6">
                             Répartition par type
                         </h3>
-                        <StorageChart
-                            categories={categories}
-                            totalBytes={totalBytes}
-                        />
+                        <StorageChart categories={categories} totalBytes={totalBytes} />
                     </GlobalCard>
                 </div>
 
-                {/* Résumé */}
                 <div className="flex flex-col gap-6">
                     <GlobalCard
                         svgIcon={

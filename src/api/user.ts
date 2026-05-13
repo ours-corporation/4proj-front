@@ -1,6 +1,7 @@
 import { getJwtToken } from "@/src/hooks/getJwtInformation";
 
 import { User } from "@/src/interface/user";
+import { StorageStats } from "@/src/interface/storage";
 
 export async function getMyInformation() {
     try {
@@ -132,4 +133,18 @@ export async function updateProfilePicture(profilePicture:File) {
         throw new Error(`Erreur lors de la récupération des informations utilisateur : ${error}`);
 
     }
+}
+
+export async function getStorageStats(): Promise<StorageStats> {
+    const url   = process.env.NEXT_PUBLIC_API_URL;
+    const token = getJwtToken();
+
+    const rep = await fetch(`${url}/api/users/me/storage`, {
+        method: 'GET',
+        headers: { Authorization: `Bearer ${token}` },
+    });
+
+    if (!rep.ok) throw new Error(`Erreur HTTP: ${rep.status}`);
+
+    return rep.json();
 }
