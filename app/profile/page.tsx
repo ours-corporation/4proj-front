@@ -13,7 +13,7 @@ import Modal from "@/src/components/modal/Modal"
 import InputFile from "@/src/components/input/InputFile";
 import SubmitButton from "@/src/components/button/SubmitButton";
 
-import {updateProfilePicture} from "@/src/api/user";
+import {updateProfilePicture, deleteProfilePicture} from "@/src/api/user";
 
 import { useAuth } from '@/src/hooks/useAuth';
 
@@ -84,12 +84,12 @@ export default function SettingsPage() {
         fetchUserData();
         fetchUserProfilePic();
 
-            return () => {
+        return () => {
             if (profilePicture) {
                 URL.revokeObjectURL(profilePicture);
             }
         };
-    }, [profilePicture]);
+    }, []);
 
 
     const memberYear = accountCreationDate ? accountCreationDate.slice(0, 4) : "2025";
@@ -196,25 +196,52 @@ export default function SettingsPage() {
                 isOpen={profilePictureOpenModal}
                 onClose={() => {  setProfilePictureOpenModal(false); }}
             >
-                <div className="space-y-6">
+                <div className="space-y-4">
+                    {profilePicture && (
+                        <div className="flex items-center gap-3 p-3 rounded-xl bg-main-bg dark:bg-dark-main-bg">
+                            <img src={profilePicture} className="w-12 h-12 rounded-xl object-cover shrink-0" alt="photo actuelle" />
+                            <span className="flex-1 text-sm text-txt-primary dark:text-dark-txt-primary">Photo actuelle</span>
+                            <button
+                                type="button"
+                                onClick={async () => {
+                                    await deleteProfilePicture();
+                                    URL.revokeObjectURL(profilePicture);
+                                    setProfilePicture("");
+                                    window.dispatchEvent(new Event('profile-picture-updated'));
+                                }}
+                                className="text-xs font-medium text-error dark:text-dark-error hover:underline"
+                            >
+                                Retirer
+                            </button>
+                        </div>
+                    )}
+
                     <InputFile
                         id="file-upload"
                         label="Sélectionner une image de profil"
                         value={choosedProfilePicture}
-                        onChange={(files) => setChoosedProfilePicture([files[files.length - 1]])} //récupère toujours la dernière image pour écrasé la précédente
+                        onChange={(files) => {
+                            const last = files[files.length - 1];
+                            setChoosedProfilePicture(last ? [last] : []);
+                        }}
                         accept="image/*"
-                        required
                     />
 
-                    { ProfilePictureError &&
+                    {ProfilePictureError &&
                         <p className="text-error dark:text-dark-error text-sm">{ProfilePictureError}</p>
                     }
 
                     <SubmitButton
                         id="add-file-button"
                         type="button"
-                        text="choisir l'image"
-                        onClick={async () => { await updateProfilePicture(choosedProfilePicture[0]); await fetchUserProfilePic(); setProfilePictureOpenModal(false); }}
+                        text="Enregistrer l'image"
+                        onClick={async () => {
+                            if (!choosedProfilePicture[0]) return;
+                            await updateProfilePicture(choosedProfilePicture[0]);
+                            await fetchUserProfilePic();
+                            window.dispatchEvent(new Event('profile-picture-updated'));
+                            setProfilePictureOpenModal(false);
+                        }}
                     />
                 </div>
             </Modal>

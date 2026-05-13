@@ -20,8 +20,11 @@ export default function NavBar({ currentPage }: { currentPage: string }) {
             if (url) {
                 setProfilePicture(url);
             }
-        } catch (error) {
-            console.log(error);
+        } catch (error: any) {
+            if (!error?.message?.includes('404')) {
+                console.log(error);
+            }
+            setProfilePicture("");
         }
     }
 
@@ -37,6 +40,8 @@ export default function NavBar({ currentPage }: { currentPage: string }) {
 
     useEffect(() => {
         fetchUserProfilePic();
+        window.addEventListener('profile-picture-updated', fetchUserProfilePic);
+        return () => window.removeEventListener('profile-picture-updated', fetchUserProfilePic);
     }, []);
 
     useEffect (()=> {

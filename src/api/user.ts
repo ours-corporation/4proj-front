@@ -135,6 +135,17 @@ export async function updateProfilePicture(profilePicture:File) {
     }
 }
 
+export async function deleteProfilePicture(): Promise<void> {
+    const url = process.env.NEXT_PUBLIC_API_URL;
+
+    const rep = await fetch(`${url}/api/users/me/profile-picture`, {
+        method: 'DELETE',
+        headers: { Authorization: `Bearer ${getJwtToken()}` },
+    });
+
+    if (!rep.ok && rep.status !== 404) throw new Error(`Erreur HTTP: ${rep.status}`);
+}
+
 export async function getStorageStats(): Promise<StorageStats> {
     const url   = process.env.NEXT_PUBLIC_API_URL;
     const token = getJwtToken();
