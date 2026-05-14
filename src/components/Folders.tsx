@@ -6,7 +6,7 @@ import {useJwtInformation} from "@/src/hooks/getJwtInformation";
 
 
 import FileCard from "@/src/components/card/FileCard";
-import { downloadFile, getFileThumbnail, moveFileIntoFolder } from '@/src/api/file';
+import { downloadFile, getFileThumbnail, moveFileIntoFolder, copyFileById} from '@/src/api/file';
 import FolderCard from "@/src/components/card/FolderCard";
 import {convertFileSize} from "@/src/utils/convert-file-size";
 import UpdateFileModal from "@/src/components/modal/UpdateFile";
@@ -19,7 +19,7 @@ import DeleteFolderModal from "@/src/components/modal/DeleteFolder";
 import RenameFolderModal from "@/src/components/modal/RenameFolder";
 import FolderDetailsModal from "@/src/components/modal/FolderDetailsModal";
 import MoveFolderModal from "@/src/components/modal/MoveFolderModal";
-import { moveFolderIntoFolder } from '@/src/api/folders';
+import { moveFolderIntoFolder, copyFolderById } from '@/src/api/folders';
 import { downloadFileService } from "@/src/services/downloadFile";
 import { downloadFolderService } from '../services/downloadFolder';
 import FileDetailsModal from "@/src/components/modal/FileDetailsModal";
@@ -301,6 +301,7 @@ export default function Folders({ listFolders, listFiles, changeFolderId, viewMo
                         openShares={!fp(folder) ? openFolderDetailsModalFn : undefined}
                         shareFolder={!fp(folder) ? openShareFolderModalFn : undefined}
                         moveFolder={!fp(folder) || fp(folder) === 'WRITE' ? openMoveFolderModalFn : undefined}
+                        copyFolder={!fp(folder) || fp(folder) === 'WRITE' ? (f) => copyFolderById(f.id) : undefined}
                     />
                 </div>
             ))}
@@ -320,6 +321,7 @@ export default function Folders({ listFolders, listFiles, changeFolderId, viewMo
                     shareFile={!fp(file) ? openShareFileModal : undefined}
                     moveFile={!fp(file) || fp(file) === 'WRITE' ? openMoveFileModal : undefined}
                     deleteFile={!fp(file) || isTrash ? openDeleteFileModal : undefined}
+                    copyFile={!fp(file) || fp(file) === 'WRITE' ? async (f) => { await copyFileById(f.id); } : undefined}
                 />
                 </div>
             ))}

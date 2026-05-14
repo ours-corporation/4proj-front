@@ -11,6 +11,7 @@ interface FolderCardProps {
     deleteFolder?: (folder: FolderResponse) => void;
     openShares?: (folder: FolderResponse) => void;
     shareFolder?: (folder: FolderResponse) => void;
+    copyFolder?: (folder: FolderResponse) => void;
 
     isTrash?: boolean;
     restoreFolder?: (folder: FolderResponse) => void;
@@ -20,7 +21,7 @@ interface FolderCardProps {
     isDropTarget?: boolean;
 }
 
-export default function FolderCard({ folder, downloadFolder, renameFolder, deleteFolder, openShares, shareFolder, moveFolder, isTrash, restoreFolder, isDropTarget }: FolderCardProps) {
+export default function FolderCard({ folder, downloadFolder, renameFolder, deleteFolder, openShares, shareFolder, moveFolder, copyFolder, isTrash, restoreFolder, isDropTarget }: FolderCardProps) {
     const folderColor = "#F59E0B";
     const folderBgColor = "#F59E0B20";
     const hasActions = !!(downloadFolder || renameFolder || deleteFolder || openShares || shareFolder || (isTrash && restoreFolder));
@@ -152,6 +153,20 @@ export default function FolderCard({ folder, downloadFolder, renameFolder, delet
                                         }}
                                     >
                                         Déplacer
+                                    </button>
+                                    )
+                                }
+
+                                {copyFolder && (
+                                    <button
+                                        className="w-full text-left px-4 py-2 text-sm hover:bg-gray-100 dark:hover:bg-gray-700"
+                                        onClick={(e) => {
+                                            e.stopPropagation();
+                                            copyFolder(folder);
+                                            setOpen(false);
+                                        }}
+                                    >
+                                        Dupliquer
                                     </button>
                                     )
                                 }

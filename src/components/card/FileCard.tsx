@@ -13,13 +13,14 @@ interface FileProps {
     editFile?: (file: FileResponse) => Promise<void>;
     shareFile?: (file: FileResponse) => Promise<void>;
     moveFile?: (file: FileResponse) => Promise<void>;
+    copyFile?: (file: FileResponse) => Promise<void>;
     deleteFile?: (file: FileResponse) => void;
     isTrash?: boolean;
     restoreFile?: (file: FileResponse) => void
 }
 
-export default function FileCard({ file, thumbnailUrl, downloadFile, editFile, shareFile, moveFile, deleteFile, isTrash, restoreFile}: FileProps) {
-    const hasActions = !!(downloadFile || editFile || shareFile || deleteFile);
+export default function FileCard({ file, thumbnailUrl, downloadFile, editFile, shareFile, moveFile, deleteFile,copyFile, isTrash, restoreFile}: FileProps) {
+    const hasActions = !!(downloadFile || editFile || shareFile || deleteFile || copyFile);
     const [open, setOpen] = useState(false);
     const menuRef = useRef<HTMLDivElement>(null);
 
@@ -142,6 +143,20 @@ export default function FileCard({ file, thumbnailUrl, downloadFile, editFile, s
                                             }}
                                         >
                                             Déplacer
+                                        </button>
+                                        )
+                                    }
+
+                                    {copyFile && (
+                                        <button
+                                            className="w-full text-left px-4 py-2 text-sm hover:bg-gray-100 dark:hover:bg-gray-700"
+                                            onClick={(e) => {
+                                                e.stopPropagation();
+                                                copyFile(file);
+                                                setOpen(false);
+                                            }}
+                                        >
+                                            dupliquer
                                         </button>
                                         )
                                     }

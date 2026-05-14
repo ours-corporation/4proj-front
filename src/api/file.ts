@@ -263,3 +263,27 @@ export async function restoreFile(fileId:number){
         throw error;
     }
 }
+
+export async function copyFileById(fileId:number){
+    const url = process.env.NEXT_PUBLIC_API_URL;
+    const token = getJwtToken();
+        try {
+        const rep = await fetch(`${url}/api/files/${fileId}/copy`, {
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json",
+                "Authorization": `Bearer ${token}`,
+            },
+        });
+
+        if (!rep.ok) {
+            throw new Error(`Erreur HTTP: ${rep.status}`);
+        }
+
+        const data = await rep.json();
+        return data as FileResponse;
+
+    } catch (error) {
+        throw error;
+    }
+}
