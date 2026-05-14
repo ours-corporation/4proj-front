@@ -43,14 +43,16 @@ export default function LoginPage() {
             const res = await register(email, password, username);
 
             if (!res.ok) {
-                if(res.status === 401) {
-                    console.log("Unauthorized access - invalid credentials");
-                    console.log(res.json());
+                if (res.status === 409) {
+                    setError("Un compte existe déjà avec cet email.");
+                } else if (res.status === 401) {
                     setError("Les identifiants sont invalides.");
+                } else if (res.status >= 500) {
+                    setError("Une erreur serveur s'est produite. Cet email est peut-être déjà utilisé.");
                 } else {
                     setError(`Erreur : ${res.status}`);
                 }
-            }else {
+            } else {
                 router.push("/login");
             }
         } catch (err) {
