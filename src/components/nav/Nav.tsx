@@ -4,6 +4,7 @@ import {useJwtInformation} from "@/src/hooks/getJwtInformation";
 import { useRouter } from 'next/navigation';
 
 import { getMyProfilePicture } from '@/src/api/user';
+import { logout } from '@/src/api/auth';
 
 export default function NavBar({ currentPage }: { currentPage: string }) {
     const userInfo = useJwtInformation();
@@ -52,16 +53,23 @@ export default function NavBar({ currentPage }: { currentPage: string }) {
         };
     }, [profilePicture])
 
-    function handleLogout() {
-        localStorage.removeItem('accessToken');
-        router.push('/login');
+    async function handleLogout() {
+        try {
+            await logout();
+        } finally {
+            localStorage.removeItem('accessToken');
+            sessionStorage.removeItem('accessToken');
+            router.push('/login');
+        }
     }
 
     return (
         <aside className="w-64 h-screen flex-shrink-0 bg-surface dark:bg-dark-surface border-r border-main-bg dark:border-dark-main-bg flex-col p-4 overflow-y-auto hidden md:flex">
             <h1>
-                <a href="/dashboard" className="text-2xl font-bold text-txt-primary dark:text-dark-txt-primary mb-6 block px-4 py-3">
-                    SupFile
+                <a href="/dashboard" className="flex items-center gap-3 mb-6 px-4 py-3">
+                    <img src="/logo-light.svg" alt="SupFile" className="w-15 h-15 rounded-xl shrink-0 dark:hidden" />
+                    <img src="/logo-dark.svg" alt="SupFile" className="w-15 h-15 rounded-xl shrink-0 hidden dark:block" />
+                    <span className="text-2xl font-bold text-txt-primary dark:text-dark-txt-primary">SupFile</span>
                 </a>
             </h1>
 
