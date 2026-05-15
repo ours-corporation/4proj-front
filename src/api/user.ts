@@ -135,6 +135,18 @@ export async function updateProfilePicture(profilePicture:File) {
     }
 }
 
+export async function deleteAccount(): Promise<void> {
+    const url = process.env.NEXT_PUBLIC_API_URL;
+
+    const rep = await fetch(`${url}/api/users/me`, {
+        method: 'DELETE',
+        credentials: 'include',
+        headers: { Authorization: `Bearer ${getJwtToken()}` },
+    });
+
+    if (!rep.ok) throw new Error(`Erreur HTTP: ${rep.status}`);
+}
+
 export async function deleteProfilePicture(): Promise<void> {
     const url = process.env.NEXT_PUBLIC_API_URL;
 

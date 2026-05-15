@@ -4,11 +4,13 @@ interface GlobalCardProps {
     children: React.ReactNode;
     title?: string;
     svgIcon?: React.ReactNode;
+    iconBg?: string;
 }
 
 export default function GlobalCard({
     children,
     svgIcon,
+    iconBg = "bg-[#7c6ef815] dark:bg-[#9b8ffa15]",
 }: GlobalCardProps) {
     // Valeurs simulées pour correspondre à l'image
     return (
@@ -18,7 +20,7 @@ export default function GlobalCard({
             {/* En-tête : Icône et Menu */}
             <div className="flex justify-between items-start mb-5">
                 {/* Boite de l'icône : Fond légèrement plus clair avec teinte bleutée */}
-                <div className="h-12 w-12 bg-main-bg dark:bg-dark-main-bg rounded-2xl flex items-center justify-center">
+                <div className={`h-12 w-12 ${iconBg} rounded-2xl flex items-center justify-center`}>
                     {svgIcon ? svgIcon : (
                         <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5"
                              stroke="currentColor" className="size-6">
