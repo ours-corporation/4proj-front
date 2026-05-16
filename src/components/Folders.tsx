@@ -301,7 +301,7 @@ export default function Folders({ listFolders, listFiles, changeFolderId, viewMo
                         openShares={!fp(folder) ? openFolderDetailsModalFn : undefined}
                         shareFolder={!fp(folder) ? openShareFolderModalFn : undefined}
                         moveFolder={!fp(folder) || fp(folder) === 'WRITE' ? openMoveFolderModalFn : undefined}
-                        copyFolder={!fp(folder) || fp(folder) === 'WRITE' ? (f) => copyFolderById(f.id) : undefined}
+                        copyFolder={!fp(folder) || fp(folder) === 'WRITE' ? async (f) => { await copyFolderById(f.id); onFolderRenamed?.(); } : undefined}
                     />
                 </div>
             ))}
@@ -321,7 +321,7 @@ export default function Folders({ listFolders, listFiles, changeFolderId, viewMo
                     shareFile={!fp(file) ? openShareFileModal : undefined}
                     moveFile={!fp(file) || fp(file) === 'WRITE' ? openMoveFileModal : undefined}
                     deleteFile={!fp(file) || isTrash ? openDeleteFileModal : undefined}
-                    copyFile={!fp(file) || fp(file) === 'WRITE' ? async (f) => { await copyFileById(f.id); } : undefined}
+                    copyFile={!fp(file) || fp(file) === 'WRITE' ? async (f) => { await copyFileById(f.id); onFileChanged?.(); } : undefined}
                 />
                 </div>
             ))}

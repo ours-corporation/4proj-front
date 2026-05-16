@@ -31,7 +31,7 @@ export default function UpdateUserMailForm(){
 
         }
         catch(err){
-            console.error("error updating the password:", error);
+            console.error("error updating the password:", err);
         }
 
         finally{
