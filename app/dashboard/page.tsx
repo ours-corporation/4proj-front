@@ -14,7 +14,7 @@ import { useStorageData } from '@/src/hooks/useStorageData';
 export default function Dashboard() {
     const userInfo    = useJwtInformation();
     const authLoading = useAuth();
-    const { usedBytes, totalBytes, categories, loading, isMock } = useStorageData();
+    const { usedBytes, totalBytes, categories, loading, isMock } = useStorageData(!authLoading);
 
     if (authLoading) return <Loading />;
     if (!userInfo)   return <Error errorMsg="Une erreur est survenue lors du chargement des informations utilisateur." />;
@@ -41,19 +41,26 @@ export default function Dashboard() {
                 >
                     <div className="mb-6">
                         <h3 className="text-txt-primary dark:text-dark-txt-primary font-medium text-md mb-1">Espace Utilisé</h3>
-                        <div className="flex items-baseline gap-2">
-                            <span className="text-4xl font-bold text-txt-primary dark:text-dark-txt-primary tracking-tight">
-                                {convertFileSize(usedBytes)}
-                            </span>
-                            <span className="text-txt-secondary dark:text-dark-txt-secondary text-lg font-medium">
-                                / {convertFileSize(totalBytes)}
-                            </span>
-                        </div>
+                        {loading ? (
+                            <div className="flex items-baseline gap-2 mt-1">
+                                <div className="h-10 w-28 bg-border-subtle dark:bg-dark-border-subtle rounded-lg animate-pulse" />
+                                <div className="h-6 w-20 bg-border-subtle dark:bg-dark-border-subtle rounded-lg animate-pulse" />
+                            </div>
+                        ) : (
+                            <div className="flex items-baseline gap-2">
+                                <span className="text-4xl font-bold text-txt-primary dark:text-dark-txt-primary tracking-tight">
+                                    {convertFileSize(usedBytes)}
+                                </span>
+                                <span className="text-txt-secondary dark:text-dark-txt-secondary text-lg font-medium">
+                                    / {convertFileSize(totalBytes)}
+                                </span>
+                            </div>
+                        )}
                     </div>
                     <div className="w-full bg-main-bg dark:bg-dark-main-bg rounded-full h-3 overflow-hidden">
                         <div
                             className="bg-action dark:bg-dark-action h-full rounded-full transition-all duration-500 ease-out"
-                            style={{ width: `${usedPct}%` }}
+                            style={{ width: loading ? '0%' : `${usedPct}%` }}
                         />
                     </div>
                 </GlobalCard>

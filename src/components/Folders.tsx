@@ -121,14 +121,20 @@ export default function Folders({ listFolders, listFiles, changeFolderId, viewMo
     function setFileInformationAndOpen(file: FileResponse) {
         setSelectedFile(file);
         setFile(null);
-        setFileLoading(true);
         setOpen(true);
+
+        // Les vidéos gèrent leur propre streaming, pas besoin de télécharger à l'avance
+        if (file.mime_type.startsWith('video/')) {
+            setFileLoading(false);
+            return;
+        }
+
+        setFileLoading(true);
         const fileDownload = async () => {
             const downloadedFile = await downloadFile({ fileId: file.id });
             setFile(downloadedFile);
-            setOpen(true);
             setFileLoading(false);
-        }
+        };
         fileDownload();
     }
 

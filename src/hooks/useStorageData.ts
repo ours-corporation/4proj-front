@@ -26,7 +26,7 @@ interface StorageData {
     loading: boolean;
 }
 
-export function useStorageData(): StorageData {
+export function useStorageData(enabled: boolean = true): StorageData {
     const [usedBytes, setUsedBytes]   = useState(0);
     const [totalBytes, setTotalBytes] = useState(MOCK_TOTAL);
     const [categories, setCategories] = useState<StorageCategoryData[]>([]);
@@ -34,6 +34,8 @@ export function useStorageData(): StorageData {
     const [loading, setLoading]       = useState(true);
 
     useEffect(() => {
+        if (!enabled) return;
+
         async function load() {
             try {
                 const stats = await getStorageStats();
@@ -47,7 +49,8 @@ export function useStorageData(): StorageData {
                         bytes: val.bytes,
                     }))
                 );
-            } catch (_) {
+                setIsMock(false);
+            } catch {
                 setCategories(MOCK_CATEGORIES);
                 setIsMock(true);
             } finally {
@@ -55,7 +58,7 @@ export function useStorageData(): StorageData {
             }
         }
         load();
-    }, []);
+    }, [enabled]);
 
     return { usedBytes, totalBytes, categories, isMock, loading };
 }
