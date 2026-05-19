@@ -40,7 +40,7 @@ export async function login(email: string, password: string) {
 
     const url = process.env.NEXT_PUBLIC_API_URL
 
-    return await fetch( url + "/api/login", {
+    return await fetch(url + "/api/login", {
         method: "POST",
         credentials: 'include',
         headers: {
@@ -57,6 +57,7 @@ export async function register(email: string, password: string, username?: strin
     if (validationError) {
         return new Response(JSON.stringify(validationError), { status: 401, headers: { "Content-Type": "application/json" } });
     }
+
     const url = process.env.NEXT_PUBLIC_API_URL
 
     return await fetch( url + "/api/register", {
@@ -92,11 +93,11 @@ export async function refreshToken()  : Promise<Response> {
 }
 
 export async function logout(){
-        
+
     const url = process.env.NEXT_PUBLIC_API_URL
 
-        return await fetch( url + "/api/logout", {
-            method: "POST",
-            credentials: 'include',
-        });
+    return await fetch( url + "/api/logout", {
+        method: "POST",
+        credentials: 'include',
+    });
 }

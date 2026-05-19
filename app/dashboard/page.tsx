@@ -11,6 +11,31 @@ import StorageChart from '@/src/components/storage/StorageChart';
 import { convertFileSize } from '@/src/utils/convert-file-size';
 import { useStorageData } from '@/src/hooks/useStorageData';
 
+function StorageIcon() {
+    return (
+        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="url(#dash-grad)" className="h-5 w-5">
+            <path strokeLinecap="round" strokeLinejoin="round" d="M20.25 6.375c0 2.278-3.694 4.125-8.25 4.125S3.75 8.653 3.75 6.375m16.5 0c0-2.278-3.694-4.125-8.25-4.125S3.75 4.097 3.75 6.375m16.5 0v11.25c0 2.278-3.694 4.125-8.25 4.125s-8.25-1.847-8.25-4.125V6.375m16.5 0v3.75m-16.5-3.75v3.75m16.5 0v3.75C20.25 16.153 16.556 18 12 18s-8.25-1.847-8.25-4.125v-3.75m16.5 0c0 2.278-3.694 4.125-8.25 4.125s-8.25-1.847-8.25-4.125" />
+        </svg>
+    );
+}
+
+function ChartIcon() {
+    return (
+        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="url(#dash-grad)" className="h-5 w-5">
+            <path strokeLinecap="round" strokeLinejoin="round" d="M10.5 6a7.5 7.5 0 1 0 7.5 7.5h-7.5V6Z" />
+            <path strokeLinecap="round" strokeLinejoin="round" d="M13.5 10.5H21A7.5 7.5 0 0 0 13.5 3v7.5Z" />
+        </svg>
+    );
+}
+
+function ClockIcon() {
+    return (
+        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="url(#dash-grad)" className="h-5 w-5">
+            <path strokeLinecap="round" strokeLinejoin="round" d="M12 6v6h4.5m4.5 0a9 9 0 1 1-18 0 9 9 0 0 1 18 0Z" />
+        </svg>
+    );
+}
+
 export default function Dashboard() {
     const userInfo    = useJwtInformation();
     const authLoading = useAuth();
@@ -23,65 +48,81 @@ export default function Dashboard() {
 
     return (
         <Layout currentPage="/dashboard">
-            <h1 className="text-3xl font-bold text-txt-primary dark:text-dark-txt-primary mb-2">
-                Bonjour, {userInfo.username} !
-            </h1>
-            <p className="text-txt-secondary dark:text-dark-txt-secondary mb-8">
-                Retrouvez vos fichiers récents et dossiers partagés.
-            </p>
+            {/* Hidden gradient sprite for SVG stroke references */}
+            <svg width="0" height="0" className="absolute overflow-hidden" aria-hidden="true">
+                <defs>
+                    <linearGradient id="dash-grad" x1="0%" y1="0%" x2="100%" y2="100%">
+                        <stop offset="0%" stopColor="#7c6ef8" />
+                        <stop offset="100%" stopColor="#42aff0" />
+                    </linearGradient>
+                </defs>
+            </svg>
 
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 mb-8">
-                {/* Espace utilisé */}
-                <GlobalCard
-                    svgIcon={
-                        <svg xmlns="http://www.w3.org/2000/svg" className="h-6 w-6 text-[#5E81F4]" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
-                            <path strokeLinecap="round" strokeLinejoin="round" d="M20.25 6.375c0 2.278-3.694 4.125-8.25 4.125S3.75 8.653 3.75 6.375m16.5 0c0-2.278-3.694-4.125-8.25-4.125S3.75 4.097 3.75 6.375m16.5 0v11.25c0 2.278-3.694 4.125-8.25 4.125s-8.25-1.847-8.25-4.125V6.375m16.5 0v3.75m-16.5-3.75v3.75m16.5 0v3.75C20.25 16.153 16.556 18 12 18s-8.25-1.847-8.25-4.125v-3.75m16.5 0c0 2.278-3.694 4.125-8.25 4.125s-8.25-1.847-8.25-4.125" />
-                        </svg>
-                    }
-                >
-                    <div className="mb-6">
-                        <h3 className="text-txt-primary dark:text-dark-txt-primary font-medium text-md mb-1">Espace Utilisé</h3>
-                        {loading ? (
-                            <div className="flex items-baseline gap-2 mt-1">
-                                <div className="h-10 w-28 bg-border-subtle dark:bg-dark-border-subtle rounded-lg animate-pulse" />
-                                <div className="h-6 w-20 bg-border-subtle dark:bg-dark-border-subtle rounded-lg animate-pulse" />
-                            </div>
-                        ) : (
-                            <div className="flex items-baseline gap-2">
-                                <span className="text-4xl font-bold text-txt-primary dark:text-dark-txt-primary tracking-tight">
+            {/* Page heading */}
+            <div className="mb-8">
+                <h1 className="text-2xl font-bold text-[#ededed] mb-1">
+                    Bonjour,{" "}
+                    <span className="bg-gradient-to-r from-[#7c6ef8] to-[#42aff0] bg-clip-text text-transparent">
+                        {userInfo.username}
+                    </span>{" "}!
+                </h1>
+                <p className="text-sm text-[#555]">
+                    Retrouvez vos fichiers récents et l&apos;état de votre stockage.
+                </p>
+            </div>
+
+            {/* Stats grid */}
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-5 mb-8">
+
+                {/* Storage used card */}
+                <GlobalCard svgIcon={<StorageIcon />}>
+                    <p className="text-[11px] font-semibold text-[#444] uppercase tracking-widest mb-3">Espace utilisé</p>
+
+                    {loading ? (
+                        <div className="space-y-2 mt-1">
+                            <div className="h-9 w-32 bg-white/[0.04] rounded-lg animate-pulse" />
+                            <div className="h-3 w-full bg-white/[0.04] rounded-full animate-pulse" />
+                        </div>
+                    ) : (
+                        <>
+                            <div className="flex items-baseline gap-2 mb-4">
+                                <span className="text-3xl font-bold text-[#ededed] tracking-tight">
                                     {convertFileSize(usedBytes)}
                                 </span>
-                                <span className="text-txt-secondary dark:text-dark-txt-secondary text-lg font-medium">
+                                <span className="text-sm text-[#444] font-medium">
                                     / {convertFileSize(totalBytes)}
                                 </span>
                             </div>
-                        )}
-                    </div>
-                    <div className="w-full bg-main-bg dark:bg-dark-main-bg rounded-full h-3 overflow-hidden">
-                        <div
-                            className="bg-action dark:bg-dark-action h-full rounded-full transition-all duration-500 ease-out"
-                            style={{ width: loading ? '0%' : `${usedPct}%` }}
-                        />
-                    </div>
+
+                            {/* Progress bar */}
+                            <div className="w-full bg-white/[0.05] rounded-full h-2 overflow-hidden">
+                                <div
+                                    className="h-full rounded-full bg-gradient-to-r from-[#7c6ef8] to-[#42aff0] transition-all duration-700 ease-out"
+                                    style={{ width: `${usedPct}%` }}
+                                />
+                            </div>
+                            <p className="text-[11px] text-[#444] mt-2">{usedPct}% utilisé</p>
+                        </>
+                    )}
                 </GlobalCard>
 
-                {/* Répartition par type */}
+                {/* Storage breakdown card */}
                 <div className="md:col-span-2">
-                    <GlobalCard
-                        svgIcon={
-                            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="h-6 w-6 text-action dark:text-dark-action">
-                                <path strokeLinecap="round" strokeLinejoin="round" d="M10.5 6a7.5 7.5 0 1 0 7.5 7.5h-7.5V6Z" />
-                                <path strokeLinecap="round" strokeLinejoin="round" d="M13.5 10.5H21A7.5 7.5 0 0 0 13.5 3v7.5Z" />
-                            </svg>
-                        }
-                    >
-                        <h3 className="text-txt-primary dark:text-dark-txt-primary font-semibold text-lg mb-6">
-                            Répartition par type
-                            {isMock && <span className="ml-2 text-xs font-normal text-yellow-500">(simulé)</span>}
-                        </h3>
+                    <GlobalCard svgIcon={<ChartIcon />}>
+                        <div className="flex items-center justify-between mb-5">
+                            <p className="text-[11px] font-semibold text-[#444] uppercase tracking-widest">
+                                Répartition par type
+                            </p>
+                            {isMock && (
+                                <span className="text-[10px] font-medium text-[#f59e0b] bg-[#f59e0b]/10 px-2 py-0.5 rounded-full">
+                                    simulé
+                                </span>
+                            )}
+                        </div>
+
                         {loading ? (
                             <div className="flex justify-center py-8">
-                                <svg className="w-8 h-8 animate-spin text-txt-secondary dark:text-dark-txt-secondary" fill="none" viewBox="0 0 24 24">
+                                <svg className="w-6 h-6 animate-spin text-[#444]" fill="none" viewBox="0 0 24 24">
                                     <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4" />
                                     <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8v4a4 4 0 00-4 4H4z" />
                                 </svg>
@@ -93,10 +134,13 @@ export default function Dashboard() {
                 </div>
             </div>
 
-            <h2 className="text-xl font-bold text-txt-secondary dark:text-dark-txt-primary mb-2">
-                Fichiers Récents
-            </h2>
-            <ShowRecentFile />
+            {/* Recent files */}
+            <GlobalCard svgIcon={<ClockIcon />}>
+                <p className="text-[11px] font-semibold text-[#444] uppercase tracking-widest mb-4">
+                    Fichiers récents
+                </p>
+                <ShowRecentFile />
+            </GlobalCard>
         </Layout>
     );
 }
