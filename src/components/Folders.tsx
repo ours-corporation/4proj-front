@@ -131,7 +131,7 @@ export default function Folders({ listFolders, listFiles, changeFolderId, viewMo
 
         setFileLoading(true);
         const fileDownload = async () => {
-            const downloadedFile = await downloadFile({ fileId: file.id });
+            const downloadedFile = await downloadFile({ fileId: file.id, mimeType: file.mime_type });
             setFile(downloadedFile);
             setFileLoading(false);
         };
@@ -302,7 +302,7 @@ export default function Folders({ listFolders, listFiles, changeFolderId, viewMo
                         //downloadFolder={!fp(folder) || fp(folder) === 'WRITE' ? downloadFolderById : undefined}
                         downloadFolder={downloadFolderById}
                         restoreFolder={isTrash ? restoreFolder : undefined}
-                        renameFolder={!fp(folder) || fp(folder) === 'WRITE' ? openRenameFolderModalFn : undefined}
+                        renameFolder={!fp(folder) ? openRenameFolderModalFn : undefined}
                         deleteFolder={!fp(folder) || isTrash ? openDeleteFolderModalFn : undefined}
                         openShares={!fp(folder) ? openFolderDetailsModalFn : undefined}
                         shareFolder={!fp(folder) ? openShareFolderModalFn : undefined}
@@ -397,7 +397,7 @@ export default function Folders({ listFolders, listFiles, changeFolderId, viewMo
                                         Partager
                                     </button>
                                 )}
-                                {(!fp(folder) || fp(folder) === 'WRITE') && (
+                                {!fp(folder) && (
                                 <button
                                     className="w-full text-left px-4 py-2 text-sm hover:bg-gray-100 dark:hover:bg-gray-700"
                                     onClick={(e) => { e.stopPropagation(); openRenameFolderModalFn(folder); setOpenListMenuId(null); }}
@@ -518,6 +518,7 @@ export default function Folders({ listFolders, listFiles, changeFolderId, viewMo
                 isOpen={openUpdateModal}
                 fileInfo={editFileInfo!}
                 closeModal={() => closeUploadFileModal()}
+                onSuccess={onFileChanged}
             />
 
             <ShareFileModal

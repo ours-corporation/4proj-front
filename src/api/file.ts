@@ -3,7 +3,7 @@ import {getJwtToken} from "@/src/hooks/getJwtInformation";
 import { FileResponse } from "../interface/file";
 import { FileShareItem } from "../interface/share";
 
-export async function downloadFile({ fileId }: { fileId: number }): Promise<File> {
+export async function downloadFile({ fileId, mimeType }: { fileId: number; mimeType?: string }): Promise<File> {
     const url = process.env.NEXT_PUBLIC_API_URL;
     const token = getJwtToken();
 
@@ -21,7 +21,8 @@ export async function downloadFile({ fileId }: { fileId: number }): Promise<File
         }
 
         const blob = await rep.blob();
-        return new File([blob], "downloaded_file", {type: blob.type});
+        const type = mimeType || blob.type || 'application/octet-stream';
+        return new File([blob], "downloaded_file", { type });
 
     } catch (error) {
         throw error;

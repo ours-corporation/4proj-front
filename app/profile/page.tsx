@@ -49,7 +49,7 @@ export default function SettingsPage() {
 
      async function fetchUserProfilePic(){
         try{
-            // suppresion de la potentiel url précédente
+            // suppression de la potentielle URL précédente
             if (profilePicture) {
                 URL.revokeObjectURL(profilePicture);
             }
@@ -79,7 +79,7 @@ export default function SettingsPage() {
                     setAccountCreationDate(date);
 
                 } else {
-                    setProfilePictureError("les informations n'ont pas réussi à être récupéré");
+                    setProfilePictureError("Les informations n'ont pas pu être récupérées.");
                 }
             } catch (error) {
                 console.log(error);
@@ -190,7 +190,7 @@ export default function SettingsPage() {
 
              <Modal
                 size="small"
-                title="modifier l'image de profile"
+                title="Modifier l'image de profil"
                 isOpen={profilePictureOpenModal}
                 onClose={() => {  setProfilePictureOpenModal(false); }}
             >
@@ -205,7 +205,9 @@ export default function SettingsPage() {
                                     await deleteProfilePicture();
                                     URL.revokeObjectURL(profilePicture);
                                     setProfilePicture("");
+                                    setChoosedProfilePicture([]);
                                     window.dispatchEvent(new Event('profile-picture-updated'));
+                                    setProfilePictureOpenModal(false);
                                 }}
                                 className="text-xs font-medium text-error dark:text-dark-error hover:underline"
                             >
