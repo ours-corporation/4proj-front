@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useState } from "react";
+import { useState } from "react";
 import InputField from "@/src/components/input/InputField";
 import SubmitButton from "@/src/components/button/SubmitButton";
 import { getPublicShareAPI} from "@/src/api/share";
@@ -8,10 +8,8 @@ import { PublicShareResponse } from "@/src/interface/share";
 import { getFileColor } from "@/src/utils/get-file-color";
 import { getFileSvg } from "@/src/utils/get-file-svg";
 import { convertFileSize } from "@/src/utils/convert-file-size";
-import {downloadFileService} from "@/src/services/downloadFile";
-
 import { downloadPublicFileService } from "@/src/services/downloadPublicFile";
-import{downloadPublicFolderService} from "@/src/services/downloadPublicFolder";
+import { downloadPublicFolderService } from "@/src/services/downloadPublicFolder";
 
 type ApiResult = Awaited<ReturnType<typeof getPublicShareAPI>>;
 
@@ -25,19 +23,28 @@ export default function ShowPublicShare({ shareId, initialResult }: ShowPublicSh
     const [result, setResult] = useState<ApiResult>(initialResult);
     const [loading, setLoading] = useState(false);
     const [error, setError] = useState<string | null>(null);
+    const [downloadError, setDownloadError] = useState<string | null>(null);
 
     async function downloadFolderById() {
-        const share = result.data as PublicShareResponse;
-        const file = share.data;
-        await downloadPublicFolderService(shareId, file.name, password);
-        
+        setDownloadError(null);
+        try {
+            const share = result.data as PublicShareResponse;
+            const file = share.data;
+            await downloadPublicFolderService(shareId, file.name, password);
+        } catch (e: any) {
+            setDownloadError(e.message || "Erreur lors du téléchargement.");
+        }
     }
 
     async function downloadFileById() {
-        const share = result.data as PublicShareResponse;
-        const file = share.data;
-        await downloadPublicFileService(shareId, file.name, password);
-
+        setDownloadError(null);
+        try {
+            const share = result.data as PublicShareResponse;
+            const file = share.data;
+            await downloadPublicFileService(shareId, file.fullName, password);
+        } catch (e: any) {
+            setDownloadError(e.message || "Erreur lors du téléchargement.");
+        }
     }
 
     const handleSubmit = async () => {
@@ -136,6 +143,10 @@ export default function ShowPublicShare({ shareId, initialResult }: ShowPublicSh
                         </span>
                     </div>
                    
+                    {downloadError && (
+                        <p className="text-sm text-error dark:text-dark-error">{downloadError}</p>
+                    )}
+
                     <button
                         onClick= {result.data.type == "file" ? downloadFileById : downloadFolderById}
                         className="w-full flex items-center justify-center gap-2 px-4 py-2.5 rounded-xl bg-action dark:bg-dark-action text-white font-medium text-sm hover:opacity-90 transition-opacity"
