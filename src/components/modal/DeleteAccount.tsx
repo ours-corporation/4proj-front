@@ -38,44 +38,46 @@ export default function DeleteAccountModal({ isOpen, email, closeModal }: Delete
     return (
         <Modal isOpen={isOpen} onClose={closeModal} title="Supprimer le compte" size="small">
             <div className="flex flex-col gap-4">
-                <div className="flex items-start gap-3 p-3 rounded-xl bg-red-50 dark:bg-red-900/20 border border-red-200 dark:border-red-800">
-                    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="w-5 h-5 text-red-600 dark:text-red-400 shrink-0 mt-0.5">
+                <div className="flex items-start gap-3 p-4 rounded-[12px] bg-[#ef5350]/[0.06] border border-[#ef5350]/20">
+                    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="#ef5350" className="w-5 h-5 shrink-0 mt-0.5">
                         <path strokeLinecap="round" strokeLinejoin="round" d="M12 9v3.75m-9.303 3.376c-.866 1.5.217 3.374 1.948 3.374h14.71c1.73 0 2.813-1.874 1.948-3.374L13.949 3.378c-.866-1.5-3.032-1.5-3.898 0L2.697 16.126ZM12 15.75h.007v.008H12v-.008Z" />
                     </svg>
-                    <p className="text-sm text-red-700 dark:text-red-300">
-                        Cette action est <span className="font-semibold">irréversible</span>. Tous vos fichiers, dossiers et partages seront définitivement supprimés.
+                    <p className="text-[13px] text-[#ef5350]/80 leading-relaxed">
+                        Cette action est <span className="font-semibold text-[#ef5350]">irréversible</span>. Tous vos fichiers, dossiers et partages seront définitivement supprimés.
                     </p>
                 </div>
 
-                <div className="flex flex-col gap-1.5">
-                    <label className="text-sm text-txt-primary dark:text-dark-txt-primary">
-                        Saisissez votre email <span className="font-semibold">{email}</span> pour confirmer :
+                <div>
+                    <label className="block text-[11px] font-medium text-[#555] mb-1.5 uppercase tracking-wider">
+                        Confirmez en saisissant votre e-mail
                     </label>
-                    <input
-                        type="email"
-                        value={confirmation}
-                        onChange={(e) => setConfirmation(e.target.value)}
-                        placeholder={email}
-                        className="w-full px-3 py-2 text-sm rounded-xl border border-gray-200 dark:border-gray-700 bg-main-bg dark:bg-dark-main-bg text-txt-primary dark:text-dark-txt-primary focus:outline-none focus:ring-2 focus:ring-red-500"
-                    />
+                    <div className="w-full bg-[#0d0d0d] border border-white/[0.08] rounded-[10px] px-4 py-3 flex items-center transition-all focus-within:border-[#ef5350]/40">
+                        <input
+                            type="email"
+                            value={confirmation}
+                            onChange={(e) => setConfirmation(e.target.value)}
+                            placeholder={email}
+                            className="flex-grow bg-transparent focus:outline-none p-0 border-none ring-0 text-[#ededed] text-sm placeholder:text-[#333]"
+                        />
+                    </div>
                 </div>
 
-                {error && <p className="text-sm text-red-500">{error}</p>}
+                {error && <p className="text-[13px] text-[#ef5350] px-3 py-2 bg-[#ef5350]/[0.08] border border-[#ef5350]/20 rounded-[8px]">{error}</p>}
 
-                <div className="flex gap-3 justify-end">
+                <div className="flex gap-3 pt-1">
                     <button
                         onClick={closeModal}
                         disabled={loading}
-                        className="px-4 py-2 text-sm rounded-xl border border-gray-200 dark:border-gray-700 text-txt-primary dark:text-dark-txt-primary hover:bg-gray-100 dark:hover:bg-gray-700 transition disabled:opacity-50"
+                        className="flex-1 px-4 py-2.5 text-sm rounded-[10px] border border-white/[0.08] text-[#888] hover:text-[#ededed] hover:border-white/[0.15] transition-all disabled:opacity-50"
                     >
                         Annuler
                     </button>
                     <button
                         onClick={handleDelete}
                         disabled={!isConfirmed || loading}
-                        className="px-4 py-2 text-sm rounded-xl bg-red-600 text-white hover:bg-red-700 transition disabled:opacity-50 disabled:cursor-not-allowed"
+                        className="flex-1 px-4 py-2.5 text-sm font-medium rounded-[10px] bg-[#ef5350] text-white hover:bg-[#d32f2f] transition-all disabled:opacity-30 disabled:cursor-not-allowed"
                     >
-                        {loading ? 'Suppression...' : 'Supprimer mon compte'}
+                        {loading ? 'Suppression…' : 'Supprimer mon compte'}
                     </button>
                 </div>
             </div>

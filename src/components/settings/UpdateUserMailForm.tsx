@@ -3,8 +3,11 @@
 import { useState, useEffect } from "react";
 import InputField from "@/src/components/input/InputField";
 import SubmitButton from "@/src/components/button/SubmitButton";
-import GlobalCard from "../card/GlobalCard";
 import { getMyInformation, updateUser } from "@/src/api/user";
+
+const iw = "mt-1 w-full bg-[#0d0d0d] border border-white/[0.08] rounded-[10px] px-4 py-3 flex items-center transition-all focus-within:border-[#7c6ef8]/50 focus-within:ring-1 focus-within:ring-[#7c6ef8]/20";
+const ii = "flex-grow bg-transparent focus:outline-none p-0 border-none ring-0 text-[#ededed] text-sm placeholder:text-[#333]";
+const lc = "block text-[11px] font-medium text-[#555] mb-1.5 uppercase tracking-wider";
 
 export default function UpdateUserMailForm() {
     const [username, setUsername] = useState("");
@@ -22,7 +25,6 @@ export default function UpdateUserMailForm() {
         setSubmitLoading(true);
         setError("");
         setSuccess(false);
-
         try {
             await updateUser(username, email, emailChanged ? password : undefined);
             setSuccess(true);
@@ -36,84 +38,58 @@ export default function UpdateUserMailForm() {
     };
 
     useEffect(() => {
-        async function fetchUserData() {
-            try {
-                const data = await getMyInformation();
-                if (data) {
-                    setEmail(data.email);
-                    setOriginalEmail(data.email);
-                    setUsername(data.username);
-                } else {
-                    setError("Les informations n'ont pas pu être récupérées.");
-                }
-            } catch (error) {
-                console.log(error);
-            }
-        }
-        fetchUserData();
+        getMyInformation().then(data => {
+            if (data) { setEmail(data.email); setOriginalEmail(data.email); setUsername(data.username); }
+        }).catch(console.log);
     }, []);
 
     return (
-        <GlobalCard
-            iconBg="bg-blue-500/10 dark:bg-blue-400/10"
-            svgIcon={
-                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="w-6 h-6 text-blue-500 dark:text-blue-400">
-                    <path strokeLinecap="round" strokeLinejoin="round" d="M15.75 6a3.75 3.75 0 1 1-7.5 0 3.75 3.75 0 0 1 7.5 0ZM4.501 20.118a7.5 7.5 0 0 1 14.998 0A17.933 17.933 0 0 1 12 21.75c-2.676 0-5.216-.584-7.499-1.632Z" />
-                </svg>
-            }
-        >
-            <form onSubmit={handleSubmit}>
-                <h1 className="text-3xl font-bold text-txt-primary dark:text-dark-txt-primary mb-4">Informations personnelles</h1>
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                    <InputField
-                        id="username"
-                        name="username"
-                        label="Nom d'utilisateur"
-                        value={username}
-                        type="text"
-                        onChange={setUsername}
-                    />
-
-                    <InputField
-                        id="email"
-                        name="email"
-                        label="Adresse e-mail"
-                        value={email}
-                        type="email"
-                        onChange={setEmail}
-                    />
-
-                    {emailChanged && (
-                        <div className="md:col-span-2">
-                            <InputField
-                                id="password-confirm"
-                                name="password-confirm"
-                                label="Mot de passe actuel (requis pour changer l'e-mail)"
-                                value={password}
-                                type="password"
-                                onChange={setPassword}
-                            />
-                        </div>
-                    )}
-
-                    {error && (
-                        <p className="text-sm text-error dark:text-dark-error col-span-full">{error}</p>
-                    )}
-                    {success && (
-                        <p className="text-sm text-green-600 dark:text-green-400 col-span-full">Modifications enregistrées.</p>
-                    )}
-
-                    <div className="md:col-span-2">
-                        <SubmitButton
-                            id="change-button"
-                            type="submit"
-                            text="Enregistrer les modifications"
-                            loading={submitLoading}
-                            loadingText="Enregistrement..."
-                        />
-                    </div>
+        <div className="bg-[#111113] border border-white/[0.06] rounded-[20px] p-6">
+            <div className="flex items-center gap-3 mb-6">
+                <div className="w-9 h-9 rounded-[10px] bg-[#7c6ef8]/10 flex items-center justify-center flex-shrink-0">
+                    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="#7c6ef8" className="w-5 h-5">
+                        <path strokeLinecap="round" strokeLinejoin="round" d="M15.75 6a3.75 3.75 0 1 1-7.5 0 3.75 3.75 0 0 1 7.5 0ZM4.501 20.118a7.5 7.5 0 0 1 14.998 0A17.933 17.933 0 0 1 12 21.75c-2.676 0-5.216-.584-7.499-1.632Z" />
+                    </svg>
                 </div>
+                <div>
+                    <h2 className="text-[15px] font-semibold text-[#ededed]">Informations personnelles</h2>
+                    <p className="text-[12px] text-[#444]">Nom d'utilisateur et adresse e-mail</p>
+                </div>
+            </div>
+
+            <form onSubmit={handleSubmit} className="space-y-4">
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                    <InputField id="username" name="username" label="Nom d'utilisateur" value={username} type="text" onChange={setUsername} labelClassName={lc} wrapperClassName={iw} inputClassName={ii} />
+                    <InputField id="email" name="email" label="Adresse e-mail" value={email} type="email" onChange={setEmail} labelClassName={lc} wrapperClassName={iw} inputClassName={ii} />
+                </div>
+
+                {emailChanged && (
+                    <InputField
+                        id="password-confirm"
+                        name="password-confirm"
+                        label="Mot de passe actuel (requis pour changer l'e-mail)"
+                        value={password}
+                        type="password"
+                        placeholder="••••••••"
+                        onChange={setPassword}
+                        labelClassName={lc}
+                        wrapperClassName={iw}
+                        inputClassName={ii}
+                    />
+                )}
+
+                {error && <p className="text-[13px] text-[#ef5350] px-3 py-2 bg-[#ef5350]/[0.08] border border-[#ef5350]/20 rounded-[8px]">{error}</p>}
+                {success && <p className="text-[13px] text-[#4CAF50] px-3 py-2 bg-[#4CAF50]/[0.08] border border-[#4CAF50]/20 rounded-[8px]">Modifications enregistrées.</p>}
+
+                <SubmitButton
+                    id="change-info-button"
+                    type="submit"
+                    text="Enregistrer les modifications"
+                    loading={submitLoading}
+                    loadingText="Enregistrement…"
+                    className="w-full py-3 rounded-[10px] bg-gradient-to-r from-[#7c6ef8] to-[#42aff0] text-white text-[14px] font-medium hover:opacity-90 transition-all disabled:opacity-50 disabled:cursor-not-allowed cursor-pointer"
+                />
             </form>
-        </GlobalCard>
+        </div>
     );
 }
