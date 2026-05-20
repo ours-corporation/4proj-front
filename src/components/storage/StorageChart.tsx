@@ -1,12 +1,8 @@
 'use client';
 
-import { Pie } from 'react-chartjs-2';
-import { Chart as ChartJS, ArcElement, Tooltip, Legend, type ChartOptions } from 'chart.js';
 import { convertFileSize } from '@/src/utils/convert-file-size';
-
-ChartJS.register(ArcElement, Tooltip, Legend);
-
 import type { StorageCategoryData } from '@/src/interface/storage';
+
 export type { StorageCategoryData };
 
 interface StorageChartProps {
@@ -14,92 +10,111 @@ interface StorageChartProps {
     totalBytes: number;
 }
 
+const DONUT_R = 38;
+const CX = 50;
+const CY = 50;
+const CIRCUMFERENCE = 2 * Math.PI * DONUT_R;
+const STROKE_WIDTH = 10;
+const GAP = 2; // gap between segments in px along the circumference
+
 export default function StorageChart({ categories, totalBytes }: StorageChartProps) {
-    const isDark = typeof window !== 'undefined' && document.documentElement.classList.contains('dark');
+    const filtered = categories.filter(c => c.bytes > 0);
+    const usedTotal = filtered.reduce((sum, c) => sum + c.bytes, 0);
 
-    const textColor = isDark ? '#9CA3AF' : '#6B7280';
-    const titleColor = isDark ? '#E5E5E5' : '#111827';
+    // Build donut segments
+    const segments: { color: string; dash: number; offset: number }[] = [];
+    let cumulative = 0;
+    for (const cat of filtered) {
+        const dash = Math.max(0, (cat.bytes / usedTotal) * CIRCUMFERENCE - GAP);
+        segments.push({ color: cat.color, dash, offset: -cumulative });
+        cumulative += (cat.bytes / usedTotal) * CIRCUMFERENCE;
+    }
 
-    const filteredCategories = categories.filter(c => c.bytes > 0);
-    const usedTotal = filteredCategories.reduce((sum, c) => sum + c.bytes, 0);
-
-    const data = {
-        labels: filteredCategories.map(c => c.label),
-        datasets: [
-            {
-                data: filteredCategories.map(c => c.bytes),
-                backgroundColor: filteredCategories.map(c => c.color),
-                borderColor: isDark ? '#2C2E33' : '#FFFFFF',
-                borderWidth: 3,
-                hoverOffset: 6,
-            },
-        ],
-    };
-
-    const options: ChartOptions<'pie'> = {
-        responsive: true,
-        maintainAspectRatio: true,
-        plugins: {
-            legend: {
-                display: false,
-            },
-            tooltip: {
-                callbacks: {
-                    label: (ctx) => {
-                        const bytes = ctx.raw as number;
-                        const pct = usedTotal > 0 ? ((bytes / usedTotal) * 100).toFixed(1) : '0';
-                        return ` ${convertFileSize(bytes)} (${pct}%)`;
-                    },
-                },
-                backgroundColor: isDark ? '#2C2E33' : '#FFFFFF',
-                titleColor,
-                bodyColor: textColor,
-                borderColor: isDark ? '#383A40' : '#E5E7EB',
-                borderWidth: 1,
-            },
-        },
-    };
+    const usedPct = totalBytes > 0 ? ((usedTotal / totalBytes) * 100).toFixed(0) : '0';
 
     return (
-        <div className="flex flex-col sm:flex-row items-center justify-center gap-4 xl:gap-8 w-full">
-            <div className="w-40 h-40 xl:w-64 xl:h-64 shrink-0">
-                <Pie data={data} options={options} />
+        <div className="flex flex-col sm:flex-row items-center gap-6 xl:gap-10 w-full">
+
+            {/* Donut chart */}
+            <div className="relative flex-shrink-0 w-36 h-36 xl:w-44 xl:h-44">
+                <svg viewBox="0 0 100 100" className="w-full h-full -rotate-90">
+                    {/* Track */}
+                    <circle
+                        cx={CX} cy={CY} r={DONUT_R}
+                        fill="none"
+                        stroke="rgba(255,255,255,0.05)"
+                        strokeWidth={STROKE_WIDTH}
+                    />
+                    {/* Segments */}
+                    {filtered.length === 0 ? (
+                        <circle
+                            cx={CX} cy={CY} r={DONUT_R}
+                            fill="none"
+                            stroke="rgba(255,255,255,0.08)"
+                            strokeWidth={STROKE_WIDTH}
+                            strokeDasharray={`${CIRCUMFERENCE} ${CIRCUMFERENCE}`}
+                        />
+                    ) : segments.map((seg, i) => (
+                        <circle
+                            key={i}
+                            cx={CX} cy={CY} r={DONUT_R}
+                            fill="none"
+                            stroke={seg.color}
+                            strokeWidth={STROKE_WIDTH}
+                            strokeDasharray={`${seg.dash} ${CIRCUMFERENCE}`}
+                            strokeDashoffset={seg.offset}
+                            strokeLinecap="butt"
+                        />
+                    ))}
+                </svg>
+
+                {/* Center label */}
+                <div className="absolute inset-0 flex flex-col items-center justify-center">
+                    <span className="text-xl font-bold text-[#ededed]">{usedPct}%</span>
+                    <span className="text-[10px] text-[#444] mt-0.5">utilisé</span>
+                </div>
             </div>
 
-            <div className="flex flex-col gap-2">
-                {/* En-têtes */}
-                <div className="flex items-center gap-3">
-                    <span className="w-3 h-3 shrink-0" />
-                    <span className="w-20 xl:w-24" />
-                    <span className="text-xs font-semibold text-txt-secondary dark:text-dark-txt-secondary w-14 xl:w-16 text-right">Taille</span>
-                    <span className="text-xs font-semibold text-txt-secondary dark:text-dark-txt-secondary w-16 xl:w-20 text-right">% utilisé</span>
-                    <span className="text-xs font-semibold text-txt-secondary dark:text-dark-txt-secondary w-16 xl:w-20 text-right">% quota</span>
-                </div>
-
-                {filteredCategories.map((cat) => {
-                    const pctUsed  = usedTotal   > 0 ? (cat.bytes / usedTotal)   * 100 : 0;
-                    const pctTotal = totalBytes  > 0 ? (cat.bytes / totalBytes)  * 100 : 0;
+            {/* Category bars */}
+            <div className="flex-1 w-full space-y-4">
+                {filtered.length === 0 ? (
+                    <p className="text-sm text-[#444] text-center py-4">Aucune donnée</p>
+                ) : filtered.map((cat) => {
+                    const pctOfUsed = usedTotal > 0 ? (cat.bytes / usedTotal) * 100 : 0;
                     return (
-                        <div key={cat.label} className="flex items-center gap-3">
-                            <span
-                                className="w-3 h-3 rounded-full shrink-0"
-                                style={{ backgroundColor: cat.color }}
-                            />
-                            <span className="text-sm text-txt-primary dark:text-dark-txt-primary w-20 xl:w-24">
-                                {cat.label}
-                            </span>
-                            <span className="text-xs text-txt-secondary dark:text-dark-txt-secondary w-14 xl:w-16 text-right">
-                                {convertFileSize(cat.bytes)}
-                            </span>
-                            <span className="text-xs text-txt-secondary dark:text-dark-txt-secondary w-16 xl:w-20 text-right">
-                                {pctUsed.toFixed(1)}%
-                            </span>
-                            <span className="text-xs text-txt-secondary dark:text-dark-txt-secondary w-16 xl:w-20 text-right">
-                                {pctTotal.toFixed(1)}%
-                            </span>
+                        <div key={cat.label}>
+                            <div className="flex items-center justify-between mb-1.5">
+                                <div className="flex items-center gap-2">
+                                    <span
+                                        className="w-2 h-2 rounded-full flex-shrink-0"
+                                        style={{ backgroundColor: cat.color }}
+                                    />
+                                    <span className="text-sm text-[#ccc]">{cat.label}</span>
+                                </div>
+                                <div className="flex items-center gap-3">
+                                    <span className="text-xs text-[#555]">{convertFileSize(cat.bytes)}</span>
+                                    <span className="text-xs font-semibold text-[#888] w-10 text-right">
+                                        {pctOfUsed.toFixed(1)}%
+                                    </span>
+                                </div>
+                            </div>
+                            <div className="w-full h-1.5 bg-white/[0.05] rounded-full overflow-hidden">
+                                <div
+                                    className="h-full rounded-full transition-all duration-700 ease-out"
+                                    style={{ width: `${pctOfUsed}%`, backgroundColor: cat.color }}
+                                />
+                            </div>
                         </div>
                     );
                 })}
+
+                {/* Total row */}
+                {filtered.length > 0 && (
+                    <div className="pt-3 border-t border-white/[0.06] flex items-center justify-between">
+                        <span className="text-xs text-[#444]">Total utilisé</span>
+                        <span className="text-sm font-semibold text-[#ededed]">{convertFileSize(usedTotal)}</span>
+                    </div>
+                )}
             </div>
         </div>
     );

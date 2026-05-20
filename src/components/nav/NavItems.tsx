@@ -8,19 +8,15 @@ interface NavItemsProps {
 }
 
 export default function NavItems({ text, href, icon, isActive = false }: NavItemsProps) {
-    // Styles pour l'élément actif (Le gros bouton bleu)
-    const activeStyle = "bg-action dark:bg-dark-action text-white shadow-lg shadow-blue-900/20 font-semibold";
-
-    // Styles pour les éléments inactifs (Gris, hover léger)
-    const inactiveStyle = "text-txt-secondary hover:text-txt-primary hover:bg-gray-200 dark:hover:bg-white/5 dark:hover:text-dark-txt-primary";
+    const activeStyle = "bg-gradient-to-r from-[#7c6ef8] to-[#42aff0] text-white shadow-[0_4px_20px_rgba(124,110,248,0.25)] font-semibold";
+    const inactiveStyle = "text-[#555] hover:text-[#ededed] hover:bg-white/[0.04]";
 
     return (
         <a
             href={href}
-            className={`flex items-center gap-3 px-4 py-3 rounded-xl transition-all duration-200 ${isActive ? activeStyle : inactiveStyle}`}
+            className={`flex items-center gap-3 px-3.5 py-2.5 rounded-[10px] transition-all duration-200 ${isActive ? activeStyle : inactiveStyle}`}
         >
-            {/* On clone l'icône pour s'assurer qu'elle a la bonne taille */}
-            <div className="w-6 h-6 flex-shrink-0">
+            <div className="w-5 h-5 flex-shrink-0">
                 {icon}
             </div>
             <span className="text-sm font-medium">{text}</span>

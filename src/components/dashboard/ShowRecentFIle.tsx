@@ -22,8 +22,8 @@ export default function ShowRecentFile() {
 
     if (loading) {
         return (
-            <div className="flex items-center justify-center py-10">
-                <svg className="w-8 h-8 animate-spin text-txt-secondary dark:text-dark-txt-secondary" fill="none" viewBox="0 0 24 24">
+            <div className="flex items-center justify-center py-8">
+                <svg className="w-6 h-6 animate-spin text-[#444]" fill="none" viewBox="0 0 24 24">
                     <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4" />
                     <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8v4a4 4 0 00-4 4H4z" />
                 </svg>
@@ -33,14 +33,14 @@ export default function ShowRecentFile() {
 
     if (files.length === 0) {
         return (
-            <p className="text-sm text-txt-secondary dark:text-dark-txt-secondary py-6 text-center">
+            <p className="text-sm text-[#444] py-6 text-center">
                 Aucun fichier récent.
             </p>
         );
     }
 
     return (
-        <div className="flex flex-col divide-y divide-gray-100 dark:divide-gray-800">
+        <div className="flex flex-col divide-y divide-white/[0.04]">
             {files.map((file) => {
                 const color = getFileColor(file.mime_type);
                 const href = file.folder_id ? `/folders?folderId=${file.folder_id}` : "/folders";
@@ -48,19 +48,19 @@ export default function ShowRecentFile() {
                     <Link
                         key={file.id}
                         href={href}
-                        className="flex items-center gap-3 py-3 px-2 rounded-lg hover:bg-gray-50 dark:hover:bg-dark-surface transition-colors"
+                        className="flex items-center gap-3 py-3 px-2 rounded-[8px] hover:bg-white/[0.03] transition-colors no-underline"
                     >
                         <div
-                            className="w-10 h-10 rounded-xl flex items-center justify-center shrink-0"
-                            style={{ backgroundColor: `${color}20` }}
+                            className="w-9 h-9 rounded-[8px] flex items-center justify-center flex-shrink-0"
+                            style={{ backgroundColor: `${color}18` }}
                         >
-                            <img src={getFileSvg(file.mime_type)} alt={file.mime_type} className="w-6 h-6" />
+                            <img src={getFileSvg(file.mime_type)} alt={file.mime_type} className="w-5 h-5" />
                         </div>
                         <div className="flex-1 min-w-0">
-                            <p className="text-sm font-medium text-txt-primary dark:text-dark-txt-primary truncate" title={file.fullName}>
+                            <p className="text-sm font-medium text-[#ccc] truncate" title={file.fullName}>
                                 {file.fullName}
                             </p>
-                            <p className="text-xs text-txt-secondary dark:text-dark-txt-secondary">
+                            <p className="text-xs text-[#555]">
                                 {convertFileSize(file.size_bytes)} · {converCreatedAt(file.updatedAt)}
                             </p>
                         </div>

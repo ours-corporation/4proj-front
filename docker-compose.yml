@@ -8,10 +8,11 @@ services:
       - /app/node_modules
       - /app/.next
     ports:
-      - "127.0.0.1:3000:3000"
+      - "3000:3000"
     environment:
       - NODE_ENV=development
       - WATCHPACK_POLLING=true
+      - NEXT_PUBLIC_API_URL=https://api-supfile.dev-lecomte.fr
     command: sh -c "npm install && npx next dev -H 0.0.0.0"
 
 #  app:
