@@ -1,6 +1,6 @@
 'use client';
 
-import { useState, useEffect } from 'react';
+import { useState, useEffect, Suspense } from 'react';
 import { useSearchParams } from 'next/navigation';
 import { useAuth } from '@/src/hooks/useAuth';
 import Loading from '@/src/components/Loading';
@@ -12,7 +12,7 @@ import CreateFolderModal from "@/src/components/modal/CreateFolderModal";
 import UploadFileModal from "@/src/components/modal/UploadFileModal";
 import ViewToolbar from "@/src/components/layout/ViewToolbar";
 
-export default function ShowFolders() {
+function FoldersContent() {
     const searchParams = useSearchParams();
     const [folderId, setFolderId] = useState<string>(searchParams.get('folderId') ?? '');
     const [folderData, setFolderData] = useState<FolderDetailResponse | null>(null);
@@ -127,5 +127,13 @@ export default function ShowFolders() {
                 onSuccess={fetchFolderData}
             />
         </Layout>
+    );
+}
+
+export default function ShowFolders() {
+    return (
+        <Suspense fallback={<Loading />}>
+            <FoldersContent />
+        </Suspense>
     );
 }
