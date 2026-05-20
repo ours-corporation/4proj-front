@@ -2,9 +2,12 @@ import React from "react";
 
 export default function Loading() {
     return (
-        <div className="h-screen flex flex-col items-center justify-center bg-main-bg dark:bg-dark-main-bg">
-            <div className="w-12 h-12 border-4 border-slate-300 border-t-sky-500 rounded-full animate-spin"></div>
-            <p className="mt-4 text-sm text-txt-primary dark:text-dark-txt-primary">Chargement...</p>
+        <div className="h-screen flex flex-col items-center justify-center bg-[#0d0d0d]">
+            <div className="relative w-12 h-12">
+                <div className="absolute inset-0 rounded-full border-4 border-white/[0.06]"></div>
+                <div className="absolute inset-0 rounded-full border-4 border-transparent border-t-[#7c6ef8] border-r-[#42aff0] animate-spin"></div>
+            </div>
+            <p className="mt-4 text-sm text-txt-secondary dark:text-dark-txt-secondary">Chargement...</p>
         </div>
     );
 }
