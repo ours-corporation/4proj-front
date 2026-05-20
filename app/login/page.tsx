@@ -32,6 +32,10 @@ export default function LoginPage() {
     const githubClientId = GetGithubClientId();
 
     useEffect(() => {
+        const params = new URLSearchParams(window.location.search);
+        const errorParam = params.get('error');
+        if (errorParam) setError(errorParam);
+
         setGoogleCallback(window.location.origin + "/auth/google/callback");
         setGoogleRedirectUri("https://accounts.google.com/o/oauth2/v2/auth?client_id=" + googleClientId + "&redirect_uri=" + googleCallback + "&response_type=code&scope=openid email profile&access_type=offline&prompt=consent");
         setGithubCallback(window.location.origin + "/auth/github/callback");
@@ -53,17 +57,23 @@ export default function LoginPage() {
         try {
             const res = await login(email, password);
             if (!res.ok) {
-                setError(res.status === 401 ? "Les identifiants sont invalides." : `Erreur : ${res.status}`);
+                if (res.status === 401) {
+                    setError("Les identifiants sont invalides.");
+                } else if (res.status === 400) {
+                    const data = await res.json().catch(() => ({}));
+                    setError(data?.errors?.[0]?.message || data?.error || "Données invalides.");
+                } else {
+                    setError("Une erreur serveur s'est produite. Veuillez réessayer.");
+                }
                 return;
             }
             const data = await res.json();
             if (data.accessToken) {
                 localStorage.setItem("accessToken", data.accessToken);
-                localStorage.setItem("refreshToken", data.refreshToken);
                 router.push("/dashboard");
             }
         } catch {
-            console.error("Login failed");
+            setError("Impossible de joindre le serveur. Vérifiez votre connexion.");
         } finally {
             setLoading(false);
         }

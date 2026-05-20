@@ -1,10 +1,13 @@
 'use client';
 
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { register } from "@/src/api/auth";
 import { useRouter } from "next/navigation";
+import { FcGoogle } from "react-icons/fc";
+import { FaGithub } from "react-icons/fa";
 import { useNotAuth } from "@/src/hooks/useAuth";
 import { registerValidatorValidator } from "@/src/validator/auth";
+import { GetGoogleClientId, GetGithubClientId } from "@/src/services/envReader";
 import InputField from "@/src/components/input/InputField";
 import SubmitButton from "@/src/components/button/SubmitButton";
 
@@ -21,6 +24,21 @@ export default function RegisterPage() {
     const [error, setError] = useState("");
 
     const router = useRouter();
+
+    const [googleCallback, setGoogleCallback] = useState("");
+    const [googleRedirectUri, setGoogleRedirectUri] = useState("");
+    const googleClientId = GetGoogleClientId();
+
+    const [githubCallback, setGithubCallback] = useState("");
+    const [githubRedirectUri, setGithubRedirectUri] = useState("");
+    const githubClientId = GetGithubClientId();
+
+    useEffect(() => {
+        setGoogleCallback(window.location.origin + "/auth/google/callback");
+        setGoogleRedirectUri("https://accounts.google.com/o/oauth2/v2/auth?client_id=" + googleClientId + "&redirect_uri=" + googleCallback + "&response_type=code&scope=openid email profile&access_type=offline&prompt=consent");
+        setGithubCallback(window.location.origin + "/auth/github/callback");
+        setGithubRedirectUri("https://github.com/login/oauth/authorize?client_id=" + githubClientId + "&redirect_uri=" + githubCallback + "&scope=user:email&state=xyz");
+    }, [googleClientId, googleCallback, googleRedirectUri, githubClientId, githubCallback, githubRedirectUri]);
 
     const handleSubmit = async (e: { preventDefault: () => void }) => {
         e.preventDefault();
@@ -46,18 +64,17 @@ export default function RegisterPage() {
             if (!res.ok) {
                 if (res.status === 409) {
                     setError("Un compte existe déjà avec cet email.");
-                } else if (res.status === 401) {
-                    setError("Les identifiants sont invalides.");
-                } else if (res.status >= 500) {
-                    setError("Une erreur serveur s'est produite. Cet email est peut-être déjà utilisé.");
+                } else if (res.status === 400) {
+                    const data = await res.json().catch(() => ({}));
+                    setError(data?.errors?.[0]?.message || data?.error || "Données invalides.");
                 } else {
-                    setError(`Erreur : ${res.status}`);
+                    setError("Une erreur serveur s'est produite. Veuillez réessayer.");
                 }
             } else {
                 router.push("/login");
             }
-        } catch (err) {
-            console.error("Register failed", err);
+        } catch {
+            setError("Impossible de joindre le serveur. Vérifiez votre connexion.");
         } finally {
             setLoading(false);
         }
@@ -186,6 +203,30 @@ export default function RegisterPage() {
                             className="w-full py-3.5 rounded-[10px] bg-gradient-to-r from-[#7c6ef8] to-[#42aff0] text-white text-[15px] font-medium mb-6 shadow-[0_0_30px_rgba(124,110,248,0.25)] hover:opacity-90 hover:-translate-y-px hover:shadow-[0_0_50px_rgba(124,110,248,0.45)] transition-all disabled:opacity-50 disabled:cursor-not-allowed cursor-pointer"
                         />
                     </form>
+
+                    <div className="flex items-center gap-3 mb-4">
+                        <div className="flex-1 h-px bg-white/[0.06]" />
+                        <span className="text-[11px] text-[#333] uppercase tracking-widest">ou</span>
+                        <div className="flex-1 h-px bg-white/[0.06]" />
+                    </div>
+
+                    <button
+                        type="button"
+                        onClick={() => { window.location.href = googleRedirectUri; }}
+                        className="w-full flex items-center justify-center gap-2.5 py-2.5 rounded-[10px] border border-white/[0.07] bg-white/[0.02] text-[#bbb] text-sm mb-2.5 hover:border-white/[0.15] hover:bg-white/[0.05] hover:text-white transition-all cursor-pointer"
+                    >
+                        <FcGoogle size={20} />
+                        Continuer avec Google
+                    </button>
+
+                    <button
+                        type="button"
+                        onClick={() => { window.location.href = githubRedirectUri; }}
+                        className="w-full flex items-center justify-center gap-2.5 py-2.5 rounded-[10px] border border-white/[0.07] bg-white/[0.02] text-[#bbb] text-sm mb-6 hover:border-white/[0.15] hover:bg-white/[0.05] hover:text-white transition-all cursor-pointer"
+                    >
+                        <FaGithub size={20} />
+                        Continuer avec GitHub
+                    </button>
 
                     <p className="text-center text-[13px] text-[#484858] font-light">
                         Vous avez déjà un compte ?{" "}
