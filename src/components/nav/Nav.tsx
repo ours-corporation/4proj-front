@@ -92,7 +92,7 @@ export default function NavBar({ currentPage }: { currentPage: string }) {
     }
 
     return (
-        <aside className="w-60 h-screen flex-shrink-0 bg-[#0d0d0d] border-r border-white/[0.06] flex-col p-4 overflow-y-auto hidden md:flex">
+        <aside className="w-60 h-screen flex-shrink-0 bg-surface dark:bg-[#0d0d0d] border-r border-border-subtle dark:border-white/[0.06] flex-col p-4 overflow-y-auto hidden md:flex shadow-sm dark:shadow-none">
 
             {/* Logo */}
             <a href="/dashboard" className="flex items-center gap-2.5 mb-8 px-2 py-2 no-underline">
@@ -103,9 +103,9 @@ export default function NavBar({ currentPage }: { currentPage: string }) {
                             <stop offset="100%" stopColor="#42aff0" />
                         </linearGradient>
                     </defs>
-                    <rect fill="#0d0d0d" stroke="#7c6ef8" strokeWidth="3" x="2" y="2" width="96" height="96" rx="22" ry="22" />
+                    <rect className="fill-surface dark:fill-[#0d0d0d]" stroke="#7c6ef8" strokeWidth="3" x="2" y="2" width="96" height="96" rx="22" ry="22" />
                     <path fill="url(#nav-grad)" d="M72 82H28C16 82 6 73 6 62C6 52 13 43.5 23 41.5C23 30 32 21 44 21C53 21 60.5 26 64 33C66 32.5 68 32 70 32C80 32 88 40 88 50C88 67 81 78 72 82Z" />
-                    <polygon fill="#0d0d0d" points="50,30 38,48 45,48 45,62 55,62 55,48 62,48" />
+                    <polygon className="fill-surface dark:fill-[#0d0d0d]" points="50,30 38,48 45,48 45,62 55,62 55,48 62,48" />
                 </svg>
                 <span className="text-lg font-bold bg-gradient-to-r from-[#7c6ef8] to-[#42aff0] bg-clip-text text-transparent" style={{ fontFamily: "'Syne', sans-serif" }}>
                     Supfile
@@ -113,7 +113,7 @@ export default function NavBar({ currentPage }: { currentPage: string }) {
             </a>
 
             {/* Section label */}
-            <p className="text-[10px] font-bold text-[#333] uppercase tracking-widest px-3.5 mb-2">Menu</p>
+            <p className="text-[10px] font-bold text-[#9CA3AF] dark:text-[#333] uppercase tracking-widest px-3.5 mb-2">Menu</p>
 
             {/* Nav items */}
             <nav className="space-y-0.5 mb-auto">
@@ -129,12 +129,12 @@ export default function NavBar({ currentPage }: { currentPage: string }) {
             </nav>
 
             {/* Profile section */}
-            <div className="mt-6 pt-4 border-t border-white/[0.06] relative" ref={menuRef}>
+            <div className="mt-6 pt-4 border-t border-border-subtle dark:border-white/[0.06] relative" ref={menuRef}>
                 {menuOpen && (
-                    <div className="absolute bottom-full left-0 right-0 mb-2 bg-[#111113] border border-white/[0.08] rounded-[14px] shadow-[0_20px_60px_rgba(0,0,0,0.5)] overflow-hidden z-50">
+                    <div className="absolute bottom-full left-0 right-0 mb-2 bg-white dark:bg-[#111113] border border-border-subtle dark:border-white/[0.08] rounded-[14px] shadow-[0_8px_30px_rgba(0,0,0,0.12)] dark:shadow-[0_20px_60px_rgba(0,0,0,0.5)] overflow-hidden z-50">
                         <a
                             href="/profile"
-                            className="flex items-center gap-3 px-4 py-3 text-sm text-[#aaa] hover:text-[#ededed] hover:bg-white/[0.04] transition-colors no-underline"
+                            className="flex items-center gap-3 px-4 py-3 text-sm text-txt-secondary dark:text-[#aaa] hover:text-txt-primary dark:hover:text-[#ededed] hover:bg-black/[0.04] dark:hover:bg-white/[0.04] transition-colors no-underline"
                             onClick={() => setMenuOpen(false)}
                         >
                             <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="w-4 h-4">
@@ -144,7 +144,7 @@ export default function NavBar({ currentPage }: { currentPage: string }) {
                         </a>
                         <button
                             onClick={handleLogout}
-                            className="w-full flex items-center gap-3 px-4 py-3 text-sm text-[#ef5350] hover:bg-white/[0.04] transition-colors"
+                            className="w-full flex items-center gap-3 px-4 py-3 text-sm text-[#ef5350] hover:bg-[#ef5350]/[0.06] dark:hover:bg-white/[0.04] transition-colors"
                         >
                             <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="w-4 h-4">
                                 <path strokeLinecap="round" strokeLinejoin="round" d="M15.75 9V5.25A2.25 2.25 0 0 0 13.5 3h-6a2.25 2.25 0 0 0-2.25 2.25v13.5A2.25 2.25 0 0 0 7.5 21h6a2.25 2.25 0 0 0 2.25-2.25V15m3 0 3-3m0 0-3-3m3 3H9" />
@@ -155,7 +155,7 @@ export default function NavBar({ currentPage }: { currentPage: string }) {
                 )}
 
                 <button
-                    className="flex items-center gap-3 px-3 py-2.5 w-full rounded-[10px] hover:bg-white/[0.04] transition-colors"
+                    className="flex items-center gap-3 px-3 py-2.5 w-full rounded-[10px] hover:bg-black/[0.04] dark:hover:bg-white/[0.04] transition-colors"
                     onClick={() => setMenuOpen(prev => !prev)}
                 >
                     {profilePicture ? (
@@ -172,10 +172,10 @@ export default function NavBar({ currentPage }: { currentPage: string }) {
                         </div>
                     )}
                     <div className="flex-1 min-w-0 text-left">
-                        <p className="text-sm font-medium text-[#ccc] truncate">{userInfo?.username}</p>
-                        <p className="text-[11px] text-[#444] truncate">Mon compte</p>
+                        <p className="text-sm font-medium text-txt-primary dark:text-[#ccc] truncate">{userInfo?.username}</p>
+                        <p className="text-[11px] text-txt-secondary dark:text-[#444] truncate">Mon compte</p>
                     </div>
-                    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="w-4 h-4 text-[#444] flex-shrink-0">
+                    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="w-4 h-4 text-txt-secondary dark:text-[#444] flex-shrink-0">
                         <path strokeLinecap="round" strokeLinejoin="round" d="m4.5 15.75 7.5-7.5 7.5 7.5" />
                     </svg>
                 </button>

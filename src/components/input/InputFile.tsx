@@ -47,7 +47,7 @@ export default function InputFile({ id, name, label, value = [], required, accep
 
     return (
         <div className="w-full">
-            <label className="block text-[11px] font-medium text-[#555] mb-1.5 uppercase tracking-wider" htmlFor={id}>
+            <label className="block text-[11px] font-medium text-txt-secondary dark:text-[#555] mb-1.5 uppercase tracking-wider" htmlFor={id}>
                 {label} {required && <span className="text-[#ef5350]">*</span>}
             </label>
 
@@ -59,19 +59,19 @@ export default function InputFile({ id, name, label, value = [], required, accep
                 className={`relative flex min-h-[120px] w-full cursor-pointer flex-col items-center justify-center rounded-[12px] border-2 border-dashed transition-all ${
                     isDragging
                         ? "border-[#7c6ef8]/60 bg-[#7c6ef8]/[0.06]"
-                        : "border-white/[0.08] bg-[#0d0d0d] hover:border-[#7c6ef8]/30 hover:bg-[#7c6ef8]/[0.03]"
+                        : "border-border-subtle dark:border-white/[0.08] bg-surface-hover dark:bg-[#0d0d0d] hover:border-[#7c6ef8]/40 hover:bg-[#7c6ef8]/[0.03]"
                 }`}
             >
                 <input ref={inputRef} id={id} name={name} type="file" accept={accept} required={required && files.length === 0} onChange={handleInputChange} className="hidden" multiple />
 
                 <div className="flex flex-col items-center p-5 text-center">
-                    <svg className={`mb-3 h-8 w-8 ${isDragging ? "text-[#7c6ef8]" : "text-[#333]"}`} fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <svg className={`mb-3 h-8 w-8 ${isDragging ? "text-[#7c6ef8]" : "text-[#9CA3AF] dark:text-[#333]"}`} fill="none" stroke="currentColor" viewBox="0 0 24 24">
                         <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="1.5" d="M3 16.5v2.25A2.25 2.25 0 0 0 5.25 21h13.5A2.25 2.25 0 0 0 21 18.75V16.5m-13.5-9L12 3m0 0 4.5 4.5M12 3v13.5" />
                     </svg>
-                    <p className="text-sm text-[#888]">
-                        <span className="font-medium text-[#ccc]">Cliquez</span> ou glissez vos fichiers ici
+                    <p className="text-sm text-txt-secondary dark:text-[#888]">
+                        <span className="font-medium text-txt-primary dark:text-[#ccc]">Cliquez</span> ou glissez vos fichiers ici
                     </p>
-                    <p className="text-xs text-[#444] mt-1">
+                    <p className="text-xs text-txt-secondary dark:text-[#444] mt-1">
                         {files.length > 0
                             ? `${files.length} fichier${files.length > 1 ? "s" : ""} sélectionné${files.length > 1 ? "s" : ""}`
                             : "Tous types de fichiers acceptés"}
@@ -82,14 +82,14 @@ export default function InputFile({ id, name, label, value = [], required, accep
             {files.length > 0 && (
                 <ul className="mt-3 space-y-2">
                     {files.map((file, index) => (
-                        <li key={`${file.name}-${index}`} className="flex items-center justify-between rounded-[8px] border border-white/[0.06] bg-[#0d0d0d] px-3 py-2">
+                        <li key={`${file.name}-${index}`} className="flex items-center justify-between rounded-[8px] border border-border-subtle dark:border-white/[0.06] bg-surface-hover dark:bg-[#0d0d0d] px-3 py-2">
                             <div className="flex items-center gap-3 overflow-hidden">
                                 <svg className="h-4 w-4 shrink-0 text-[#4CAF50]" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
                                 </svg>
                                 <div className="overflow-hidden">
-                                    <p className="truncate text-sm text-[#ccc]">{file.name}</p>
-                                    <p className="text-xs text-[#444]">{formatSize(file.size)}</p>
+                                    <p className="truncate text-sm text-txt-primary dark:text-[#ccc]">{file.name}</p>
+                                    <p className="text-xs text-txt-secondary dark:text-[#444]">{formatSize(file.size)}</p>
                                 </div>
                             </div>
                             <button

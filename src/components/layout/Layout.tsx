@@ -6,7 +6,7 @@ import Headers from "@/src/components/layout/Headers";
 
 export default function Layout({ children, currentPage }: { children: React.ReactNode, currentPage: string }) {
     return (
-        <div className="flex h-screen w-full bg-[#0d0d0d] overflow-hidden">
+        <div className="flex h-screen w-full bg-main-bg dark:bg-[#0d0d0d] overflow-hidden">
             <NavBar currentPage={currentPage} />
             <main className="flex-1 flex flex-col min-w-0">
                 <Headers />

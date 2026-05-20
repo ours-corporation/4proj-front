@@ -8,7 +8,7 @@ export default function ToggleDark() {
     return (
         <button
             onClick={toggleTheme}
-            className="p-2 rounded-[8px] text-[#555] hover:text-[#ededed] hover:bg-white/[0.05] transition-colors"
+            className="p-2 rounded-[8px] text-txt-secondary dark:text-[#555] hover:text-txt-primary dark:hover:text-[#ededed] hover:bg-black/[0.05] dark:hover:bg-white/[0.05] transition-colors"
             title={theme === 'dark' ? 'Passer en mode clair' : 'Passer en mode sombre'}
         >
             {theme === 'dark' ? (

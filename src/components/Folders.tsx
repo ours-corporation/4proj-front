@@ -146,8 +146,8 @@ export default function Folders({ listFolders, listFiles, changeFolderId, viewMo
                     {listFolders.map((folder) => (
                         <div
                             key={folder.id}
-                            className={`bg-[#111113] border rounded-[12px] overflow-hidden hover:border-[#7c6ef8]/20 transition-all duration-200 cursor-pointer ${
-                                hoveredFolderId === folder.id ? 'border-[#7c6ef8]/60' : 'border-white/[0.06]'
+                            className={`bg-surface dark:bg-[#111113] border rounded-[12px] overflow-hidden hover:border-[#7c6ef8]/20 transition-all duration-200 cursor-pointer shadow-[0_2px_8px_rgba(0,0,0,0.06)] dark:shadow-none ${
+                                hoveredFolderId === folder.id ? 'border-[#7c6ef8]/60' : 'border-border-subtle dark:border-white/[0.06]'
                             }`}
                             onClick={() => changeFolderId(folder.id)}
                             onDragOver={(e) => e.preventDefault()}
@@ -173,7 +173,7 @@ export default function Folders({ listFolders, listFiles, changeFolderId, viewMo
                     {listFiles && listFiles.map((file) => (
                         <div
                             key={file.id}
-                            className="bg-[#111113] border border-white/[0.06] rounded-[12px] overflow-hidden hover:border-[#7c6ef8]/20 transition-all duration-200 cursor-pointer"
+                            className="bg-surface dark:bg-[#111113] border border-border-subtle dark:border-white/[0.06] rounded-[12px] overflow-hidden hover:border-[#7c6ef8]/20 transition-all duration-200 cursor-pointer shadow-[0_2px_8px_rgba(0,0,0,0.06)] dark:shadow-none"
                             onClick={() => setFileInformationAndOpen(file)}
                         >
                             <FileCard
@@ -197,18 +197,18 @@ export default function Folders({ listFolders, listFiles, changeFolderId, viewMo
                     {/* List header */}
                     <div className="grid grid-cols-[auto_1fr_auto_auto_auto] gap-4 px-4 py-2 mb-1">
                         <div className="w-9" />
-                        <span className="text-[11px] font-semibold text-[#333] uppercase tracking-wider">Nom</span>
-                        <span className="text-[11px] font-semibold text-[#333] uppercase tracking-wider w-20 text-right">Taille</span>
-                        <span className="text-[11px] font-semibold text-[#333] uppercase tracking-wider w-32 text-right">Modifié</span>
+                        <span className="text-[11px] font-semibold text-[#9CA3AF] dark:text-[#333] uppercase tracking-wider">Nom</span>
+                        <span className="text-[11px] font-semibold text-[#9CA3AF] dark:text-[#333] uppercase tracking-wider w-20 text-right">Taille</span>
+                        <span className="text-[11px] font-semibold text-[#9CA3AF] dark:text-[#333] uppercase tracking-wider w-32 text-right">Modifié</span>
                         <div className="w-8" />
                     </div>
 
-                    <div className="flex flex-col divide-y divide-white/[0.04]">
+                    <div className="flex flex-col divide-y divide-border-subtle dark:divide-white/[0.04]">
                         {listFolders.map((folder) => (
                             <div
                                 key={folder.id}
                                 className={`grid grid-cols-[auto_1fr_auto_auto_auto] gap-4 items-center px-4 py-2.5 rounded-[8px] transition-colors ${
-                                    hoveredFolderId === folder.id ? 'bg-[#7c6ef8]/10' : 'hover:bg-white/[0.02]'
+                                    hoveredFolderId === folder.id ? 'bg-[#7c6ef8]/10' : 'hover:bg-black/[0.03] dark:hover:bg-white/[0.02]'
                                 }`}
                                 draggable={true}
                                 onDragStart={(e) => { e.dataTransfer.setData('application/json', JSON.stringify({ type: 'folder', id: folder.id })); e.dataTransfer.effectAllowed = 'move'; }}
@@ -223,15 +223,15 @@ export default function Folders({ listFolders, listFiles, changeFolderId, viewMo
                                     </svg>
                                 </div>
                                 <button className="text-left min-w-0" onClick={() => !isTrash && changeFolderId(folder.id)}>
-                                    <span className="text-sm font-medium text-[#ccc] truncate block">{folder.name}</span>
-                                    <span className="text-xs text-[#444]">Dossier</span>
+                                    <span className="text-sm font-medium text-txt-primary dark:text-[#ccc] truncate block">{folder.name}</span>
+                                    <span className="text-xs text-txt-secondary dark:text-[#444]">Dossier</span>
                                 </button>
-                                <span className="text-xs text-[#444] w-20 text-right">—</span>
-                                <span className="text-xs text-[#444] w-32 text-right">{folder.created_at ? new Date(folder.created_at).toLocaleDateString('fr-FR', { day: 'numeric', month: 'short', year: 'numeric' }) : '—'}</span>
+                                <span className="text-xs text-txt-secondary dark:text-[#444] w-20 text-right">—</span>
+                                <span className="text-xs text-txt-secondary dark:text-[#444] w-32 text-right">{folder.created_at ? new Date(folder.created_at).toLocaleDateString('fr-FR', { day: 'numeric', month: 'short', year: 'numeric' }) : '—'}</span>
                                 <div className="relative w-8 flex-shrink-0" onMouseDown={e => e.stopPropagation()}>
                                     <button
                                         onClick={(e) => { e.stopPropagation(); setOpenListMenuId(openListMenuId === `folder-${folder.id}` ? null : `folder-${folder.id}`); }}
-                                        className="w-8 h-8 flex items-center justify-center rounded-[6px] text-[#444] hover:text-[#ededed] hover:bg-white/[0.06] transition-colors"
+                                        className="w-8 h-8 flex items-center justify-center rounded-[6px] text-txt-secondary dark:text-[#444] hover:text-txt-primary dark:hover:text-[#ededed] hover:bg-black/[0.05] dark:hover:bg-white/[0.06] transition-colors"
                                     >
                                         <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="w-4 h-4">
                                             <path strokeLinecap="round" strokeLinejoin="round" d="M6.75 12a.75.75 0 1 1-1.5 0 .75.75 0 0 1 1.5 0ZM12.75 12a.75.75 0 1 1-1.5 0 .75.75 0 0 1 1.5 0ZM18.75 12a.75.75 0 1 1-1.5 0 .75.75 0 0 1 1.5 0Z" />
@@ -260,7 +260,7 @@ export default function Folders({ listFolders, listFiles, changeFolderId, viewMo
                             return (
                                 <div
                                     key={file.id}
-                                    className="grid grid-cols-[auto_1fr_auto_auto_auto] gap-4 items-center px-4 py-2.5 rounded-[8px] hover:bg-white/[0.02] transition-colors cursor-grab active:cursor-grabbing"
+                                    className="grid grid-cols-[auto_1fr_auto_auto_auto] gap-4 items-center px-4 py-2.5 rounded-[8px] hover:bg-black/[0.03] dark:hover:bg-white/[0.02] transition-colors cursor-grab active:cursor-grabbing"
                                     draggable={true}
                                     onDragStart={(e) => { e.dataTransfer.setData('application/json', JSON.stringify({ type: 'file', id: file.id })); e.dataTransfer.effectAllowed = 'move'; }}
                                 >
@@ -272,15 +272,15 @@ export default function Folders({ listFolders, listFiles, changeFolderId, viewMo
                                         )}
                                     </div>
                                     <button className="text-left min-w-0" onClick={() => setFileInformationAndOpen(file)}>
-                                        <span className="text-sm font-medium text-[#ccc] truncate block">{file.fullName}</span>
-                                        <span className="text-xs text-[#444]">{file.mime_type}</span>
+                                        <span className="text-sm font-medium text-txt-primary dark:text-[#ccc] truncate block">{file.fullName}</span>
+                                        <span className="text-xs text-txt-secondary dark:text-[#444]">{file.mime_type}</span>
                                     </button>
-                                    <span className="text-xs text-[#444] w-20 text-right">{convertFileSize(file.size_bytes)}</span>
-                                    <span className="text-xs text-[#444] w-32 text-right">{new Date(file.updatedAt).toLocaleDateString('fr-FR', { day: 'numeric', month: 'short', year: 'numeric' })}</span>
+                                    <span className="text-xs text-txt-secondary dark:text-[#444] w-20 text-right">{convertFileSize(file.size_bytes)}</span>
+                                    <span className="text-xs text-txt-secondary dark:text-[#444] w-32 text-right">{new Date(file.updatedAt).toLocaleDateString('fr-FR', { day: 'numeric', month: 'short', year: 'numeric' })}</span>
                                     <div className="relative w-8 flex-shrink-0" onMouseDown={e => e.stopPropagation()}>
                                         <button
                                             onClick={(e) => { e.stopPropagation(); setOpenListMenuId(openListMenuId === `file-${file.id}` ? null : `file-${file.id}`); }}
-                                            className="w-8 h-8 flex items-center justify-center rounded-[6px] text-[#444] hover:text-[#ededed] hover:bg-white/[0.06] transition-colors"
+                                            className="w-8 h-8 flex items-center justify-center rounded-[6px] text-txt-secondary dark:text-[#444] hover:text-txt-primary dark:hover:text-[#ededed] hover:bg-black/[0.05] dark:hover:bg-white/[0.06] transition-colors"
                                         >
                                             <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="w-4 h-4">
                                                 <path strokeLinecap="round" strokeLinejoin="round" d="M6.75 12a.75.75 0 1 1-1.5 0 .75.75 0 0 1 1.5 0ZM12.75 12a.75.75 0 1 1-1.5 0 .75.75 0 0 1 1.5 0ZM18.75 12a.75.75 0 1 1-1.5 0 .75.75 0 0 1 1.5 0Z" />

@@ -11,9 +11,9 @@ import { GetGoogleClientId, GetGithubClientId } from "@/src/services/envReader";
 import InputField from "@/src/components/input/InputField";
 import SubmitButton from "@/src/components/button/SubmitButton";
 
-const inputWrapper = "mt-1 w-full bg-[#0d0d0d] border border-white/[0.08] rounded-[10px] px-4 py-3 flex items-center transition-all focus-within:border-[#7c6ef8]/50 focus-within:ring-2 focus-within:ring-[#7c6ef8]/10";
-const inputInner = "flex-grow bg-transparent focus:outline-none p-0 border-none ring-0 text-[#ededed] text-sm placeholder:text-[#333]";
-const labelClass = "block text-[11px] font-medium text-[#666] mb-1.5 uppercase tracking-wider";
+const inputWrapper = "mt-1 w-full bg-input-bg dark:bg-[#0d0d0d] border border-border-subtle dark:border-white/[0.08] rounded-[10px] px-4 py-3 flex items-center transition-all focus-within:border-[#7c6ef8]/50 focus-within:ring-2 focus-within:ring-[#7c6ef8]/10";
+const inputInner = "flex-grow bg-transparent focus:outline-none p-0 border-none ring-0 text-txt-primary dark:text-[#ededed] text-sm placeholder:text-[#9CA3AF] dark:placeholder:text-[#333]";
+const labelClass = "block text-[11px] font-medium text-txt-secondary dark:text-[#666] mb-1.5 uppercase tracking-wider";
 
 export default function RegisterPage() {
     const [email, setEmail] = useState("");
@@ -93,14 +93,14 @@ export default function RegisterPage() {
                 .glow-anim { animation: glowPulse 7s ease-in-out infinite; }
             `}</style>
 
-            <div className="min-h-screen bg-[#0d0d0d] flex flex-col items-center justify-center relative overflow-hidden p-6 font-['DM_Sans',sans-serif]">
+            <div className="min-h-screen bg-main-bg dark:bg-[#0d0d0d] flex flex-col items-center justify-center relative overflow-hidden p-6 font-['DM_Sans',sans-serif]">
 
                 <div
                     className="glow-anim absolute -top-52 left-1/2 -translate-x-1/2 w-[800px] h-[500px] pointer-events-none"
                     style={{ background: "radial-gradient(ellipse at center, rgba(124,110,248,0.13) 0%, rgba(66,175,240,0.06) 45%, transparent 70%)" }}
                 />
 
-                <div className="w-full max-w-[420px] bg-[#111113] border border-[#7c6ef8]/20 rounded-[20px] px-9 py-10 relative z-10 shadow-[0_40px_80px_rgba(0,0,0,0.6)]">
+                <div className="w-full max-w-[420px] bg-surface dark:bg-[#111113] border border-border-subtle dark:border-[#7c6ef8]/20 rounded-[20px] px-9 py-10 relative z-10 shadow-[0_20px_60px_rgba(0,0,0,0.1)] dark:shadow-[0_40px_80px_rgba(0,0,0,0.6)]">
 
                     <a href="/" className="flex items-center justify-center gap-2.5 mb-7 no-underline">
                         <svg width="32" height="32" viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg">
@@ -110,19 +110,19 @@ export default function RegisterPage() {
                                     <stop offset="100%" stopColor="#42aff0" />
                                 </linearGradient>
                             </defs>
-                            <rect fill="#0d0d0d" stroke="#7c6ef8" strokeWidth="3" x="2" y="2" width="96" height="96" rx="22" ry="22" />
+                            <rect className="fill-surface dark:fill-[#0d0d0d]" stroke="#7c6ef8" strokeWidth="3" x="2" y="2" width="96" height="96" rx="22" ry="22" />
                             <path fill="url(#lg-register)" d="M72 82H28C16 82 6 73 6 62C6 52 13 43.5 23 41.5C23 30 32 21 44 21C53 21 60.5 26 64 33C66 32.5 68 32 70 32C80 32 88 40 88 50C88 67 81 78 72 82Z" />
-                            <polygon fill="#0d0d0d" points="50,30 38,48 45,48 45,62 55,62 55,48 62,48" />
+                            <polygon className="fill-surface dark:fill-[#0d0d0d]" points="50,30 38,48 45,48 45,62 55,62 55,48 62,48" />
                         </svg>
                         <span className="font-['Syne',sans-serif] text-xl font-bold bg-gradient-to-r from-[#7c6ef8] to-[#42aff0] bg-clip-text text-transparent">
                             Supfile
                         </span>
                     </a>
 
-                    <h1 className="font-['Syne',sans-serif] text-[26px] font-extrabold text-[#ededed] text-center mb-1.5 tracking-tight">
+                    <h1 className="font-['Syne',sans-serif] text-[26px] font-extrabold text-txt-primary dark:text-[#ededed] text-center mb-1.5 tracking-tight">
                         Inscription
                     </h1>
-                    <p className="text-sm text-[#484858] text-center mb-8 font-light">
+                    <p className="text-sm text-txt-secondary dark:text-[#484858] text-center mb-8 font-light">
                         Créez votre compte et démarrez gratuitement.
                     </p>
 
@@ -192,7 +192,7 @@ export default function RegisterPage() {
                             </div>
                         )}
 
-                        <p className="text-[12px] text-[#333] mb-4">* Champs obligatoires</p>
+                        <p className="text-[12px] text-txt-secondary dark:text-[#333] mb-4">* Champs obligatoires</p>
 
                         <SubmitButton
                             id="register-button"
@@ -205,15 +205,15 @@ export default function RegisterPage() {
                     </form>
 
                     <div className="flex items-center gap-3 mb-4">
-                        <div className="flex-1 h-px bg-white/[0.06]" />
-                        <span className="text-[11px] text-[#333] uppercase tracking-widest">ou</span>
-                        <div className="flex-1 h-px bg-white/[0.06]" />
+                        <div className="flex-1 h-px bg-border-subtle dark:bg-white/[0.06]" />
+                        <span className="text-[11px] text-[#9CA3AF] dark:text-[#333] uppercase tracking-widest">ou</span>
+                        <div className="flex-1 h-px bg-border-subtle dark:bg-white/[0.06]" />
                     </div>
 
                     <button
                         type="button"
                         onClick={() => { window.location.href = googleRedirectUri; }}
-                        className="w-full flex items-center justify-center gap-2.5 py-2.5 rounded-[10px] border border-white/[0.07] bg-white/[0.02] text-[#bbb] text-sm mb-2.5 hover:border-white/[0.15] hover:bg-white/[0.05] hover:text-white transition-all cursor-pointer"
+                        className="w-full flex items-center justify-center gap-2.5 py-2.5 rounded-[10px] border border-border-subtle dark:border-white/[0.07] bg-surface-hover dark:bg-white/[0.02] text-txt-secondary dark:text-[#bbb] text-sm mb-2.5 hover:border-[#7c6ef8]/30 dark:hover:border-white/[0.15] hover:bg-[#7c6ef8]/[0.04] dark:hover:bg-white/[0.05] hover:text-txt-primary dark:hover:text-white transition-all cursor-pointer"
                     >
                         <FcGoogle size={20} />
                         Continuer avec Google
@@ -222,13 +222,13 @@ export default function RegisterPage() {
                     <button
                         type="button"
                         onClick={() => { window.location.href = githubRedirectUri; }}
-                        className="w-full flex items-center justify-center gap-2.5 py-2.5 rounded-[10px] border border-white/[0.07] bg-white/[0.02] text-[#bbb] text-sm mb-6 hover:border-white/[0.15] hover:bg-white/[0.05] hover:text-white transition-all cursor-pointer"
+                        className="w-full flex items-center justify-center gap-2.5 py-2.5 rounded-[10px] border border-border-subtle dark:border-white/[0.07] bg-surface-hover dark:bg-white/[0.02] text-txt-secondary dark:text-[#bbb] text-sm mb-6 hover:border-[#7c6ef8]/30 dark:hover:border-white/[0.15] hover:bg-[#7c6ef8]/[0.04] dark:hover:bg-white/[0.05] hover:text-txt-primary dark:hover:text-white transition-all cursor-pointer"
                     >
                         <FaGithub size={20} />
                         Continuer avec GitHub
                     </button>
 
-                    <p className="text-center text-[13px] text-[#484858] font-light">
+                    <p className="text-center text-[13px] text-txt-secondary dark:text-[#484858] font-light">
                         Vous avez déjà un compte ?{" "}
                         <a href="/login" className="text-[#7c6ef8] hover:text-[#42aff0] transition-colors no-underline">
                             Se connecter
@@ -236,7 +236,7 @@ export default function RegisterPage() {
                     </p>
                 </div>
 
-                <p className="absolute bottom-5 text-[12px] text-[#262630] z-10">
+                <p className="absolute bottom-5 text-[12px] text-txt-secondary dark:text-[#262630] z-10">
                     © 2026 Supfile. Tous droits réservés.
                 </p>
             </div>

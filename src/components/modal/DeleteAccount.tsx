@@ -48,16 +48,16 @@ export default function DeleteAccountModal({ isOpen, email, closeModal }: Delete
                 </div>
 
                 <div>
-                    <label className="block text-[11px] font-medium text-[#555] mb-1.5 uppercase tracking-wider">
+                    <label className="block text-[11px] font-medium text-txt-secondary dark:text-[#555] mb-1.5 uppercase tracking-wider">
                         Confirmez en saisissant votre e-mail
                     </label>
-                    <div className="w-full bg-[#0d0d0d] border border-white/[0.08] rounded-[10px] px-4 py-3 flex items-center transition-all focus-within:border-[#ef5350]/40">
+                    <div className="w-full bg-input-bg dark:bg-[#0d0d0d] border border-border-subtle dark:border-white/[0.08] rounded-[10px] px-4 py-3 flex items-center transition-all focus-within:border-[#ef5350]/40">
                         <input
                             type="email"
                             value={confirmation}
                             onChange={(e) => setConfirmation(e.target.value)}
                             placeholder={email}
-                            className="flex-grow bg-transparent focus:outline-none p-0 border-none ring-0 text-[#ededed] text-sm placeholder:text-[#333]"
+                            className="flex-grow bg-transparent focus:outline-none p-0 border-none ring-0 text-txt-primary dark:text-[#ededed] text-sm placeholder:text-[#9CA3AF] dark:placeholder:text-[#333]"
                         />
                     </div>
                 </div>
@@ -68,7 +68,7 @@ export default function DeleteAccountModal({ isOpen, email, closeModal }: Delete
                     <button
                         onClick={closeModal}
                         disabled={loading}
-                        className="flex-1 px-4 py-2.5 text-sm rounded-[10px] border border-white/[0.08] text-[#888] hover:text-[#ededed] hover:border-white/[0.15] transition-all disabled:opacity-50"
+                        className="flex-1 px-4 py-2.5 text-sm rounded-[10px] border border-border-subtle dark:border-white/[0.08] text-txt-secondary dark:text-[#888] hover:text-txt-primary dark:hover:text-[#ededed] hover:border-[#7c6ef8]/30 dark:hover:border-white/[0.15] transition-all disabled:opacity-50"
                     >
                         Annuler
                     </button>

@@ -9,7 +9,7 @@ interface NavItemsProps {
 
 export default function NavItems({ text, href, icon, isActive = false }: NavItemsProps) {
     const activeStyle = "bg-gradient-to-r from-[#7c6ef8] to-[#42aff0] text-white shadow-[0_4px_20px_rgba(124,110,248,0.25)] font-semibold";
-    const inactiveStyle = "text-[#555] hover:text-[#ededed] hover:bg-white/[0.04]";
+    const inactiveStyle = "text-txt-secondary dark:text-[#555] hover:text-txt-primary dark:hover:text-[#ededed] hover:bg-black/[0.05] dark:hover:bg-white/[0.04]";
 
     return (
         <a

@@ -52,9 +52,9 @@ export default function UploadFileModal({ isOpen, onClose, parentFolderId, onSuc
                     <div className="space-y-2">
                         <div className="flex justify-between text-[13px]">
                             <span className="text-[#888]">Upload en cours…</span>
-                            <span className="font-semibold text-[#ededed]">{uploadProgress}%</span>
+                            <span className="font-semibold text-txt-primary dark:text-[#ededed]">{uploadProgress}%</span>
                         </div>
-                        <div className="w-full bg-white/[0.05] rounded-full h-1.5 overflow-hidden">
+                        <div className="w-full bg-black/[0.05] dark:bg-white/[0.05] rounded-full h-1.5 overflow-hidden">
                             <div
                                 className="bg-gradient-to-r from-[#7c6ef8] to-[#42aff0] h-full rounded-full transition-all duration-200 ease-out"
                                 style={{ width: `${uploadProgress}%` }}
