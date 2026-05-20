@@ -18,7 +18,8 @@ export default function GoogleCallback() {
             }
 
             try {
-                const rep = await authGoogle(code);
+                const redirectUri = window.location.origin + "/auth/google/callback";
+            const rep = await authGoogle(code, redirectUri);
                 if (!rep.ok) {
                     let errorMsg = "Échec de la connexion avec Google.";
                     try {

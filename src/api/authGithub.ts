@@ -1,4 +1,4 @@
-export async function authGithub(code : string) {
+export async function authGithub(code: string, redirectUri: string) {
 
     const url = process.env.NEXT_PUBLIC_API_URL
 
@@ -8,6 +8,6 @@ export async function authGithub(code : string) {
         headers: {
             "Content-Type": "application/json",
         },
-        body: JSON.stringify({code}),
+        body: JSON.stringify({ code, redirect_uri: redirectUri }),
     });
 }

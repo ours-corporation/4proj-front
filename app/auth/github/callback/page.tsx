@@ -18,7 +18,8 @@ export default function GithubCallback() {
             }
 
             try {
-                const rep = await authGithub(code);
+                const redirectUri = window.location.origin + "/auth/github/callback";
+            const rep = await authGithub(code, redirectUri);
                 if (!rep.ok) {
                     let errorMsg = "Échec de la connexion avec GitHub.";
                     try {
