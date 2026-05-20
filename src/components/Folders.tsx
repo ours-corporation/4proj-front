@@ -1,28 +1,29 @@
-import React, {useState, useEffect} from 'react';
+'use client';
 
+import React, { useState, useEffect } from 'react';
 import { FolderResponse } from '@/src/interface/folder';
-import {FileResponse} from "@/src/interface/file";
-import {useJwtInformation} from "@/src/hooks/getJwtInformation";
-
+import { FileResponse } from "@/src/interface/file";
+import { useJwtInformation } from "@/src/hooks/getJwtInformation";
 
 import FileCard from "@/src/components/card/FileCard";
-import { downloadFile, getFileThumbnail } from '@/src/api/file';
+import { downloadFile, getFileThumbnail, moveFileIntoFolder, copyFileById } from '@/src/api/file';
 import FolderCard from "@/src/components/card/FolderCard";
-import {convertFileSize} from "@/src/utils/convert-file-size";
+import { convertFileSize } from "@/src/utils/convert-file-size";
 import UpdateFileModal from "@/src/components/modal/UpdateFile";
 import ShareFileModal from "@/src/components/modal/ShareFile";
 import MoveFileModal from '@/src/components/modal/MoveFile';
-import {getFileColor} from "@/src/utils/get-file-color";
-import {getFileSvg} from "@/src/utils/get-file-svg";
+import { getFileColor } from "@/src/utils/get-file-color";
+import { getFileSvg } from "@/src/utils/get-file-svg";
 import DeleteFileModal from "@/src/components/modal/DeleteFile";
 import DeleteFolderModal from "@/src/components/modal/DeleteFolder";
 import RenameFolderModal from "@/src/components/modal/RenameFolder";
 import FolderDetailsModal from "@/src/components/modal/FolderDetailsModal";
 import MoveFolderModal from "@/src/components/modal/MoveFolderModal";
+import { moveFolderIntoFolder, copyFolderById } from '@/src/api/folders';
 import { downloadFileService } from "@/src/services/downloadFile";
 import { downloadFolderService } from '../services/downloadFolder';
 import FileDetailsModal from "@/src/components/modal/FileDetailsModal";
-
+import { DropdownMenu } from "@/src/components/ui/DropdownMenu";
 
 interface FoldersProps {
     listFolders: FolderResponse[];
@@ -32,41 +33,33 @@ interface FoldersProps {
     onFolderRenamed?: () => void;
     onFileChanged?: () => void;
     contextPermission?: 'READ' | 'WRITE' | null;
-
-    isTrash?: boolean;                                   
-    restoreFolder?: (folder: FolderResponse) => void;    
-    restoreFile?: (folder: FileResponse) => void;   
+    isTrash?: boolean;
+    restoreFolder?: (folder: FolderResponse) => void;
+    restoreFile?: (folder: FileResponse) => void;
 }
 
-export default function Folders({ listFolders, listFiles, changeFolderId, viewMode = 'grid', onFolderRenamed, onFileChanged, contextPermission, isTrash, restoreFolder, restoreFile}: FoldersProps) {
+export default function Folders({ listFolders, listFiles, changeFolderId, viewMode = 'grid', onFolderRenamed, onFileChanged, contextPermission, isTrash, restoreFolder, restoreFile }: FoldersProps) {
     const userInfo = useJwtInformation();
-
-    // Permission effective : celle de l'item si définie, sinon celle héritée du contexte (dossier partagé parent)
     const fp = (item: FolderResponse | FileResponse) => item.permission ?? contextPermission ?? null;
+
     const [open, setOpen] = useState(false);
     const [openListMenuId, setOpenListMenuId] = useState<string | null>(null);
     const [thumbnails, setThumbnails] = useState<Record<number, string>>({});
+    const [hoveredFolderId, setHoveredFolderId] = useState<number | null>(null);
 
     useEffect(() => {
         if (!listFiles) return;
         const imageFiles = listFiles.filter(f => f.mime_type.startsWith('image/'));
         if (imageFiles.length === 0) return;
-
         const objectUrls: string[] = [];
-
         imageFiles.forEach(f => {
-            getFileThumbnail(f.id, 'small')
-                .then(blob => {
-                    const url = URL.createObjectURL(blob);
-                    objectUrls.push(url);
-                    setThumbnails(prev => ({ ...prev, [f.id]: url }));
-                })
-                .catch(() => {});
+            getFileThumbnail(f.id, 'small').then(blob => {
+                const url = URL.createObjectURL(blob);
+                objectUrls.push(url);
+                setThumbnails(prev => ({ ...prev, [f.id]: url }));
+            }).catch(() => {});
         });
-
-        return () => {
-            objectUrls.forEach(u => URL.revokeObjectURL(u));
-        };
+        return () => { objectUrls.forEach(u => URL.revokeObjectURL(u)); };
     }, [listFiles]);
 
     useEffect(() => {
@@ -75,447 +68,255 @@ export default function Folders({ listFolders, listFiles, changeFolderId, viewMo
         document.addEventListener('mousedown', handleClickOutside);
         return () => document.removeEventListener('mousedown', handleClickOutside);
     }, [openListMenuId]);
+
     const [selectedFile, setSelectedFile] = useState<FileResponse | null>(null);
-    const [file , setFile] = useState<File | null>(null);
+    const [file, setFile] = useState<File | null>(null);
     const [fileLoading, setFileLoading] = useState(false);
 
-    //Edit file modal
-    const [ openUpdateModal, setOpenUpdateModal ] = useState<boolean>(false);
-    const [ editFileInfo, setEditFileInfo ] = useState<FileResponse | null>(null);
+    const [openUpdateModal, setOpenUpdateModal] = useState(false);
+    const [editFileInfo, setEditFileInfo] = useState<FileResponse | null>(null);
 
-    //Share file modal
-    const [ openShareModal, setOpenShareModal ] = useState<boolean>(false);
-    const [ shareFileInfo, setShareFileInfo ] = useState<FileResponse | null>(null);
+    const [openShareModal, setOpenShareModal] = useState(false);
+    const [shareFileInfo, setShareFileInfo] = useState<FileResponse | null>(null);
 
-    //Delete file modal
-    const [ openDeleteModal, setOpenDeleteModal ] = useState<boolean>(false);
-    const [ deleteFileInfo, setDeleteFileInfo ] = useState<FileResponse | null>(null);
+    const [openDeleteModal, setOpenDeleteModal] = useState(false);
+    const [deleteFileInfo, setDeleteFileInfo] = useState<FileResponse | null>(null);
 
-    //Rename folder modal
-    const [ openRenameFolderModal, setOpenRenameFolderModal ] = useState<boolean>(false);
-    const [ renameFolderInfo, setRenameFolderInfo ] = useState<FolderResponse | null>(null);
+    const [openRenameFolderModal, setOpenRenameFolderModal] = useState(false);
+    const [renameFolderInfo, setRenameFolderInfo] = useState<FolderResponse | null>(null);
 
-    //Move folder modal
-    const [ openMoveFolderModal, setOpenMoveFolderModal ] = useState<boolean>(false);
-    const [ moveFolderInfo, setMoveFolderInfo ] = useState<FolderResponse | null>(null);
+    const [openMoveFolderModal, setOpenMoveFolderModal] = useState(false);
+    const [moveFolderInfo, setMoveFolderInfo] = useState<FolderResponse | null>(null);
 
-    //Delete folder modal
-    const [ openDeleteFolderModal, setOpenDeleteFolderModal ] = useState<boolean>(false);
-    const [ deleteFolderInfo, setDeleteFolderInfo ] = useState<FolderResponse | null>(null);
+    const [openDeleteFolderModal, setOpenDeleteFolderModal] = useState(false);
+    const [deleteFolderInfo, setDeleteFolderInfo] = useState<FolderResponse | null>(null);
 
-    //Folder details (shares) modal
-    const [ openFolderDetailsModal, setOpenFolderDetailsModal ] = useState<boolean>(false);
-    const [ folderDetailsInfo, setFolderDetailsInfo ] = useState<FolderResponse | null>(null);
+    const [openFolderDetailsModal, setOpenFolderDetailsModal] = useState(false);
+    const [folderDetailsInfo, setFolderDetailsInfo] = useState<FolderResponse | null>(null);
 
-    //Share folder modal
-    const [ openShareFolderModal, setOpenShareFolderModal ] = useState<boolean>(false);
-    const [ shareFolderInfo, setShareFolderInfo ] = useState<FolderResponse | null>(null);
+    const [openShareFolderModal, setOpenShareFolderModal] = useState(false);
+    const [shareFolderInfo, setShareFolderInfo] = useState<FolderResponse | null>(null);
 
-
-    //Move File modal
-    const [ openMoveModal, setOpenMoveModal] = useState<boolean>(false);
-    const [ editFilePositionInfo, setPositionFileInfo ] = useState<FileResponse | null>(null);
+    const [openMoveModal, setOpenMoveModal] = useState(false);
+    const [editFilePositionInfo, setPositionFileInfo] = useState<FileResponse | null>(null);
 
     function setFileInformationAndOpen(file: FileResponse) {
         setSelectedFile(file);
         setFile(null);
-        setFileLoading(true);
         setOpen(true);
-        const fileDownload = async () => {
-            const downloadedFile = await downloadFile({ fileId: file.id });
-            setFile(downloadedFile);
-            setOpen(true);
-            setFileLoading(false);
-        }
-        fileDownload();
+        if (file.mime_type.startsWith('video/')) { setFileLoading(false); return; }
+        setFileLoading(true);
+        downloadFile({ fileId: file.id, mimeType: file.mime_type }).then(f => { setFile(f); setFileLoading(false); });
     }
 
-    function setFileInformationAndClose() {
-        setOpen(false);
-        setSelectedFile(null);
-        setFile(null);
+    function setFileInformationAndClose() { setOpen(false); setSelectedFile(null); setFile(null); }
+
+    async function downloadFileById(fileId: number | null, fileName: string) { await downloadFileService(fileId, fileName); }
+    async function downloadFolderById(folderId: number | null, folderName: string) { await downloadFolderService(folderId, folderName); }
+
+    async function handleDrop(e: React.DragEvent, targetFolderId: number) {
+        e.preventDefault();
+        setHoveredFolderId(null);
+        try {
+            const data = JSON.parse(e.dataTransfer.getData('application/json')) as { type: 'file' | 'folder'; id: number };
+            if (data.type === 'file') { await moveFileIntoFolder(data.id, targetFolderId.toString()); onFileChanged?.(); }
+            else if (data.type === 'folder' && data.id !== targetFolderId) { await moveFolderIntoFolder(data.id, targetFolderId.toString()); onFolderRenamed?.(); }
+        } catch {}
     }
-
-    async function downloadFileById(fileId: number | null, fileName: string) {
-        await downloadFileService(fileId, fileName);
-    }
-
-    async function downloadFolderById(folderId: number | null, folderName: string){
-        await downloadFolderService(folderId, folderName);
-    }
-
-    //File edit modal
-    async function openUpdateFileModal(file: FileResponse){
-        if (!file) return;
-        setEditFileInfo(file);
-        setOpenUpdateModal(true);
-    }
-
-    async function closeUploadFileModal() : Promise<void> {
-        setEditFileInfo(null);
-        setOpenUpdateModal(false);
-    }
-
-    //Share file modal
-    async function openShareFileModal(file: FileResponse){
-        if (!file) return;
-        setShareFileInfo(file);
-        setOpenShareModal(true);
-    }
-
-    async function closeShareFileModal() : Promise<void> {
-        setShareFileInfo(null);
-        setOpenShareModal(false);
-    }
-
-    //Delete file modal
-    async function openDeleteFileModal(file: FileResponse){
-        if (!file) return;
-        setDeleteFileInfo(file);
-        setOpenDeleteModal(true);
-    }
-
-    async function closeDeleteFileModal() : Promise<void> {
-        setDeleteFileInfo(null);
-        setOpenDeleteModal(false);
-    }
-
-    //Rename folder modal
-    function openRenameFolderModalFn(folder: FolderResponse) {
-        setRenameFolderInfo(folder);
-        setOpenRenameFolderModal(true);
-    }
-
-    function closeRenameFolderModal() {
-        setRenameFolderInfo(null);
-        setOpenRenameFolderModal(false);
-    }
-
-
-    //Move folder modal
-    function openMoveFolderModalFn(folder: FolderResponse) {
-        setMoveFolderInfo(folder);
-        setOpenMoveFolderModal(true);
-    }
-
-    function closeMoveFolderModal() {
-        setMoveFolderInfo(null);
-        setOpenMoveFolderModal(false);
-    }
-
-    //Delete folder modal
-    function openDeleteFolderModalFn(folder: FolderResponse) {
-        setDeleteFolderInfo(folder);
-        setOpenDeleteFolderModal(true);
-    }
-
-    function closeDeleteFolderModal() {
-        setDeleteFolderInfo(null);
-        setOpenDeleteFolderModal(false);
-    }
-
-    //Folder details (shares) modal
-    function openFolderDetailsModalFn(folder: FolderResponse) {
-        setFolderDetailsInfo(folder);
-        setOpenFolderDetailsModal(true);
-    }
-
-    function closeFolderDetailsModal() {
-        setFolderDetailsInfo(null);
-        setOpenFolderDetailsModal(false);
-    }
-
-    //Share folder modal
-    function openShareFolderModalFn(folder: FolderResponse) {
-        setShareFolderInfo(folder);
-        setOpenShareFolderModal(true);
-    }
-
-    function closeShareFolderModal() {
-        setShareFolderInfo(null);
-        setOpenShareFolderModal(false);
-    }
-
-    async function openMoveFileModal(file: FileResponse){
-        if (!file) return;
-        setPositionFileInfo(file);
-        setOpenMoveModal(true);
-    }
-
-    async function closeMoveFileModal(){
-        setPositionFileInfo(null);
-        setOpenMoveModal(false);
-    }
-
-    const formatDate = (dateString: string) => {
-        return new Date(dateString).toLocaleDateString('fr-FR', {
-            day: 'numeric', month: 'short', year: 'numeric', hour: '2-digit', minute: '2-digit'
-        });
-    };
 
     const folderColor = "#F59E0B";
-    const folderBgColor = "#F59E0B20";
+
+    const isEmpty = listFolders.length === 0 && (!listFiles || listFiles.length === 0);
 
     return (
         <>
-        {viewMode === 'grid' ? (
-        <div className="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-5 gap-6">
-            {listFolders.map((folder) => (
-                <div
-                    key={folder.id}
-                    className="bg-surface dark:bg-dark-surface p-4 rounded-lg shadow-md hover:shadow-lg transition duration-300 cursor-pointer"
-                    onClick={() => changeFolderId(folder.id)}
-                >
-                    <FolderCard
-                        folder={folder}
-                        isTrash={isTrash}         
-                        //downloadFolder={!fp(folder) || fp(folder) === 'WRITE' ? downloadFolderById : undefined}  
-                        downloadFolder={downloadFolderById}               
-                        restoreFolder={isTrash ? restoreFolder : undefined} 
-                        renameFolder={!fp(folder) || fp(folder) === 'WRITE' ? openRenameFolderModalFn : undefined}
-                        deleteFolder={!fp(folder) || isTrash ? openDeleteFolderModalFn : undefined}
-                        openShares={!fp(folder) ? openFolderDetailsModalFn : undefined}
-                        shareFolder={!fp(folder) ? openShareFolderModalFn : undefined}
-                        moveFolder={!fp(folder) || fp(folder) === 'WRITE' ? openMoveFolderModalFn : undefined}
-                    />
-                </div>
-            ))}
-            {listFiles && listFiles.map((file) => (
-                <div key={file.id}
-                    className="bg-white dark:bg-dark-surface p-5 rounded-3xl shadow-sm border border-gray-100 dark:border-gray-700 hover:shadow-md transition-shadow duration-300 w-full max-w-xs cursor-pointer"
-                    onClick={() => setFileInformationAndOpen(file)}
-                >
-                <FileCard
-                    file={file}
-                    thumbnailUrl={thumbnails[file.id]}
-                    isTrash={isTrash}    
-                    restoreFile={!fp(file) || isTrash ? restoreFile : undefined} 
-                    //downloadFile={!fp(file) || fp(file) === 'WRITE' ? downloadFileById : undefined}
-                    downloadFile={downloadFileById}
-                    editFile={!fp(file) || fp(file) === 'WRITE' ? openUpdateFileModal : undefined}
-                    shareFile={!fp(file) ? openShareFileModal : undefined}
-                    moveFile={!fp(file) || fp(file) === 'WRITE' ? openMoveFileModal : undefined}
-                    deleteFile={!fp(file) || isTrash ? openDeleteFileModal : undefined}
-                />
-                </div>
-            ))}
-        </div>
-        ) : (
-        <div className="flex flex-col divide-y divide-gray-100 dark:divide-gray-800">
-            {listFolders.map((folder) => (
-                <div key={folder.id} className="flex items-center py-3 px-2 hover:bg-gray-50 dark:hover:bg-dark-surface rounded-lg">
-                    <div
-                        className="w-10 h-10 rounded-xl flex items-center justify-center mr-3 flex-shrink-0"
-                        style={{ backgroundColor: folderBgColor, color: folderColor }}
-                    >
-                        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" className="w-6 h-6">
-                            <path d="M19.5 21a3 3 0 0 0 3-3v-4.5a3 3 0 0 0-3-3h-15a3 3 0 0 0-3 3V18a3 3 0 0 0 3 3h15ZM1.5 10.146V6a3 3 0 0 1 3-3h5.379a2.25 2.25 0 0 1 1.59.659l2.122 2.121c.14.141.331.22.53.22H19.5a3 3 0 0 1 3 3v1.146A4.483 4.483 0 0 0 19.5 9h-15a4.483 4.483 0 0 0-3 1.146Z" />
+            {isEmpty ? (
+                <div className="flex flex-col items-center justify-center py-20 text-center">
+                    <div className="w-16 h-16 rounded-2xl bg-white/[0.04] flex items-center justify-center mb-4">
+                        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1} stroke="currentColor" className="w-8 h-8 text-[#333]">
+                            <path strokeLinecap="round" strokeLinejoin="round" d="M2.25 12.75V12A2.25 2.25 0 0 1 4.5 9.75h15A2.25 2.25 0 0 1 21.75 12v.75m-8.69-6.44-2.12-2.12a1.5 1.5 0 0 0-1.061-.44H4.5A2.25 2.25 0 0 0 2.25 6v12a2.25 2.25 0 0 0 2.25 2.25h15A2.25 2.25 0 0 0 21.75 18V9a2.25 2.25 0 0 0-2.25-2.25h-5.379a1.5 1.5 0 0 1-1.06-.44Z" />
                         </svg>
                     </div>
-                    <button className="flex-1 text-left min-w-0 mr-3" onClick={() => !isTrash && changeFolderId(folder.id)}>
-                        <span className="font-medium text-gray-900 dark:text-white truncate block">{folder.name}</span>
-                        <span className="text-xs text-gray-500 dark:text-gray-400">Dossier</span>
-                    </button>
-                    <div className="relative flex-shrink-0" onMouseDown={e => e.stopPropagation()}>
-                        <button
-                            onClick={(e) => {
-                                e.stopPropagation();
-                                setOpenListMenuId(openListMenuId === `folder-${folder.id}` ? null : `folder-${folder.id}`);
-                            }}
-                            className="p-1 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-700 text-gray-500"
+                    <p className="text-[#444] text-sm">Ce dossier est vide</p>
+                    <p className="text-[#333] text-xs mt-1">Importez des fichiers ou créez un dossier</p>
+                </div>
+            ) : viewMode === 'grid' ? (
+                /* ─── GRID VIEW ─── */
+                <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 xl:grid-cols-6 gap-3">
+                    {listFolders.map((folder) => (
+                        <div
+                            key={folder.id}
+                            className={`bg-[#111113] border rounded-[12px] overflow-hidden hover:border-[#7c6ef8]/20 transition-all duration-200 cursor-pointer ${
+                                hoveredFolderId === folder.id ? 'border-[#7c6ef8]/60' : 'border-white/[0.06]'
+                            }`}
+                            onClick={() => changeFolderId(folder.id)}
+                            onDragOver={(e) => e.preventDefault()}
+                            onDragEnter={(e) => { e.preventDefault(); setHoveredFolderId(folder.id); }}
+                            onDragLeave={(e) => { if (!e.currentTarget.contains(e.relatedTarget as Node)) setHoveredFolderId(null); }}
+                            onDrop={(e) => handleDrop(e, folder.id)}
                         >
-                            ⋯
-                        </button>
-                        {openListMenuId === `folder-${folder.id}` && (
-                            <div className="absolute right-0 w-40 bg-main-bg dark:bg-dark-main-bg rounded-lg shadow-lg border border-gray-200 dark:border-gray-700 z-10">
-                                {isTrash && restoreFolder && (
-                                    <button
-                                        className="w-full text-left px-4 py-2 text-sm text-green-600 hover:bg-green-50 dark:hover:bg-green-900/20"
-                                        onClick={(e) => { e.stopPropagation(); restoreFolder(folder); setOpenListMenuId(null); }}
-                                    >
-                                        Restaurer
-                                    </button>
-                                )}
-                                
-                                {!fp(folder) && (
-                                    <button
-                                        className="w-full text-left px-4 py-2 text-sm hover:bg-gray-100 dark:hover:bg-gray-700"
-                                        onClick={(e) => { e.stopPropagation(); openFolderDetailsModalFn(folder); setOpenListMenuId(null); }}
-                                    >
-                                        Droits d&apos;accès
-                                    </button>
-                                )}
-                                {!fp(folder) && (
-                                    <button
-                                        className="w-full text-left px-4 py-2 text-sm hover:bg-gray-100 dark:hover:bg-gray-700"
-                                        onClick={(e) => { e.stopPropagation(); openShareFolderModalFn(folder); setOpenListMenuId(null); }}
-                                    >
-                                        Partager
-                                    </button>
-                                )}
-                                {(!fp(folder) || fp(folder) === 'WRITE') && (
-                                <button
-                                    className="w-full text-left px-4 py-2 text-sm hover:bg-gray-100 dark:hover:bg-gray-700"
-                                    onClick={(e) => { e.stopPropagation(); openRenameFolderModalFn(folder); setOpenListMenuId(null); }}
-                                >
-                                    Renommer
-                                </button>
-                                )}
+                            <FolderCard
+                                folder={folder}
+                                isTrash={isTrash}
+                                isDropTarget={hoveredFolderId === folder.id}
+                                downloadFolder={downloadFolderById}
+                                restoreFolder={isTrash ? restoreFolder : undefined}
+                                renameFolder={!fp(folder) ? (f) => { setRenameFolderInfo(f); setOpenRenameFolderModal(true); } : undefined}
+                                deleteFolder={!fp(folder) || isTrash ? (f) => { setDeleteFolderInfo(f); setOpenDeleteFolderModal(true); } : undefined}
+                                openShares={!fp(folder) ? (f) => { setFolderDetailsInfo(f); setOpenFolderDetailsModal(true); } : undefined}
+                                shareFolder={!fp(folder) ? (f) => { setShareFolderInfo(f); setOpenShareFolderModal(true); } : undefined}
+                                moveFolder={!fp(folder) || fp(folder) === 'WRITE' ? (f) => { setMoveFolderInfo(f); setOpenMoveFolderModal(true); } : undefined}
+                                copyFolder={!fp(folder) || fp(folder) === 'WRITE' ? async (f) => { await copyFolderById(f.id); onFolderRenamed?.(); } : undefined}
+                            />
+                        </div>
+                    ))}
+                    {listFiles && listFiles.map((file) => (
+                        <div
+                            key={file.id}
+                            className="bg-[#111113] border border-white/[0.06] rounded-[12px] overflow-hidden hover:border-[#7c6ef8]/20 transition-all duration-200 cursor-pointer"
+                            onClick={() => setFileInformationAndOpen(file)}
+                        >
+                            <FileCard
+                                file={file}
+                                thumbnailUrl={thumbnails[file.id]}
+                                isTrash={isTrash}
+                                restoreFile={!fp(file) || isTrash ? restoreFile : undefined}
+                                downloadFile={!isTrash ? downloadFileById : undefined}
+                                editFile={!fp(file) || fp(file) === 'WRITE' ? (f) => { setEditFileInfo(f); setOpenUpdateModal(true); return Promise.resolve(); } : undefined}
+                                shareFile={!fp(file) ? (f) => { setShareFileInfo(f); setOpenShareModal(true); return Promise.resolve(); } : undefined}
+                                moveFile={!fp(file) || fp(file) === 'WRITE' ? (f) => { setPositionFileInfo(f); setOpenMoveModal(true); return Promise.resolve(); } : undefined}
+                                deleteFile={!fp(file) || isTrash ? (f) => { setDeleteFileInfo(f); setOpenDeleteModal(true); } : undefined}
+                                copyFile={!fp(file) || fp(file) === 'WRITE' ? async (f) => { await copyFileById(f.id); onFileChanged?.(); } : undefined}
+                            />
+                        </div>
+                    ))}
+                </div>
+            ) : (
+                /* ─── LIST VIEW ─── */
+                <div className="flex flex-col">
+                    {/* List header */}
+                    <div className="grid grid-cols-[auto_1fr_auto_auto_auto] gap-4 px-4 py-2 mb-1">
+                        <div className="w-9" />
+                        <span className="text-[11px] font-semibold text-[#333] uppercase tracking-wider">Nom</span>
+                        <span className="text-[11px] font-semibold text-[#333] uppercase tracking-wider w-20 text-right">Taille</span>
+                        <span className="text-[11px] font-semibold text-[#333] uppercase tracking-wider w-32 text-right">Modifié</span>
+                        <div className="w-8" />
+                    </div>
 
-                                {(!fp(folder)) && (
-                                <button
-                                    className="w-full text-left px-4 py-2 text-sm hover:bg-gray-100 dark:hover:bg-gray-700"
-                                    onClick={(e) => { e.stopPropagation(); openMoveFolderModalFn(folder); setOpenListMenuId(null); }}
-                                >
-                                    Déplacer
+                    <div className="flex flex-col divide-y divide-white/[0.04]">
+                        {listFolders.map((folder) => (
+                            <div
+                                key={folder.id}
+                                className={`grid grid-cols-[auto_1fr_auto_auto_auto] gap-4 items-center px-4 py-2.5 rounded-[8px] transition-colors ${
+                                    hoveredFolderId === folder.id ? 'bg-[#7c6ef8]/10' : 'hover:bg-white/[0.02]'
+                                }`}
+                                draggable={true}
+                                onDragStart={(e) => { e.dataTransfer.setData('application/json', JSON.stringify({ type: 'folder', id: folder.id })); e.dataTransfer.effectAllowed = 'move'; }}
+                                onDragOver={(e) => e.preventDefault()}
+                                onDragEnter={(e) => { e.preventDefault(); setHoveredFolderId(folder.id); }}
+                                onDragLeave={(e) => { if (!e.currentTarget.contains(e.relatedTarget as Node)) setHoveredFolderId(null); }}
+                                onDrop={(e) => handleDrop(e, folder.id)}
+                            >
+                                <div className="w-9 h-9 rounded-[8px] flex items-center justify-center flex-shrink-0" style={{ backgroundColor: '#F59E0B18', color: folderColor }}>
+                                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" className="w-5 h-5">
+                                        <path d="M19.5 21a3 3 0 0 0 3-3v-4.5a3 3 0 0 0-3-3h-15a3 3 0 0 0-3 3V18a3 3 0 0 0 3 3h15ZM1.5 10.146V6a3 3 0 0 1 3-3h5.379a2.25 2.25 0 0 1 1.59.659l2.122 2.121c.14.141.331.22.53.22H19.5a3 3 0 0 1 3 3v1.146A4.483 4.483 0 0 0 19.5 9h-15a4.483 4.483 0 0 0-3 1.146Z" />
+                                    </svg>
+                                </div>
+                                <button className="text-left min-w-0" onClick={() => !isTrash && changeFolderId(folder.id)}>
+                                    <span className="text-sm font-medium text-[#ccc] truncate block">{folder.name}</span>
+                                    <span className="text-xs text-[#444]">Dossier</span>
                                 </button>
-                                )}
-
-                                {!fp(folder) || isTrash && (
-                                <button
-                                    className="w-full text-left px-4 py-2 text-sm text-red-600 hover:bg-red-50 dark:hover:bg-red-900/20"
-                                    onClick={(e) => { e.stopPropagation(); openDeleteFolderModalFn(folder); setOpenListMenuId(null); }}
-                                >
-                                    Supprimer
-                                </button>
-                                )}
+                                <span className="text-xs text-[#444] w-20 text-right">—</span>
+                                <span className="text-xs text-[#444] w-32 text-right">{folder.created_at ? new Date(folder.created_at).toLocaleDateString('fr-FR', { day: 'numeric', month: 'short', year: 'numeric' }) : '—'}</span>
+                                <div className="relative w-8 flex-shrink-0" onMouseDown={e => e.stopPropagation()}>
+                                    <button
+                                        onClick={(e) => { e.stopPropagation(); setOpenListMenuId(openListMenuId === `folder-${folder.id}` ? null : `folder-${folder.id}`); }}
+                                        className="w-8 h-8 flex items-center justify-center rounded-[6px] text-[#444] hover:text-[#ededed] hover:bg-white/[0.06] transition-colors"
+                                    >
+                                        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="w-4 h-4">
+                                            <path strokeLinecap="round" strokeLinejoin="round" d="M6.75 12a.75.75 0 1 1-1.5 0 .75.75 0 0 1 1.5 0ZM12.75 12a.75.75 0 1 1-1.5 0 .75.75 0 0 1 1.5 0ZM18.75 12a.75.75 0 1 1-1.5 0 .75.75 0 0 1 1.5 0Z" />
+                                        </svg>
+                                    </button>
+                                    {openListMenuId === `folder-${folder.id}` && (
+                                        <DropdownMenu
+                                            onClose={() => setOpenListMenuId(null)}
+                                            items={[
+                                                ...(isTrash && restoreFolder ? [{ label: 'Restaurer', success: true, onClick: () => restoreFolder(folder) }] : []),
+                                                { label: 'Télécharger', onClick: () => downloadFolderById(folder.id, folder.name) },
+                                                ...(!fp(folder) ? [{ label: "Droits d'accès", onClick: () => { setFolderDetailsInfo(folder); setOpenFolderDetailsModal(true); } }] : []),
+                                                ...(!fp(folder) ? [{ label: 'Partager', onClick: () => { setShareFolderInfo(folder); setOpenShareFolderModal(true); } }] : []),
+                                                ...(!fp(folder) ? [{ label: 'Renommer', onClick: () => { setRenameFolderInfo(folder); setOpenRenameFolderModal(true); } }] : []),
+                                                ...(!fp(folder) || fp(folder) === 'WRITE' ? [{ label: 'Déplacer', onClick: () => { setMoveFolderInfo(folder); setOpenMoveFolderModal(true); } }] : []),
+                                                ...(!fp(folder) || isTrash ? [{ label: 'Supprimer', danger: true, onClick: () => { setDeleteFolderInfo(folder); setOpenDeleteFolderModal(true); } }] : []),
+                                            ]}
+                                        />
+                                    )}
+                                </div>
                             </div>
-                        )}
+                        ))}
+
+                        {listFiles && listFiles.map((file) => {
+                            const color = getFileColor(file.mime_type);
+                            return (
+                                <div
+                                    key={file.id}
+                                    className="grid grid-cols-[auto_1fr_auto_auto_auto] gap-4 items-center px-4 py-2.5 rounded-[8px] hover:bg-white/[0.02] transition-colors cursor-grab active:cursor-grabbing"
+                                    draggable={true}
+                                    onDragStart={(e) => { e.dataTransfer.setData('application/json', JSON.stringify({ type: 'file', id: file.id })); e.dataTransfer.effectAllowed = 'move'; }}
+                                >
+                                    <div className="w-9 h-9 rounded-[8px] flex items-center justify-center flex-shrink-0 overflow-hidden" style={{ backgroundColor: `${color}18` }}>
+                                        {thumbnails[file.id] ? (
+                                            <img src={thumbnails[file.id]} alt={file.name} className="w-full h-full object-cover rounded-[8px]" />
+                                        ) : (
+                                            <img src={getFileSvg(file.mime_type)} alt="File Icon" className="w-5 h-5" />
+                                        )}
+                                    </div>
+                                    <button className="text-left min-w-0" onClick={() => setFileInformationAndOpen(file)}>
+                                        <span className="text-sm font-medium text-[#ccc] truncate block">{file.fullName}</span>
+                                        <span className="text-xs text-[#444]">{file.mime_type}</span>
+                                    </button>
+                                    <span className="text-xs text-[#444] w-20 text-right">{convertFileSize(file.size_bytes)}</span>
+                                    <span className="text-xs text-[#444] w-32 text-right">{new Date(file.updatedAt).toLocaleDateString('fr-FR', { day: 'numeric', month: 'short', year: 'numeric' })}</span>
+                                    <div className="relative w-8 flex-shrink-0" onMouseDown={e => e.stopPropagation()}>
+                                        <button
+                                            onClick={(e) => { e.stopPropagation(); setOpenListMenuId(openListMenuId === `file-${file.id}` ? null : `file-${file.id}`); }}
+                                            className="w-8 h-8 flex items-center justify-center rounded-[6px] text-[#444] hover:text-[#ededed] hover:bg-white/[0.06] transition-colors"
+                                        >
+                                            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="w-4 h-4">
+                                                <path strokeLinecap="round" strokeLinejoin="round" d="M6.75 12a.75.75 0 1 1-1.5 0 .75.75 0 0 1 1.5 0ZM12.75 12a.75.75 0 1 1-1.5 0 .75.75 0 0 1 1.5 0ZM18.75 12a.75.75 0 1 1-1.5 0 .75.75 0 0 1 1.5 0Z" />
+                                            </svg>
+                                        </button>
+                                        {openListMenuId === `file-${file.id}` && (
+                                            <DropdownMenu
+                                                onClose={() => setOpenListMenuId(null)}
+                                                items={[
+                                                    ...(isTrash && restoreFile ? [{ label: 'Restaurer', success: true, onClick: () => restoreFile(file) }] : []),
+                                                    ...(!isTrash ? [{ label: 'Télécharger', onClick: () => downloadFileById(file.id, file.name) }] : []),
+                                                    ...(!fp(file) || fp(file) === 'WRITE' ? [{ label: 'Renommer', onClick: () => { setEditFileInfo(file); setOpenUpdateModal(true); } }] : []),
+                                                    ...(!fp(file) ? [{ label: 'Partager', onClick: () => { setShareFileInfo(file); setOpenShareModal(true); } }] : []),
+                                                    ...(!fp(file) || fp(file) === 'WRITE' ? [{ label: 'Déplacer', onClick: () => { setPositionFileInfo(file); setOpenMoveModal(true); } }] : []),
+                                                    ...(!fp(file) || isTrash ? [{ label: 'Supprimer', danger: true, onClick: () => { setDeleteFileInfo(file); setOpenDeleteModal(true); } }] : []),
+                                                ]}
+                                            />
+                                        )}
+                                    </div>
+                                </div>
+                            );
+                        })}
                     </div>
                 </div>
-            ))}
-            {listFiles && listFiles.map((file) => (
-                <div key={file.id} className="flex items-center py-3 px-2 hover:bg-gray-50 dark:hover:bg-dark-surface rounded-lg">
-                    <div
-                        className="w-10 h-10 rounded-xl flex items-center justify-center mr-3 flex-shrink-0 overflow-hidden"
-                        style={{ backgroundColor: `${getFileColor(file.mime_type)}20`, color: getFileColor(file.mime_type) }}
-                    >
-                        {thumbnails[file.id] ? (
-                            <img src={thumbnails[file.id]} alt={file.name} className="w-full h-full object-cover rounded-xl" />
-                        ) : (
-                            <img src={getFileSvg(file.mime_type)} alt="File Icon" className="w-6 h-6" />
-                        )}
-                    </div>
-                    <button className="flex-1 text-left min-w-0 mr-3" onClick={() => setFileInformationAndOpen(file)}>
-                        <span className="font-medium text-gray-900 dark:text-white truncate block">{file.fullName}</span>
-                        <span className="text-xs text-gray-500 dark:text-gray-400">
-                            {convertFileSize(file.size_bytes)} · {formatDate(file.updatedAt)}
-                        </span>
-                    </button>
-                    <div className="relative flex-shrink-0" onMouseDown={e => e.stopPropagation()}>
-                        <button
-                            onClick={(e) => {
-                                e.stopPropagation();
-                                setOpenListMenuId(openListMenuId === `file-${file.id}` ? null : `file-${file.id}`);
-                            }}
-                            className="p-1 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-700 text-gray-500"
-                        >
-                            ⋯
-                        </button>
-                        {openListMenuId === `file-${file.id}` && (
-                            <div className="absolute right-0 w-40 bg-main-bg dark:bg-dark-main-bg rounded-lg shadow-lg border border-gray-200 dark:border-gray-700 z-10">
-                                <button
-                                    className="w-full text-left px-4 py-2 text-sm hover:bg-gray-200 dark:hover:bg-gray-700"
-                                    onClick={(e) => { e.stopPropagation(); downloadFileById(file.id, file.name); setOpenListMenuId(null); }}
-                                >
-                                    Télécharger
-                                </button>
-                                {(!fp(file) || fp(file) === 'WRITE') && (
-                                    <button
-                                        className="w-full text-left px-4 py-2 text-sm hover:bg-gray-100 dark:hover:bg-gray-700"
-                                        onClick={(e) => { e.stopPropagation(); openUpdateFileModal(file); setOpenListMenuId(null); }}
-                                    >
-                                        Renommer
-                                    </button>
-                                )}
-                                {!fp(file) && (
-                                    <>
-                                        <button
-                                            className="w-full text-left px-4 py-2 text-sm hover:bg-gray-100 dark:hover:bg-gray-700"
-                                            onClick={(e) => { e.stopPropagation(); openShareFileModal(file); setOpenListMenuId(null); }}
-                                        >
-                                            Partager
-                                        </button>
-                                        <button
-                                            className="w-full text-left px-4 py-2 text-sm text-red-600 hover:bg-red-50 dark:hover:bg-red-900/20"
-                                            onClick={(e) => { e.stopPropagation(); openDeleteFileModal(file); setOpenListMenuId(null); }}
-                                        >
-                                            Supprimer
-                                        </button>
-                                    </>
-                                )}
-                            </div>
-                        )}
-                    </div>
-                </div>
-            ))}
-        </div>
-        )}
+            )}
 
-            {/* Show details modal */}
-            <FileDetailsModal
-                isOpen={open}
-                selectedFile={selectedFile}
-                file={file}
-                fileLoading={fileLoading}
-                currentUserId={userInfo.id}
-                onClose={() => setFileInformationAndClose()}
-            />
-
-            <UpdateFileModal
-                isOpen={openUpdateModal}
-                fileInfo={editFileInfo!}
-                closeModal={() => closeUploadFileModal()}
-            />
-
-            <ShareFileModal
-                isOpen={openShareModal}
-                fileInfo={shareFileInfo!}
-                closeModal={() => closeShareFileModal()}
-            />
-            <MoveFileModal
-                isOpen={openMoveModal}
-                fileInfo={editFilePositionInfo!}
-                closeModal={() => closeMoveFileModal()}
-            />
-
-            <DeleteFileModal
-                isOpen={openDeleteModal}
-                fileInfo={deleteFileInfo!}
-                closeModal={() => closeDeleteFileModal()}
-                onSuccess={onFileChanged}
-            />
-
-            <RenameFolderModal
-                isOpen={openRenameFolderModal}
-                folderInfo={renameFolderInfo!}
-                closeModal={closeRenameFolderModal}
-                onSuccess={onFolderRenamed}
-            />
-
-            <DeleteFolderModal
-                isOpen={openDeleteFolderModal}
-                folderInfo={deleteFolderInfo!}
-                closeModal={closeDeleteFolderModal}
-            />
-
-            <MoveFolderModal
-                isOpen={openMoveFolderModal}
-                folderInfo={moveFolderInfo!}
-                closeModal={closeMoveFolderModal}
-            />
-
-            <FolderDetailsModal
-                isOpen={openFolderDetailsModal}
-                folder={folderDetailsInfo}
-                onClose={closeFolderDetailsModal}
-            />
-
-            <ShareFileModal
-                isOpen={openShareFolderModal}
-                folderInfo={shareFolderInfo!}
-                closeModal={closeShareFolderModal}
-            />
+            <FileDetailsModal isOpen={open} selectedFile={selectedFile} file={file} fileLoading={fileLoading} currentUserId={userInfo.id} onClose={setFileInformationAndClose} />
+            <UpdateFileModal isOpen={openUpdateModal} fileInfo={editFileInfo!} closeModal={() => { setEditFileInfo(null); setOpenUpdateModal(false); }} onSuccess={onFileChanged} />
+            <ShareFileModal isOpen={openShareModal} fileInfo={shareFileInfo!} closeModal={() => { setShareFileInfo(null); setOpenShareModal(false); }} />
+            <MoveFileModal isOpen={openMoveModal} fileInfo={editFilePositionInfo!} closeModal={() => { setPositionFileInfo(null); setOpenMoveModal(false); }} />
+            <DeleteFileModal isOpen={openDeleteModal} fileInfo={deleteFileInfo!} closeModal={() => { setDeleteFileInfo(null); setOpenDeleteModal(false); }} onSuccess={onFileChanged} />
+            <RenameFolderModal isOpen={openRenameFolderModal} folderInfo={renameFolderInfo!} closeModal={() => { setRenameFolderInfo(null); setOpenRenameFolderModal(false); }} onSuccess={onFolderRenamed} />
+            <DeleteFolderModal isOpen={openDeleteFolderModal} folderInfo={deleteFolderInfo!} closeModal={() => { setDeleteFolderInfo(null); setOpenDeleteFolderModal(false); }} />
+            <MoveFolderModal isOpen={openMoveFolderModal} folderInfo={moveFolderInfo!} closeModal={() => { setMoveFolderInfo(null); setOpenMoveFolderModal(false); }} />
+            <FolderDetailsModal isOpen={openFolderDetailsModal} folder={folderDetailsInfo} onClose={() => { setFolderDetailsInfo(null); setOpenFolderDetailsModal(false); }} />
+            <ShareFileModal isOpen={openShareFolderModal} folderInfo={shareFolderInfo!} closeModal={() => { setShareFolderInfo(null); setOpenShareFolderModal(false); }} />
         </>
     );
 }

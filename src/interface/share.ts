@@ -1,3 +1,16 @@
+export interface SentShare {
+    id: number;
+    type: 'file' | 'folder';
+    item: { id: number; name: string; fullName?: string };
+    shareType: 'public' | 'private';
+    recipient: ShareRecipient | null;
+    token: string | null;
+    hasPassword: boolean;
+    expiresAt: string | null;
+    permission: 'READ' | 'WRITE';
+    createdAt: string;
+}
+
 export interface ShareRecipient {
     id: number;
     username: string;

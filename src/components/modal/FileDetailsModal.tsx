@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import { useState, useEffect } from 'react';
 import Modal from '@/src/components/modal/Modal';
 import { FileResponse } from '@/src/interface/file';
 import { FileShareItem } from '@/src/interface/share';
@@ -82,7 +82,7 @@ export default function FileDetailsModal({
             return <PdfPreview file={file!} fileInformation={selectedFile} onClose={handleClose} />;
         }
         if (mimeType.startsWith('video/')) {
-            return <VideoPreview file={file!} fileInformation={selectedFile} onClose={handleClose} />;
+            return <VideoPreview fileInformation={selectedFile} onClose={handleClose} />;
         }
         if (mimeType.startsWith('audio/')) {
             return <AudioPreview file={file!} fileInformation={selectedFile} onClose={handleClose} />;

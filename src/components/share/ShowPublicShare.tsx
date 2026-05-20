@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useState } from "react";
+import { useState } from "react";
 import InputField from "@/src/components/input/InputField";
 import SubmitButton from "@/src/components/button/SubmitButton";
 import { getPublicShareAPI} from "@/src/api/share";
@@ -8,10 +8,8 @@ import { PublicShareResponse } from "@/src/interface/share";
 import { getFileColor } from "@/src/utils/get-file-color";
 import { getFileSvg } from "@/src/utils/get-file-svg";
 import { convertFileSize } from "@/src/utils/convert-file-size";
-import {downloadFileService} from "@/src/services/downloadFile";
-
 import { downloadPublicFileService } from "@/src/services/downloadPublicFile";
-import{downloadPublicFolderService} from "@/src/services/downloadPublicFolder";
+import { downloadPublicFolderService } from "@/src/services/downloadPublicFolder";
 
 type ApiResult = Awaited<ReturnType<typeof getPublicShareAPI>>;
 
@@ -25,19 +23,28 @@ export default function ShowPublicShare({ shareId, initialResult }: ShowPublicSh
     const [result, setResult] = useState<ApiResult>(initialResult);
     const [loading, setLoading] = useState(false);
     const [error, setError] = useState<string | null>(null);
+    const [downloadError, setDownloadError] = useState<string | null>(null);
 
     async function downloadFolderById() {
-        const share = result.data as PublicShareResponse;
-        const file = share.data;
-        await downloadPublicFolderService(shareId, file.name, password);
-        
+        setDownloadError(null);
+        try {
+            const share = result.data as PublicShareResponse;
+            const file = share.data;
+            await downloadPublicFolderService(shareId, file.name, password);
+        } catch (e: any) {
+            setDownloadError(e.message || "Erreur lors du téléchargement.");
+        }
     }
 
     async function downloadFileById() {
-        const share = result.data as PublicShareResponse;
-        const file = share.data;
-        await downloadPublicFileService(shareId, file.name, password);
-
+        setDownloadError(null);
+        try {
+            const share = result.data as PublicShareResponse;
+            const file = share.data;
+            await downloadPublicFileService(shareId, file.fullName, password);
+        } catch (e: any) {
+            setDownloadError(e.message || "Erreur lors du téléchargement.");
+        }
     }
 
     const handleSubmit = async () => {
@@ -99,8 +106,9 @@ export default function ShowPublicShare({ shareId, initialResult }: ShowPublicSh
     if (result.success && result.data) {
         const share = result.data as PublicShareResponse;
         const file = share.data;
-        const color = getFileColor(file.mime_type);
-        const svgSrc = getFileSvg(file.mime_type);
+        const isFolder = result.data.type === "folder";
+        const color = isFolder ? "#F59E0B" : getFileColor(file.mime_type);
+        const svgSrc = isFolder ? null : getFileSvg(file.mime_type);
 
         return (
 
@@ -111,14 +119,20 @@ export default function ShowPublicShare({ shareId, initialResult }: ShowPublicSh
                             className="w-16 h-16 rounded-2xl flex items-center justify-center shrink-0"
                             style={{ backgroundColor: `${color}20` }}
                         >
-                            <img src={svgSrc} alt={file.mime_type} className="w-8 h-8" />
+                            {isFolder ? (
+                                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" className="w-8 h-8" style={{ color }}>
+                                    <path d="M19.5 21a3 3 0 0 0 3-3v-4.5a3 3 0 0 0-3-3h-15a3 3 0 0 0-3 3V18a3 3 0 0 0 3 3h15ZM1.5 10.146V6a3 3 0 0 1 3-3h5.379a2.25 2.25 0 0 1 1.59.659l2.122 2.121c.14.141.331.22.53.22H19.5a3 3 0 0 1 3 3v1.146A4.483 4.483 0 0 0 19.5 9h-15a4.483 4.483 0 0 0-3 1.146Z" />
+                                </svg>
+                            ) : (
+                                <img src={svgSrc!} alt={file.mime_type} className="w-8 h-8" />
+                            )}
                         </div>
                         <div className="min-w-0">
                             <h1
                                 className="text-lg font-bold text-txt-primary dark:text-dark-txt-primary truncate"
-                                title={file.fullName}
+                                title={file.fullName ?? file.name}
                             >
-                                {file.fullName}
+                                {file.fullName ?? file.name}
                             </h1>
                             <p className="text-sm text-txt-secondary dark:text-dark-txt-secondary">
                                 Partagé par <span className="font-medium">{share.owner}</span>
@@ -126,16 +140,21 @@ export default function ShowPublicShare({ shareId, initialResult }: ShowPublicSh
                         </div>
                     </div>
 
-                    
                     <div className="flex gap-3">
+                        {!isFolder && (
+                            <span className="px-3 py-1 rounded-full text-xs font-medium bg-main-bg dark:bg-dark-main-bg text-txt-secondary dark:text-dark-txt-secondary border border-border-subtle dark:border-dark-border-subtle">
+                                {convertFileSize(file.size_bytes)}
+                            </span>
+                        )}
                         <span className="px-3 py-1 rounded-full text-xs font-medium bg-main-bg dark:bg-dark-main-bg text-txt-secondary dark:text-dark-txt-secondary border border-border-subtle dark:border-dark-border-subtle">
-                            {convertFileSize(file.size_bytes)}
-                        </span>
-                        <span className="px-3 py-1 rounded-full text-xs font-medium bg-main-bg dark:bg-dark-main-bg text-txt-secondary dark:text-dark-txt-secondary border border-border-subtle dark:border-dark-border-subtle">
-                            {file.mime_type}
+                            {isFolder ? "Dossier (ZIP)" : file.mime_type}
                         </span>
                     </div>
                    
+                    {downloadError && (
+                        <p className="text-sm text-error dark:text-dark-error">{downloadError}</p>
+                    )}
+
                     <button
                         onClick= {result.data.type == "file" ? downloadFileById : downloadFolderById}
                         className="w-full flex items-center justify-center gap-2 px-4 py-2.5 rounded-xl bg-action dark:bg-dark-action text-white font-medium text-sm hover:opacity-90 transition-opacity"

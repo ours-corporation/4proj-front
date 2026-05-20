@@ -246,3 +246,27 @@ export async function moveFolderIntoFolder(movingFolderId:number|null, destinati
         throw error;
     }
 }
+
+export async function copyFolderById(folderId:number){
+    const url = process.env.NEXT_PUBLIC_API_URL;
+    const token = getJwtToken();
+        try {
+        const rep = await fetch(`${url}/api/folders/${folderId}/copy`, {
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json",
+                "Authorization": `Bearer ${token}`,
+            },
+        });
+
+        if (!rep.ok) {
+            throw new Error(`Erreur HTTP: ${rep.status}`);
+        }
+
+        const data = await rep.json();
+        return data as FolderResponse;
+
+    } catch (error) {
+        throw error;
+    }
+}

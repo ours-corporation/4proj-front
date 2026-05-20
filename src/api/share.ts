@@ -1,7 +1,7 @@
 import {getJwtToken} from "@/src/hooks/getJwtInformation";
-import {FolderResponse, FolderShareResponse} from "@/src/interface/folder";
-import {FileResponse, FileShareResponse} from "@/src/interface/file";
-import { PublicShareResponse } from "@/src/interface/share";
+import {FolderResponse} from "@/src/interface/folder";
+import {FileResponse} from "@/src/interface/file";
+import { SentShare } from "@/src/interface/share";
 
 export async function createPublicShareAPI(fileId?: number, folderId?: number, password?: string, expiresAt?: string) : Promise<Response> {
     const url = process.env.NEXT_PUBLIC_API_URL
@@ -119,6 +119,22 @@ export async function downloadPublicFileShareAPI(token: string, password?: strin
         throw error;
     }
     
+}
+
+export async function getSentSharesAPI(): Promise<SentShare[]> {
+    const url = process.env.NEXT_PUBLIC_API_URL;
+    const token = getJwtToken();
+
+    const rep = await fetch(`${url}/api/shares/sent`, {
+        method: 'GET',
+        headers: {
+            'Content-Type': 'application/json',
+            'Authorization': `Bearer ${token}`,
+        },
+    });
+
+    if (!rep.ok) throw new Error(`Erreur HTTP: ${rep.status}`);
+    return rep.json();
 }
 
 export async function updateShareAPI(
