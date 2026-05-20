@@ -1,8 +1,9 @@
 'use client';
 
-import { useState, useEffect, Suspense } from 'react';
+import { useState, useEffect, useCallback, Suspense } from 'react';
 import { useSearchParams } from 'next/navigation';
 import { useAuth } from '@/src/hooks/useAuth';
+import { useSocketEvent } from '@/src/hooks/useSocketEvent';
 import Loading from '@/src/components/Loading';
 import Layout from '@/src/components/layout/Layout';
 import Error from "@/src/components/Error";
@@ -23,15 +24,25 @@ function FoldersContent() {
 
     useEffect(() => { setFolderId(searchParams.get('folderId') ?? ''); }, [searchParams]);
 
-    async function fetchFolderData() {
+    const fetchFolderData = useCallback(async () => {
         setError(null);
         try {
             const data = await getFolderById({ folderId });
             setFolderData(data);
         } catch { setFolderData(null); }
-    }
+    }, [folderId]);
 
-    useEffect(() => { fetchFolderData(); }, [folderId]);
+    useEffect(() => { fetchFolderData(); }, [fetchFolderData]);
+
+    useSocketEvent('file:created', useCallback(() => { fetchFolderData(); }, [fetchFolderData]));
+    useSocketEvent('file:updated', useCallback(() => { fetchFolderData(); }, [fetchFolderData]));
+    useSocketEvent('file:trashed', useCallback(() => { fetchFolderData(); }, [fetchFolderData]));
+    useSocketEvent('file:deleted', useCallback(() => { fetchFolderData(); }, [fetchFolderData]));
+    useSocketEvent('folder:created', useCallback(() => { fetchFolderData(); }, [fetchFolderData]));
+    useSocketEvent('folder:updated', useCallback(() => { fetchFolderData(); }, [fetchFolderData]));
+    useSocketEvent('folder:trashed', useCallback(() => { fetchFolderData(); }, [fetchFolderData]));
+    useSocketEvent('folder:deleted', useCallback(() => { fetchFolderData(); }, [fetchFolderData]));
+    useSocketEvent('items:moved', useCallback(() => { fetchFolderData(); }, [fetchFolderData]));
 
     async function changeFolderId(newFolderIdNumber: number | null) {
         const newFolderId = newFolderIdNumber?.toString() ?? '';
