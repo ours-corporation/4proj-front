@@ -22,6 +22,7 @@ export default function RegisterPage() {
     const [username, setUsername] = useState("");
     const [loading, setLoading] = useState(useNotAuth());
     const [error, setError] = useState("");
+    const [registered, setRegistered] = useState(false);
 
     const router = useRouter();
 
@@ -71,7 +72,7 @@ export default function RegisterPage() {
                     setError("Une erreur serveur s'est produite. Veuillez réessayer.");
                 }
             } else {
-                router.push("/login");
+                setRegistered(true);
             }
         } catch {
             setError("Impossible de joindre le serveur. Vérifiez votre connexion.");
@@ -102,6 +103,34 @@ export default function RegisterPage() {
 
                 <div className="w-full max-w-[420px] bg-surface dark:bg-[#111113] border border-border-subtle dark:border-[#7c6ef8]/20 rounded-[20px] px-9 py-10 relative z-10 shadow-[0_20px_60px_rgba(0,0,0,0.1)] dark:shadow-[0_40px_80px_rgba(0,0,0,0.6)]">
 
+                    {registered ? (
+                        <div className="text-center">
+                            <div className="flex justify-center mb-5">
+                                <div className="w-12 h-12 rounded-full bg-emerald-500/15 flex items-center justify-center">
+                                    <svg className="w-7 h-7 text-emerald-400" fill="none" stroke="currentColor" strokeWidth="2.5" viewBox="0 0 24 24">
+                                        <path strokeLinecap="round" strokeLinejoin="round" d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z" />
+                                    </svg>
+                                </div>
+                            </div>
+                            <h2 className="font-['Syne',sans-serif] text-[22px] font-extrabold text-txt-primary dark:text-[#ededed] mb-2 tracking-tight">
+                                Vérifiez votre email
+                            </h2>
+                            <p className="text-sm text-txt-secondary dark:text-[#484858] font-light mb-2">
+                                Un lien de confirmation a été envoyé à
+                            </p>
+                            <p className="text-sm font-medium text-[#7c6ef8] mb-6 break-all">{email}</p>
+                            <p className="text-[12px] text-txt-secondary dark:text-[#333] mb-7">
+                                Cliquez sur le lien dans l'email pour activer votre compte. Le lien expire dans 24h.
+                            </p>
+                            <a
+                                href="/login"
+                                className="inline-block w-full py-3 rounded-[10px] border border-border-subtle dark:border-white/[0.07] text-txt-secondary dark:text-[#bbb] text-sm hover:border-[#7c6ef8]/30 hover:text-[#7c6ef8] transition-all no-underline"
+                            >
+                                Retour à la connexion
+                            </a>
+                        </div>
+                    ) : (
+                    <>
                     <a href="/" className="flex items-center justify-center gap-2.5 mb-7 no-underline">
                         <svg width="32" height="32" viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg">
                             <defs>
@@ -234,6 +263,8 @@ export default function RegisterPage() {
                             Se connecter
                         </a>
                     </p>
+                    </>
+                    )}
                 </div>
 
                 <p className="absolute bottom-5 text-[12px] text-txt-secondary dark:text-[#262630] z-10">

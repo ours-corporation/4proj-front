@@ -59,6 +59,8 @@ export default function LoginPage() {
             if (!res.ok) {
                 if (res.status === 401) {
                     setError("Les identifiants sont invalides.");
+                } else if (res.status === 403) {
+                    setError("Veuillez vérifier votre adresse email avant de vous connecter. Consultez votre boîte de réception.");
                 } else if (res.status === 400) {
                     const data = await res.json().catch(() => ({}));
                     setError(data?.errors?.[0]?.message || data?.error || "Données invalides.");

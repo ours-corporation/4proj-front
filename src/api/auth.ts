@@ -57,3 +57,11 @@ export async function logout(){
         credentials: 'include',
     });
 }
+
+export async function verifyEmail(token: string) {
+    const url = process.env.NEXT_PUBLIC_API_URL
+
+    return await fetch(url + `/api/verify-email?token=${encodeURIComponent(token)}`, {
+        method: "GET",
+    });
+}
