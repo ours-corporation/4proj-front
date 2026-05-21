@@ -311,7 +311,7 @@ export default function Folders({ listFolders, listFiles, changeFolderId, viewMo
             <UpdateFileModal isOpen={openUpdateModal} fileInfo={editFileInfo!} closeModal={() => { setEditFileInfo(null); setOpenUpdateModal(false); }} onSuccess={onFileChanged} />
             <ShareFileModal isOpen={openShareModal} fileInfo={shareFileInfo!} closeModal={() => { setShareFileInfo(null); setOpenShareModal(false); }} />
             <MoveFileModal isOpen={openMoveModal} fileInfo={editFilePositionInfo!} closeModal={() => { setPositionFileInfo(null); setOpenMoveModal(false); }} />
-            <DeleteFileModal isOpen={openDeleteModal} fileInfo={deleteFileInfo!} closeModal={() => { setDeleteFileInfo(null); setOpenDeleteModal(false); }} onSuccess={onFileChanged} />
+            <DeleteFileModal isOpen={openDeleteModal} fileInfo={deleteFileInfo!} closeModal={() => { setDeleteFileInfo(null); setOpenDeleteModal(false); }} onSuccess={onFileChanged} isTrash={isTrash} />
             <RenameFolderModal isOpen={openRenameFolderModal} folderInfo={renameFolderInfo!} closeModal={() => { setRenameFolderInfo(null); setOpenRenameFolderModal(false); }} onSuccess={onFolderRenamed} />
             <DeleteFolderModal isOpen={openDeleteFolderModal} folderInfo={deleteFolderInfo!} closeModal={() => { setDeleteFolderInfo(null); setOpenDeleteFolderModal(false); }} />
             <MoveFolderModal isOpen={openMoveFolderModal} folderInfo={moveFolderInfo!} closeModal={() => { setMoveFolderInfo(null); setOpenMoveFolderModal(false); }} />

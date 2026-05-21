@@ -8,9 +8,10 @@ interface DeleteFileModalProps {
     fileInfo?: FileResponse;
     closeModal: () => void;
     onSuccess?: () => void;
+    isTrash?: boolean;
 }
 
-export default function DeleteFileModal({ isOpen, closeModal, fileInfo, onSuccess }: DeleteFileModalProps) {
+export default function DeleteFileModal({ isOpen, closeModal, fileInfo, onSuccess, isTrash }: DeleteFileModalProps) {
     const [loading, setLoading] = useState(false);
     const [error, setError] = useState<string | null>(null);
     const [forceDelete, setForceDelete] = useState(false);
@@ -22,7 +23,7 @@ export default function DeleteFileModal({ isOpen, closeModal, fileInfo, onSucces
         setLoading(true);
         setError(null);
         try {
-            await deleteFileById(fileInfo!.id, forceDelete);
+            await deleteFileById(fileInfo!.id, isTrash ? true : forceDelete);
             closeModal();
             onSuccess?.();
         } catch {
@@ -45,17 +46,19 @@ export default function DeleteFileModal({ isOpen, closeModal, fileInfo, onSucces
                     <span className="font-semibold">{fileInfo.fullName}</span> ?
                 </p>
 
-                <label className="flex items-center gap-2 cursor-pointer w-fit">
-                    <input
-                        type="checkbox"
-                        checked={forceDelete}
-                        onChange={(e) => setForceDelete(e.target.checked)}
-                        className="w-4 h-4 accent-red-600 cursor-pointer"
-                    />
-                    <span className="text-sm text-txt-primary dark:text-dark-txt-primary">
-                        Suppression forcée
-                    </span>
-                </label>
+                {!isTrash && (
+                    <label className="flex items-center gap-2 cursor-pointer w-fit">
+                        <input
+                            type="checkbox"
+                            checked={forceDelete}
+                            onChange={(e) => setForceDelete(e.target.checked)}
+                            className="w-4 h-4 accent-red-600 cursor-pointer"
+                        />
+                        <span className="text-sm text-txt-primary dark:text-dark-txt-primary">
+                            Suppression forcée
+                        </span>
+                    </label>
+                )}
 
                 {error && (
                     <p className="text-sm text-red-500">{error}</p>
