@@ -1,6 +1,7 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useCallback } from 'react';
 import { getStorageStats } from '@/src/api/user';
 import { StorageCategoryData } from '@/src/interface/storage';
+import { useSocketEvent } from '@/src/hooks/useSocketEvent';
 
 const CATEGORY_META: Record<string, { label: string; color: string }> = {
     video:    { label: 'Vidéos',    color: '#C0392B' },
@@ -33,32 +34,31 @@ export function useStorageData(enabled: boolean = true): StorageData {
     const [isMock, setIsMock]         = useState(false);
     const [loading, setLoading]       = useState(true);
 
-    useEffect(() => {
+    const load = useCallback(async () => {
         if (!enabled) return;
-
-        async function load() {
-            try {
-                const stats = await getStorageStats();
-
-                setUsedBytes(stats.used_bytes);
-                setTotalBytes(stats.quota_bytes);
-                setCategories(
-                    Object.entries(stats.categories).map(([key, val]) => ({
-                        label: CATEGORY_META[key]?.label ?? key,
-                        color: CATEGORY_META[key]?.color ?? '#95A5A6',
-                        bytes: val.bytes,
-                    }))
-                );
-                setIsMock(false);
-            } catch {
-                setCategories(MOCK_CATEGORIES);
-                setIsMock(true);
-            } finally {
-                setLoading(false);
-            }
+        try {
+            const stats = await getStorageStats();
+            setUsedBytes(stats.used_bytes);
+            setTotalBytes(stats.quota_bytes);
+            setCategories(
+                Object.entries(stats.categories).map(([key, val]) => ({
+                    label: CATEGORY_META[key]?.label ?? key,
+                    color: CATEGORY_META[key]?.color ?? '#95A5A6',
+                    bytes: val.bytes,
+                }))
+            );
+            setIsMock(false);
+        } catch {
+            setCategories(MOCK_CATEGORIES);
+            setIsMock(true);
+        } finally {
+            setLoading(false);
         }
-        load();
     }, [enabled]);
+
+    useEffect(() => { load(); }, [load]);
+
+    useSocketEvent('storage:updated', useCallback(() => { load(); }, [load]));
 
     return { usedBytes, totalBytes, categories, isMock, loading };
 }

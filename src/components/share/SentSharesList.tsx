@@ -1,8 +1,9 @@
 'use client';
 
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useCallback } from 'react';
 import { SentShare } from '@/src/interface/share';
 import { getSentSharesAPI, deleteShareAPI } from '@/src/api/share';
+import { useSocketEvent } from '@/src/hooks/useSocketEvent';
 
 const BASE_URL = typeof window !== 'undefined' ? window.location.origin : '';
 
@@ -36,7 +37,7 @@ export default function SentSharesList() {
     const [loading, setLoading] = useState(true);
     const [revoking, setRevoking] = useState<number | null>(null);
 
-    async function fetchShares() {
+    const fetchShares = useCallback(async () => {
         setLoading(true);
         try {
             const data = await getSentSharesAPI();
@@ -46,9 +47,13 @@ export default function SentSharesList() {
         } finally {
             setLoading(false);
         }
-    }
+    }, []);
 
-    useEffect(() => { fetchShares(); }, []);
+    useEffect(() => { fetchShares(); }, [fetchShares]);
+
+    useSocketEvent('share:created', useCallback(() => { fetchShares(); }, [fetchShares]));
+    useSocketEvent('share:updated', useCallback(() => { fetchShares(); }, [fetchShares]));
+    useSocketEvent('share:revoked', useCallback(() => { fetchShares(); }, [fetchShares]));
 
     async function handleRevoke(shareId: number) {
         setRevoking(shareId);

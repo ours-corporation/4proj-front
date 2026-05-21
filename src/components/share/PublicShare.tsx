@@ -84,7 +84,7 @@ export default function PublicShare({ fileInfo, folderInfo }: PublicShareProps) 
                 </div>
             ) : (
                 <div>
-                    <h2 className="text-lg font-bold mb-4">Partager le fichier publiquement</h2>
+                    <h2 className="text-lg font-bold mb-4 text-txt-primary dark:text-dark-txt-primary">Partager le fichier publiquement</h2>
                     <div className="mt-4 flex items-center justify-between mb-4">
                         <span className="text-sm font-medium text-txt-primary dark:text-dark-txt-primary">
                             Activer la protection par mot de passe

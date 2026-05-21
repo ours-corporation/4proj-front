@@ -60,13 +60,13 @@ export default function Dashboard() {
 
             {/* Page heading */}
             <div className="mb-8">
-                <h1 className="text-2xl font-bold text-[#ededed] mb-1">
+                <h1 className="text-2xl font-bold text-txt-primary dark:text-[#ededed] mb-1">
                     Bonjour,{" "}
                     <span className="bg-gradient-to-r from-[#7c6ef8] to-[#42aff0] bg-clip-text text-transparent">
                         {userInfo.username}
                     </span>{" "}!
                 </h1>
-                <p className="text-sm text-[#555]">
+                <p className="text-sm text-txt-secondary dark:text-[#555]">
                     Retrouvez vos fichiers récents et l&apos;état de votre stockage.
                 </p>
             </div>
@@ -76,32 +76,32 @@ export default function Dashboard() {
 
                 {/* Storage used card */}
                 <GlobalCard svgIcon={<StorageIcon />}>
-                    <p className="text-[11px] font-semibold text-[#444] uppercase tracking-widest mb-3">Espace utilisé</p>
+                    <p className="text-[11px] font-semibold text-txt-secondary dark:text-[#444] uppercase tracking-widest mb-3">Espace utilisé</p>
 
                     {loading ? (
                         <div className="space-y-2 mt-1">
-                            <div className="h-9 w-32 bg-white/[0.04] rounded-lg animate-pulse" />
-                            <div className="h-3 w-full bg-white/[0.04] rounded-full animate-pulse" />
+                            <div className="h-9 w-32 bg-black/[0.04] dark:bg-white/[0.04] rounded-lg animate-pulse" />
+                            <div className="h-3 w-full bg-black/[0.04] dark:bg-white/[0.04] rounded-full animate-pulse" />
                         </div>
                     ) : (
                         <>
                             <div className="flex items-baseline gap-2 mb-4">
-                                <span className="text-3xl font-bold text-[#ededed] tracking-tight">
+                                <span className="text-3xl font-bold text-txt-primary dark:text-[#ededed] tracking-tight">
                                     {convertFileSize(usedBytes)}
                                 </span>
-                                <span className="text-sm text-[#444] font-medium">
+                                <span className="text-sm text-txt-secondary dark:text-[#444] font-medium">
                                     / {convertFileSize(totalBytes)}
                                 </span>
                             </div>
 
                             {/* Progress bar */}
-                            <div className="w-full bg-white/[0.05] rounded-full h-2 overflow-hidden">
+                            <div className="w-full bg-black/[0.05] dark:bg-white/[0.05] rounded-full h-2 overflow-hidden">
                                 <div
                                     className="h-full rounded-full bg-gradient-to-r from-[#7c6ef8] to-[#42aff0] transition-all duration-700 ease-out"
                                     style={{ width: `${usedPct}%` }}
                                 />
                             </div>
-                            <p className="text-[11px] text-[#444] mt-2">{usedPct}% utilisé</p>
+                            <p className="text-[11px] text-txt-secondary dark:text-[#444] mt-2">{usedPct}% utilisé</p>
                         </>
                     )}
                 </GlobalCard>
@@ -110,7 +110,7 @@ export default function Dashboard() {
                 <div className="md:col-span-2">
                     <GlobalCard svgIcon={<ChartIcon />}>
                         <div className="flex items-center justify-between mb-5">
-                            <p className="text-[11px] font-semibold text-[#444] uppercase tracking-widest">
+                            <p className="text-[11px] font-semibold text-txt-secondary dark:text-[#444] uppercase tracking-widest">
                                 Répartition par type
                             </p>
                             {isMock && (
@@ -136,7 +136,7 @@ export default function Dashboard() {
 
             {/* Recent files */}
             <GlobalCard svgIcon={<ClockIcon />}>
-                <p className="text-[11px] font-semibold text-[#444] uppercase tracking-widest mb-4">
+                <p className="text-[11px] font-semibold text-txt-secondary dark:text-[#444] uppercase tracking-widest mb-4">
                     Fichiers récents
                 </p>
                 <ShowRecentFile />

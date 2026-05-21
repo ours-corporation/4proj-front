@@ -41,7 +41,7 @@ export default function StorageCard({ stats }: { stats: StorageStats | null }) {
     const usedPct    = stats?.used_percent ?? 0;
 
     return (
-        <div className="bg-[#111113] border border-white/[0.06] rounded-[20px] p-6">
+        <div className="bg-surface dark:bg-[#111113] border border-border-subtle dark:border-white/[0.06] rounded-[20px] p-6 shadow-[0_4px_16px_rgba(0,0,0,0.06)] dark:shadow-none">
             <div className="flex items-center gap-3 mb-6">
                 <div className="w-9 h-9 rounded-[10px] bg-[#7c6ef8]/10 flex items-center justify-center flex-shrink-0">
                     <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="#7c6ef8" className="w-5 h-5">
@@ -49,18 +49,18 @@ export default function StorageCard({ stats }: { stats: StorageStats | null }) {
                     </svg>
                 </div>
                 <div>
-                    <h2 className="text-[15px] font-semibold text-[#ededed]">Stockage</h2>
-                    <p className="text-[12px] text-[#444]">{fmt(usedBytes)} utilisé sur {fmt(quotaBytes)}</p>
+                    <h2 className="text-[15px] font-semibold text-txt-primary dark:text-[#ededed]">Stockage</h2>
+                    <p className="text-[12px] text-txt-secondary dark:text-[#444]">{fmt(usedBytes)} utilisé sur {fmt(quotaBytes)}</p>
                 </div>
             </div>
 
             {/* Global bar */}
             <div className="mb-6">
                 <div className="flex justify-between items-center mb-2">
-                    <span className="text-[12px] text-[#555]">Espace utilisé</span>
-                    <span className="text-[12px] font-semibold text-[#888]">{usedPct.toFixed(1)}%</span>
+                    <span className="text-[12px] text-txt-secondary dark:text-[#555]">Espace utilisé</span>
+                    <span className="text-[12px] font-semibold text-txt-secondary dark:text-[#888]">{usedPct.toFixed(1)}%</span>
                 </div>
-                <div className="w-full h-2 bg-white/[0.05] rounded-full overflow-hidden">
+                <div className="w-full h-2 bg-border-subtle dark:bg-white/[0.05] rounded-full overflow-hidden">
                     <div
                         className="h-full rounded-full bg-gradient-to-r from-[#7c6ef8] to-[#42aff0] transition-all duration-700"
                         style={{ width: `${Math.min(usedPct, 100)}%` }}
@@ -74,20 +74,20 @@ export default function StorageCard({ stats }: { stats: StorageStats | null }) {
                     const cat = stats?.categories[key];
                     const pct = cat?.percent ?? 0;
                     return (
-                        <div key={key} className="p-3 rounded-[12px] bg-[#0d0d0d] border border-white/[0.04]">
+                        <div key={key} className="p-3 rounded-[12px] bg-main-bg dark:bg-[#0d0d0d] border border-border-subtle dark:border-white/[0.04]">
                             <div className="flex items-center gap-2 mb-3">
                                 <div className="w-7 h-7 rounded-[8px] flex items-center justify-center flex-shrink-0" style={{ backgroundColor: `${color}18` }}>
                                     <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke={color} className="w-4 h-4">
                                         <path strokeLinecap="round" strokeLinejoin="round" d={icon} />
                                     </svg>
                                 </div>
-                                <span className="text-[12px] font-medium text-[#888]">{label}</span>
+                                <span className="text-[12px] font-medium text-txt-secondary dark:text-[#888]">{label}</span>
                             </div>
                             <div className="flex items-end justify-between mb-2">
-                                <span className="text-sm font-bold text-[#ccc]">{cat ? fmt(cat.bytes) : '—'}</span>
-                                <span className="text-[11px] text-[#444]">{pct.toFixed(1)}%</span>
+                                <span className="text-sm font-bold text-txt-primary dark:text-[#ccc]">{cat ? fmt(cat.bytes) : '—'}</span>
+                                <span className="text-[11px] text-txt-secondary dark:text-[#444]">{pct.toFixed(1)}%</span>
                             </div>
-                            <div className="w-full h-1 bg-white/[0.05] rounded-full overflow-hidden">
+                            <div className="w-full h-1 bg-border-subtle dark:bg-white/[0.05] rounded-full overflow-hidden">
                                 <div className="h-full rounded-full transition-all duration-500" style={{ width: `${Math.min(pct, 100)}%`, backgroundColor: color }} />
                             </div>
                         </div>

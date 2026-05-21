@@ -60,12 +60,12 @@ export default function Headers() {
     }, []);
 
     return (
-        <header className="flex items-center gap-4 w-full px-6 py-4 bg-[#0d0d0d] border-b border-white/[0.05]">
+        <header className="flex items-center gap-4 w-full px-6 py-4 bg-surface dark:bg-[#0d0d0d] border-b border-border-subtle dark:border-white/[0.05]">
 
             {/* Mobile hamburger */}
             <div className="relative md:hidden flex-shrink-0" ref={menuRef}>
                 <button
-                    className="p-2 rounded-[8px] text-[#555] hover:text-[#ededed] hover:bg-white/[0.05] transition-colors"
+                    className="p-2 rounded-[8px] text-txt-secondary dark:text-[#555] hover:text-txt-primary dark:hover:text-[#ededed] hover:bg-black/[0.05] dark:hover:bg-white/[0.05] transition-colors"
                     onClick={() => setMenuOpen(prev => !prev)}
                 >
                     <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="w-5 h-5">
@@ -74,7 +74,7 @@ export default function Headers() {
                 </button>
 
                 {menuOpen && (
-                    <div className="absolute top-full left-0 mt-2 w-52 bg-[#111113] border border-white/[0.08] rounded-[14px] shadow-[0_20px_60px_rgba(0,0,0,0.5)] overflow-hidden z-50">
+                    <div className="absolute top-full left-0 mt-2 w-52 bg-white dark:bg-[#111113] border border-border-subtle dark:border-white/[0.08] rounded-[14px] shadow-[0_8px_30px_rgba(0,0,0,0.12)] dark:shadow-[0_20px_60px_rgba(0,0,0,0.5)] overflow-hidden z-50">
                         {MOBILE_NAV_ITEMS.map(item => {
                             const isActive = pathname === item.href;
                             return (
@@ -85,7 +85,7 @@ export default function Headers() {
                                     className={`flex items-center gap-3 px-4 py-3 text-sm transition-colors no-underline ${
                                         isActive
                                             ? 'bg-gradient-to-r from-[#7c6ef8] to-[#42aff0] text-white font-semibold'
-                                            : 'text-[#888] hover:text-[#ededed] hover:bg-white/[0.04]'
+                                            : 'text-txt-secondary dark:text-[#888] hover:text-txt-primary dark:hover:text-[#ededed] hover:bg-black/[0.04] dark:hover:bg-white/[0.04]'
                                     }`}
                                 >
                                     {item.icon}
@@ -100,7 +100,7 @@ export default function Headers() {
             {/* Search bar */}
             <div className="flex-1 relative max-w-xl">
                 <div className="absolute inset-y-0 left-0 pl-3.5 flex items-center pointer-events-none">
-                    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="w-4 h-4 text-[#444]">
+                    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="w-4 h-4 text-txt-secondary dark:text-[#444]">
                         <path strokeLinecap="round" strokeLinejoin="round" d="m21 21-5.197-5.197m0 0A7.5 7.5 0 1 0 5.196 5.196a7.5 7.5 0 0 0 10.607 10.607Z" />
                     </svg>
                 </div>

@@ -35,20 +35,20 @@ export default function Modal({ size = 'medium', isOpen, title, children, onClos
             onClick={onClose}
         >
             <div
-                className={`bg-[#111113] border border-white/[0.08] rounded-[20px] shadow-[0_40px_80px_rgba(0,0,0,0.7)] w-full ${sizeMap[size]} overflow-hidden transform transition-all duration-200 ${
+                className={`bg-surface dark:bg-[#111113] border border-border-subtle dark:border-white/[0.08] rounded-[20px] shadow-[0_20px_60px_rgba(0,0,0,0.12)] dark:shadow-[0_40px_80px_rgba(0,0,0,0.7)] w-full ${sizeMap[size]} overflow-hidden transform transition-all duration-200 ${
                     isOpen ? 'scale-100 opacity-100 translate-y-0' : 'scale-95 opacity-0 translate-y-2'
                 }`}
                 onClick={(e) => e.stopPropagation()}
             >
-                <div className="flex items-center justify-between px-6 py-4 border-b border-white/[0.06]">
+                <div className="flex items-center justify-between px-6 py-4 border-b border-border-subtle dark:border-white/[0.06]">
                     {title && (
-                        <h2 className="text-[15px] font-semibold text-[#ededed] tracking-tight line-clamp-1">
+                        <h2 className="text-[15px] font-semibold text-txt-primary dark:text-[#ededed] tracking-tight line-clamp-1">
                             {title}
                         </h2>
                     )}
                     <button
                         onClick={onClose}
-                        className="ml-auto p-1.5 text-[#555] hover:text-[#ededed] hover:bg-white/[0.06] rounded-[8px] transition-colors"
+                        className="ml-auto p-1.5 text-[#9CA3AF] hover:text-txt-primary dark:text-[#555] dark:hover:text-[#ededed] hover:bg-black/[0.05] dark:hover:bg-white/[0.06] rounded-[8px] transition-colors"
                         aria-label="Fermer"
                     >
                         <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">

@@ -1,8 +1,9 @@
 'use client';
 
-import { useState, useEffect, Suspense } from 'react';
+import { useState, useEffect, useCallback, Suspense } from 'react';
 import { useSearchParams } from 'next/navigation';
 import { useAuth } from '@/src/hooks/useAuth';
+import { useSocketEvent } from '@/src/hooks/useSocketEvent';
 import Loading from '@/src/components/Loading';
 import Layout from '@/src/components/layout/Layout';
 import Error from "@/src/components/Error";
@@ -23,15 +24,25 @@ function FoldersContent() {
 
     useEffect(() => { setFolderId(searchParams.get('folderId') ?? ''); }, [searchParams]);
 
-    async function fetchFolderData() {
+    const fetchFolderData = useCallback(async () => {
         setError(null);
         try {
             const data = await getFolderById({ folderId });
             setFolderData(data);
         } catch { setFolderData(null); }
-    }
+    }, [folderId]);
 
-    useEffect(() => { fetchFolderData(); }, [folderId]);
+    useEffect(() => { fetchFolderData(); }, [fetchFolderData]);
+
+    useSocketEvent('file:created', useCallback(() => { fetchFolderData(); }, [fetchFolderData]));
+    useSocketEvent('file:updated', useCallback(() => { fetchFolderData(); }, [fetchFolderData]));
+    useSocketEvent('file:trashed', useCallback(() => { fetchFolderData(); }, [fetchFolderData]));
+    useSocketEvent('file:deleted', useCallback(() => { fetchFolderData(); }, [fetchFolderData]));
+    useSocketEvent('folder:created', useCallback(() => { fetchFolderData(); }, [fetchFolderData]));
+    useSocketEvent('folder:updated', useCallback(() => { fetchFolderData(); }, [fetchFolderData]));
+    useSocketEvent('folder:trashed', useCallback(() => { fetchFolderData(); }, [fetchFolderData]));
+    useSocketEvent('folder:deleted', useCallback(() => { fetchFolderData(); }, [fetchFolderData]));
+    useSocketEvent('items:moved', useCallback(() => { fetchFolderData(); }, [fetchFolderData]));
 
     async function changeFolderId(newFolderIdNumber: number | null) {
         const newFolderId = newFolderIdNumber?.toString() ?? '';
@@ -51,7 +62,7 @@ function FoldersContent() {
             {/* Page header */}
             <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 mb-6">
                 <div>
-                    <h1 className="text-xl font-bold text-[#ededed]">Mes Fichiers</h1>
+                    <h1 className="text-xl font-bold text-txt-primary dark:text-[#ededed]">Mes Fichiers</h1>
 
                     {/* Breadcrumb */}
                     {folderData?.breadcrumbs && folderData.breadcrumbs.length > 0 && (
@@ -60,16 +71,16 @@ function FoldersContent() {
                                 <span key={crumb.id} className="flex items-center gap-1">
                                     <button
                                         onClick={() => changeFolderId(crumb.id)}
-                                        className={`text-[13px] transition-colors hover:text-[#ededed] ${
+                                        className={`text-[13px] transition-colors hover:text-txt-primary dark:hover:text-[#ededed] ${
                                             index === folderData.breadcrumbs.length - 1
                                                 ? 'text-[#7c6ef8] font-medium'
-                                                : 'text-[#444]'
+                                                : 'text-txt-secondary dark:text-[#444]'
                                         }`}
                                     >
                                         {crumb.name}
                                     </button>
                                     {index < folderData.breadcrumbs.length - 1 && (
-                                        <svg className="w-3.5 h-3.5 text-[#333]" fill="currentColor" viewBox="0 0 20 20">
+                                        <svg className="w-3.5 h-3.5 text-txt-secondary dark:text-[#333]" fill="currentColor" viewBox="0 0 20 20">
                                             <path fillRule="evenodd" d="M7.293 14.707a1 1 0 010-1.414L10.586 10 7.293 6.707a1 1 0 011.414-1.414l4 4a1 1 0 010 1.414l-4 4a1 1 0 01-1.414 0z" clipRule="evenodd" />
                                         </svg>
                                     )}
@@ -84,7 +95,7 @@ function FoldersContent() {
 
                     <button
                         onClick={() => setCreateFolderOpen(true)}
-                        className="flex items-center gap-2 px-4 py-2 rounded-[10px] border border-white/[0.08] bg-white/[0.03] text-[#aaa] text-sm hover:text-[#ededed] hover:border-white/[0.15] transition-all"
+                        className="flex items-center gap-2 px-4 py-2 rounded-[10px] border border-border-subtle dark:border-white/[0.08] bg-surface dark:bg-white/[0.03] text-txt-secondary dark:text-[#aaa] text-sm hover:text-txt-primary dark:hover:text-[#ededed] hover:border-[#7c6ef8]/30 dark:hover:border-white/[0.15] transition-all"
                     >
                         <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="w-4 h-4">
                             <path strokeLinecap="round" strokeLinejoin="round" d="M12 10.5v6m3-3H9m4.06-7.19-2.12-2.12a1.5 1.5 0 0 0-1.061-.44H4.5A2.25 2.25 0 0 0 2.25 6v12a2.25 2.25 0 0 0 2.25 2.25h15A2.25 2.25 0 0 0 21.75 18V9a2.25 2.25 0 0 0-2.25-2.25h-5.379a1.5 1.5 0 0 1-1.06-.44Z" />

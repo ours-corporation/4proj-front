@@ -62,7 +62,7 @@ export default function PrivateShare({ fileInfo, folderInfo }: PrivateShareProps
 
     return (
         <div>
-            <h2 className="text-lg font-bold mb-4">Partager à un utilisateur</h2>
+            <h2 className="text-lg font-bold mb-4 text-txt-primary dark:text-dark-txt-primary">Partager à un utilisateur</h2>
             <p className="text-sm text-txt-secondary dark:text-dark-txt-secondary mb-6">
                 Entrez l&apos;email de l&apos;utilisateur avec lequel vous souhaitez partager ce fichier ou dossier.
             </p>
