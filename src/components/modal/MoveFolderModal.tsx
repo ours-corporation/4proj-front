@@ -1,7 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import Modal from "@/src/components/modal/Modal";
 import { FolderResponse } from "@/src/interface/folder";
-import InputField from "@/src/components/input/InputField";
 import SubmitButton from "@/src/components/button/SubmitButton";
 import{moveFolderIntoFolder, getFolderById, getRootFolder} from "@/src/api/folders"
 
@@ -69,61 +68,52 @@ export default function MoveFolderModal({ isOpen, folderInfo, closeModal, onSucc
             title="Déplacer le dossier"
             size="small">
 
-            <div className = "bg-main-bg dark:bg-dark-surface rounded-xl p-4 border border-border-subtle dark:border-dark-border-subtle">
-                <div className="flex flex-col gap-5 w-full">
-                    <div className="flex flex-col gap-4 w-full">
-                        <div className="flex flex-col gap-1">
-                            <p className="text-txt-primary dark:text-dark-txt-primary mb-1">
-                                Dossier
-                            </p>
-                            <p className="font-medium text-txt-secondary dark:text-dark-txt-secondary truncate">
-                                {folderName}
-                            </p>
-                        </div>
-                        <div className="w-full h-px bg-border-subtle dark:bg-dark-border-subtle"></div>
-                        
-                        <form className="flex flex-col gap-4 w-full">
-                            <label className="text-txt-primary dark:text-dark-txt-primary mb-1">
-                                Destination
-                            </label>
-                            {
-                            folder?.id!=null ?
-                            <label key={folder.parent_id} className = "flex items-center gap-2">
-                                    <input
-                                        type="radio"
-                                        name="folder"
-                                        value={folder.parent_id+""}
-                                        checked={selected === folder.parent_id+""}
-                                        onChange={(e) => setSelected(e.target.value)}
-                                    />
-                                    Remonter au dossier parent
-                                </label> : null
-                            }
-                            {
-                            subFolders!=null ? subFolders
-                            .filter((folder) => folder.id !== folderInfo.id) //vérifie de ne pas afficher le folder lui même
-                            .map((folder)=> (
-                                
-                                <label key={folder.id} className = "flex items-center gap-2">
-                                    <input
-                                        type="radio"
-                                        name="folder"
-                                        value={folder.id+""}
-                                        checked={selected === folder.id+""}
-                                        onChange={(e) => setSelected(e.target.value)}
-                                    />
-                                    {folder.name}
-                                </label>
-                            )) : null
-                            }
-                        </form>
-                    </div>
+            <div className="flex flex-col gap-4 w-full">
+                <div className="flex flex-col gap-1">
+                    <p className="text-xs font-medium text-txt-secondary dark:text-[#555] uppercase tracking-wider">Dossier</p>
+                    <p className="text-sm font-medium text-txt-primary dark:text-[#ededed] truncate">{folderName}</p>
                 </div>
-                <p className="mt-2">
-                    {errorMessage && (
-                        <span className="text-sm text-red-500">{errorMessage}</span>
-                    )}
-                </p>
+
+                <div className="w-full h-px bg-border-subtle dark:bg-white/[0.06]" />
+
+                <div className="flex flex-col gap-1">
+                    <p className="text-xs font-medium text-txt-secondary dark:text-[#555] uppercase tracking-wider mb-1">Destination</p>
+                    <form className="flex flex-col gap-1">
+                        {folder?.id != null && (
+                            <label key={folder.parent_id} className="flex items-center gap-3 px-3 py-2.5 rounded-[8px] cursor-pointer hover:bg-surface-hover dark:hover:bg-white/[0.04] transition-colors">
+                                <input
+                                    type="radio"
+                                    name="folder"
+                                    value={folder.parent_id + ""}
+                                    checked={selected === folder.parent_id + ""}
+                                    onChange={(e) => setSelected(e.target.value)}
+                                    className="accent-[#7c6ef8]"
+                                />
+                                <span className="text-sm text-txt-primary dark:text-[#ededed]">↑ Dossier parent</span>
+                            </label>
+                        )}
+                        {subFolders != null && subFolders
+                            .filter((f) => f.id !== folderInfo.id)
+                            .map((f) => (
+                                <label key={f.id} className="flex items-center gap-3 px-3 py-2.5 rounded-[8px] cursor-pointer hover:bg-surface-hover dark:hover:bg-white/[0.04] transition-colors">
+                                    <input
+                                        type="radio"
+                                        name="folder"
+                                        value={f.id + ""}
+                                        checked={selected === f.id + ""}
+                                        onChange={(e) => setSelected(e.target.value)}
+                                        className="accent-[#7c6ef8]"
+                                    />
+                                    <span className="text-sm text-txt-primary dark:text-[#ededed]">{f.name}</span>
+                                </label>
+                            ))
+                        }
+                    </form>
+                </div>
+
+                {errorMessage && (
+                    <p className="text-sm text-red-500">{errorMessage}</p>
+                )}
             </div>
 
             <div className="mt-4 flex justify-end w-full">
