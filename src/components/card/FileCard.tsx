@@ -28,7 +28,7 @@ export default function FileCard({ file, thumbnailUrl, downloadFile, editFile, s
 
     const menuItems: MenuItem[] = [
         ...(isTrash && restoreFile ? [{ label: 'Restaurer', success: true, onClick: () => restoreFile(file) }] : []),
-        ...(downloadFile ? [{ label: 'Télécharger', onClick: () => downloadFile(file.id, file.name) }] : []),
+        ...(downloadFile ? [{ label: 'Télécharger', onClick: () => downloadFile(file.id, file.fullName) }] : []),
         ...(editFile ? [{ label: 'Renommer', onClick: () => editFile(file) }] : []),
         ...(shareFile ? [{ label: 'Partager', onClick: () => shareFile(file) }] : []),
         ...(moveFile ? [{ label: 'Déplacer', onClick: () => moveFile(file) }] : []),

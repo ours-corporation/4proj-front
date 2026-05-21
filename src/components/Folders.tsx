@@ -291,7 +291,7 @@ export default function Folders({ listFolders, listFiles, changeFolderId, viewMo
                                                 onClose={() => setOpenListMenuId(null)}
                                                 items={[
                                                     ...(isTrash && restoreFile ? [{ label: 'Restaurer', success: true, onClick: () => restoreFile(file) }] : []),
-                                                    ...(!isTrash ? [{ label: 'Télécharger', onClick: () => downloadFileById(file.id, file.name) }] : []),
+                                                    ...(!isTrash ? [{ label: 'Télécharger', onClick: () => downloadFileById(file.id, file.fullName) }] : []),
                                                     ...(!fp(file) || fp(file) === 'WRITE' ? [{ label: 'Renommer', onClick: () => { setEditFileInfo(file); setOpenUpdateModal(true); } }] : []),
                                                     ...(!fp(file) ? [{ label: 'Partager', onClick: () => { setShareFileInfo(file); setOpenShareModal(true); } }] : []),
                                                     ...(!fp(file) || fp(file) === 'WRITE' ? [{ label: 'Déplacer', onClick: () => { setPositionFileInfo(file); setOpenMoveModal(true); } }] : []),
