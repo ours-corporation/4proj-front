@@ -159,8 +159,19 @@ export default function LoginPage() {
                         {error && (
                             <div className="text-[13px] text-[#ef5350] mb-3.5 px-3.5 py-2.5 bg-[#ef5350]/[0.08] border border-[#ef5350]/20 rounded-lg">
                                 {error}
+                                {error.includes("vérifier votre adresse email") && (
+                                    <a href={`/verify-email`} className="block mt-1.5 text-[#7c6ef8] hover:underline no-underline">
+                                        Renvoyer le lien de vérification →
+                                    </a>
+                                )}
                             </div>
                         )}
+
+                        <div className="flex justify-end mb-1 -mt-2">
+                            <a href="/forgot-password" className="text-[12px] text-[#7c6ef8] hover:text-[#42aff0] transition-colors no-underline">
+                                Mot de passe oublié ?
+                            </a>
+                        </div>
 
                         <SubmitButton
                             id="login-button"

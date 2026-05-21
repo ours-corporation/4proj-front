@@ -2,7 +2,7 @@
 
 import React, { Suspense, useEffect, useState } from "react";
 import { useSearchParams } from "next/navigation";
-import { verifyEmail } from "@/src/api/auth";
+import { verifyEmail, resendVerification } from "@/src/api/auth";
 
 type Status = "loading" | "success" | "already" | "error";
 
@@ -10,6 +10,8 @@ function VerifyEmailContent() {
     const searchParams = useSearchParams();
     const [status, setStatus] = useState<Status>("loading");
     const [message, setMessage] = useState("");
+    const [resendEmail, setResendEmail] = useState("");
+    const [resendState, setResendState] = useState<"idle" | "sending" | "sent">("idle");
 
     useEffect(() => {
         const token = searchParams.get("token");
@@ -36,6 +38,15 @@ function VerifyEmailContent() {
                 setMessage("Impossible de joindre le serveur.");
             });
     }, [searchParams]);
+
+    const handleResend = async (e: React.FormEvent) => {
+        e.preventDefault();
+        setResendState("sending");
+        try {
+            await resendVerification(resendEmail);
+        } catch {}
+        setResendState("sent");
+    };
 
     const config = {
         loading: {
@@ -138,7 +149,34 @@ function VerifyEmailContent() {
                         {subtitle}
                     </p>
 
-                    {cta && (
+                    {status === "error" ? (
+                        resendState === "sent" ? (
+                            <p className="text-sm text-emerald-400">
+                                Email envoyé ! Vérifiez votre boîte de réception.
+                            </p>
+                        ) : (
+                            <form onSubmit={handleResend} className="mt-1">
+                                <input
+                                    type="email"
+                                    required
+                                    placeholder="votre@email.com"
+                                    value={resendEmail}
+                                    onChange={e => setResendEmail(e.target.value)}
+                                    className="w-full bg-input-bg dark:bg-[#0d0d0d] border border-border-subtle dark:border-white/[0.08] rounded-[10px] px-4 py-3 text-sm text-txt-primary dark:text-[#ededed] placeholder:text-[#9CA3AF] dark:placeholder:text-[#333] focus:outline-none focus:border-[#7c6ef8]/50 focus:ring-2 focus:ring-[#7c6ef8]/10 mb-3"
+                                />
+                                <button
+                                    type="submit"
+                                    disabled={resendState === "sending"}
+                                    className="w-full py-3.5 rounded-[10px] bg-gradient-to-r from-[#7c6ef8] to-[#42aff0] text-white text-[15px] font-medium shadow-[0_0_30px_rgba(124,110,248,0.25)] hover:opacity-90 hover:-translate-y-px transition-all disabled:opacity-50 disabled:cursor-not-allowed cursor-pointer mb-3"
+                                >
+                                    {resendState === "sending" ? "Envoi…" : "Renvoyer le lien"}
+                                </button>
+                                <a href="/" className="block text-center text-[13px] text-txt-secondary dark:text-[#484858] hover:text-[#7c6ef8] transition-colors no-underline">
+                                    Retour à l'accueil
+                                </a>
+                            </form>
+                        )
+                    ) : cta && (
                         <a
                             href={cta.href}
                             className="inline-block w-full py-3.5 rounded-[10px] bg-gradient-to-r from-[#7c6ef8] to-[#42aff0] text-white text-[15px] font-medium shadow-[0_0_30px_rgba(124,110,248,0.25)] hover:opacity-90 hover:-translate-y-px hover:shadow-[0_0_50px_rgba(124,110,248,0.45)] transition-all no-underline"
