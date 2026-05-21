@@ -31,8 +31,10 @@ export default function TrashPage() {
 
     useEffect(() => { fetchTrash(); }, [fetchTrash]);
 
+    useSocketEvent('file:trashed', useCallback(() => { fetchTrash(); }, [fetchTrash]));
     useSocketEvent('file:restored', useCallback(() => { fetchTrash(); }, [fetchTrash]));
     useSocketEvent('file:deleted', useCallback(() => { fetchTrash(); }, [fetchTrash]));
+    useSocketEvent('folder:trashed', useCallback(() => { fetchTrash(); }, [fetchTrash]));
     useSocketEvent('folder:restored', useCallback(() => { fetchTrash(); }, [fetchTrash]));
     useSocketEvent('folder:deleted', useCallback(() => { fetchTrash(); }, [fetchTrash]));
     useSocketEvent('trash:emptied', useCallback(() => { fetchTrash(); }, [fetchTrash]));

@@ -39,9 +39,6 @@ export default function ShowShareFolders() {
     }, []);
 
     useSocketEvent('share:received', useCallback(() => { fetchShareData(); }, [fetchShareData]));
-    useSocketEvent('share:created', useCallback(() => { fetchShareData(); }, [fetchShareData]));
-    useSocketEvent('share:updated', useCallback(() => { fetchShareData(); }, [fetchShareData]));
-    useSocketEvent('share:revoked', useCallback(() => { fetchShareData(); }, [fetchShareData]));
 
     async function fetchFolderData() {
         try {
