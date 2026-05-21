@@ -1,12 +1,12 @@
 'use client';
 
-import React, { useEffect, useState } from "react";
+import React, { Suspense, useEffect, useState } from "react";
 import { useSearchParams } from "next/navigation";
 import { verifyEmail } from "@/src/api/auth";
 
 type Status = "loading" | "success" | "already" | "error";
 
-export default function VerifyEmailPage() {
+function VerifyEmailContent() {
     const searchParams = useSearchParams();
     const [status, setStatus] = useState<Status>("loading");
     const [message, setMessage] = useState("");
@@ -153,5 +153,13 @@ export default function VerifyEmailPage() {
                 </p>
             </div>
         </>
+    );
+}
+
+export default function VerifyEmailPage() {
+    return (
+        <Suspense>
+            <VerifyEmailContent />
+        </Suspense>
     );
 }
