@@ -1,7 +1,8 @@
 'use client';
 
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useCallback } from 'react';
 import { useAuth } from '@/src/hooks/useAuth';
+import { useSocketEvent } from '@/src/hooks/useSocketEvent';
 import Loading from '@/src/components/Loading';
 import Layout from '@/src/components/layout/Layout';
 import Error from "@/src/components/Error";
@@ -27,7 +28,7 @@ export default function ShowShareFolders() {
 
     const canWrite = folderId !== '' && contextPermission === 'WRITE';
 
-    async function fetchShareData() {
+    const fetchShareData = useCallback(async () => {
         setError(null);
         try {
             const data = await getReceivedSharesAPI();
@@ -35,7 +36,9 @@ export default function ShowShareFolders() {
         } catch {
             setFolderData(null);
         }
-    }
+    }, []);
+
+    useSocketEvent('share:received', useCallback(() => { fetchShareData(); }, [fetchShareData]));
 
     async function fetchFolderData() {
         try {
@@ -48,7 +51,7 @@ export default function ShowShareFolders() {
 
     useEffect(() => {
         if (!folderId) { fetchShareData(); }
-    }, [folderId]);
+    }, [folderId, fetchShareData]);
 
     async function changeFolderId(newFolderIdNumber: number | null) {
         const newFolderId = newFolderIdNumber?.toString() ?? '';

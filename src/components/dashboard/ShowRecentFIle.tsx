@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useEffect, useState } from "react";
+import React, { useCallback, useEffect, useState } from "react";
 import Link from "next/link";
 import { FileResponse } from "@/src/interface/file";
 import { getRecentFilesAPI } from "@/src/api/file";
@@ -8,17 +8,25 @@ import { getFileColor } from "@/src/utils/get-file-color";
 import { getFileSvg } from "@/src/utils/get-file-svg";
 import { convertFileSize } from "@/src/utils/convert-file-size";
 import { converCreatedAt } from "@/src/utils/conver-created-at";
+import { useSocketEvent } from "@/src/hooks/useSocketEvent";
 
 export default function ShowRecentFile() {
     const [files, setFiles] = useState<FileResponse[]>([]);
     const [loading, setLoading] = useState(true);
 
-    useEffect(() => {
+    const load = useCallback(() => {
         getRecentFilesAPI()
             .then(setFiles)
             .catch(console.error)
             .finally(() => setLoading(false));
     }, []);
+
+    useEffect(() => { load(); }, [load]);
+
+    useSocketEvent('file:created', useCallback(() => { load(); }, [load]));
+    useSocketEvent('file:updated', useCallback(() => { load(); }, [load]));
+    useSocketEvent('file:trashed', useCallback(() => { load(); }, [load]));
+    useSocketEvent('file:deleted', useCallback(() => { load(); }, [load]));
 
     if (loading) {
         return (

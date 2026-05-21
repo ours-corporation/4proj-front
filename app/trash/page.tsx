@@ -1,7 +1,8 @@
 'use client';
 
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useCallback } from 'react';
 import { useAuth } from '@/src/hooks/useAuth';
+import { useSocketEvent } from '@/src/hooks/useSocketEvent';
 import Loading from '@/src/components/Loading';
 import Layout from '@/src/components/layout/Layout';
 import { getTrashAPI, TrashResponse } from '@/src/api/trash';
@@ -20,18 +21,23 @@ export default function TrashPage() {
     const [viewMode, setViewMode] = useState<'grid' | 'list'>('grid');
     const [cleanTrashOpen, setCleanTrashOpen] = useState<boolean>(false);
 
-    async function fetchTrash() {
+    const fetchTrash = useCallback(() => {
         setLoading(true);
         getTrashAPI()
             .then(setTrashData)
             .catch(() => setTrashData({ folders: [], files: [] }))
             .finally(() => setLoading(false));
-    }
-
-
-    useEffect(() => {
-        fetchTrash();
     }, []);
+
+    useEffect(() => { fetchTrash(); }, [fetchTrash]);
+
+    useSocketEvent('file:trashed', useCallback(() => { fetchTrash(); }, [fetchTrash]));
+    useSocketEvent('file:restored', useCallback(() => { fetchTrash(); }, [fetchTrash]));
+    useSocketEvent('file:deleted', useCallback(() => { fetchTrash(); }, [fetchTrash]));
+    useSocketEvent('folder:trashed', useCallback(() => { fetchTrash(); }, [fetchTrash]));
+    useSocketEvent('folder:restored', useCallback(() => { fetchTrash(); }, [fetchTrash]));
+    useSocketEvent('folder:deleted', useCallback(() => { fetchTrash(); }, [fetchTrash]));
+    useSocketEvent('trash:emptied', useCallback(() => { fetchTrash(); }, [fetchTrash]));
 
     const authLoading = useAuth();
     if (authLoading || loading) return <Loading />;
