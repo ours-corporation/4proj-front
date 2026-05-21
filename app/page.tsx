@@ -297,6 +297,8 @@ export default function Home() {
           </a>
           <span className="text-[12px] text-[#333]">© 2026 Supfile. Tous droits réservés.</span>
           <div className="flex gap-5">
+            <a href="/cgu" className="text-[12px] text-[#333] no-underline hover:text-[#888] transition-colors">CGU</a>
+            <a href="/mentions-legales" className="text-[12px] text-[#333] no-underline hover:text-[#888] transition-colors">Mentions légales</a>
             <a href="/login" className="text-[12px] text-[#333] no-underline hover:text-[#888] transition-colors">Connexion</a>
             <a href="/register" className="text-[12px] text-[#333] no-underline hover:text-[#888] transition-colors">Inscription</a>
           </div>
