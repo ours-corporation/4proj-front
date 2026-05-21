@@ -104,7 +104,7 @@ export default function Folders({ listFolders, listFiles, changeFolderId, viewMo
         setSelectedFile(file);
         setFile(null);
         setOpen(true);
-        if (file.mime_type.startsWith('video/')) { setFileLoading(false); return; }
+        if (file.mime_type.startsWith('video/') || file.mime_type.startsWith('audio/')) { setFileLoading(false); return; }
         setFileLoading(true);
         downloadFile({ fileId: file.id, mimeType: file.mime_type }).then(f => { setFile(f); setFileLoading(false); });
     }
