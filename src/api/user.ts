@@ -170,3 +170,23 @@ export async function getStorageStats(): Promise<StorageStats> {
 
     return rep.json();
 }
+
+export async function downloadGdprExport(): Promise<void> {
+    const url   = process.env.NEXT_PUBLIC_API_URL;
+    const token = getJwtToken();
+
+    const rep = await fetch(`${url}/api/users/me/data-export`, {
+        method: 'GET',
+        headers: { Authorization: `Bearer ${token}` },
+    });
+
+    if (!rep.ok) throw new Error(`Erreur HTTP: ${rep.status}`);
+
+    const blob = await rep.blob();
+    const objectUrl = URL.createObjectURL(blob);
+    const a = document.createElement('a');
+    a.href = objectUrl;
+    a.download = `supfile-data-export-${Date.now()}.json`;
+    a.click();
+    URL.revokeObjectURL(objectUrl);
+}
