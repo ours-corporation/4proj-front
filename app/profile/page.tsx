@@ -67,7 +67,7 @@ export default function ProfilePage() {
         <Layout currentPage="/profile">
 
             {/* ── Profile header card ── */}
-            <div className="bg-[#111113] border border-white/[0.06] rounded-[20px] p-6 mb-6">
+            <div className="bg-surface dark:bg-[#111113] border border-border-subtle dark:border-white/[0.06] rounded-[20px] p-6 mb-6">
                 <div className="flex flex-col sm:flex-row items-start sm:items-center gap-5">
 
                     {/* Avatar */}
@@ -91,8 +91,8 @@ export default function ProfilePage() {
 
                     {/* Info */}
                     <div className="flex-1 min-w-0">
-                        <h1 className="text-xl font-bold text-[#ededed] truncate">{username || "Utilisateur"}</h1>
-                        <p className="text-[13px] text-[#555] mt-0.5 truncate">{email}</p>
+                        <h1 className="text-xl font-bold text-txt-primary dark:text-[#ededed] truncate">{username || "Utilisateur"}</h1>
+                        <p className="text-[13px] text-txt-secondary dark:text-[#555] mt-0.5 truncate">{email}</p>
 
                         <div className="flex flex-wrap items-center gap-3 mt-3">
                             <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-[#7c6ef8]/10 border border-[#7c6ef8]/20 text-[12px] font-medium text-[#9b8ffa]">
@@ -101,15 +101,15 @@ export default function ProfilePage() {
                                 </svg>
                                 Plan Premium
                             </span>
-                            <span className="text-[12px] text-[#444]">Membre depuis {memberYear}</span>
+                            <span className="text-[12px] text-txt-secondary dark:text-[#444]">Membre depuis {memberYear}</span>
                         </div>
                     </div>
 
                     {/* Storage mini summary */}
                     <div className="sm:text-right flex-shrink-0 w-full sm:w-auto">
-                        <p className="text-[11px] text-[#444] mb-1.5 uppercase tracking-wider">Stockage</p>
-                        <p className="text-[22px] font-bold text-[#ededed]">{fmtGo(usedBytes)} <span className="text-[14px] text-[#444] font-normal">/ {fmtGo(quotaBytes)} Go</span></p>
-                        <div className="w-full sm:w-40 h-1.5 bg-white/[0.05] rounded-full overflow-hidden mt-2">
+                        <p className="text-[11px] text-txt-secondary dark:text-[#444] mb-1.5 uppercase tracking-wider">Stockage</p>
+                        <p className="text-[22px] font-bold text-txt-primary dark:text-[#ededed]">{fmtGo(usedBytes)} <span className="text-[14px] text-txt-secondary dark:text-[#444] font-normal">/ {fmtGo(quotaBytes)} Go</span></p>
+                        <div className="w-full sm:w-40 h-1.5 bg-black/[0.05] dark:bg-white/[0.05] rounded-full overflow-hidden mt-2">
                             <div className="h-full rounded-full bg-gradient-to-r from-[#7c6ef8] to-[#42aff0]" style={{ width: `${Math.min(usedPct, 100)}%` }} />
                         </div>
                     </div>
@@ -125,7 +125,7 @@ export default function ProfilePage() {
                 </div>
 
                 {/* Danger zone */}
-                <div className="lg:col-span-2 bg-[#111113] border border-[#ef5350]/20 rounded-[20px] p-6">
+                <div className="lg:col-span-2 bg-surface dark:bg-[#111113] border border-[#ef5350]/20 rounded-[20px] p-6">
                     <div className="flex items-center gap-3 mb-4">
                         <div className="w-9 h-9 rounded-[10px] bg-[#ef5350]/10 flex items-center justify-center flex-shrink-0">
                             <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="#ef5350" className="w-5 h-5">
@@ -134,14 +134,14 @@ export default function ProfilePage() {
                         </div>
                         <div>
                             <h2 className="text-[15px] font-semibold text-[#ef5350]">Zone de danger</h2>
-                            <p className="text-[12px] text-[#444]">Actions irréversibles sur votre compte</p>
+                            <p className="text-[12px] text-txt-secondary dark:text-[#444]">Actions irréversibles sur votre compte</p>
                         </div>
                     </div>
 
                     <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 p-4 rounded-[12px] bg-[#ef5350]/[0.04] border border-[#ef5350]/10">
                         <div>
-                            <p className="text-[14px] font-medium text-[#ccc]">Supprimer le compte</p>
-                            <p className="text-[12px] text-[#555] mt-0.5">Tous vos fichiers, dossiers et données seront définitivement perdus.</p>
+                            <p className="text-[14px] font-medium text-txt-primary dark:text-[#ccc]">Supprimer le compte</p>
+                            <p className="text-[12px] text-txt-secondary dark:text-[#555] mt-0.5">Tous vos fichiers, dossiers et données seront définitivement perdus.</p>
                         </div>
                         <button
                             onClick={() => setDeleteAccountOpenModal(true)}
@@ -157,9 +157,9 @@ export default function ProfilePage() {
             <Modal size="small" title="Photo de profil" isOpen={profilePictureOpenModal} onClose={() => setProfilePictureOpenModal(false)}>
                 <div className="space-y-4">
                     {profilePicture && (
-                        <div className="flex items-center gap-3 p-3 rounded-[12px] bg-[#0d0d0d] border border-white/[0.06]">
+                        <div className="flex items-center gap-3 p-3 rounded-[12px] bg-surface-hover dark:bg-[#0d0d0d] border border-border-subtle dark:border-white/[0.06]">
                             <img src={profilePicture} className="w-12 h-12 rounded-[10px] object-cover flex-shrink-0" alt="photo actuelle" />
-                            <span className="flex-1 text-sm text-[#888]">Photo actuelle</span>
+                            <span className="flex-1 text-sm text-txt-secondary dark:text-[#888]">Photo actuelle</span>
                             <button
                                 type="button"
                                 onClick={async () => {

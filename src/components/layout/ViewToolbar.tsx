@@ -8,10 +8,10 @@ interface Props {
 
 export default function ViewToolbar({ viewMode, onViewModeChange, onRefresh }: Props) {
     return (
-        <div className="flex items-center bg-[#111113] border border-white/[0.06] rounded-[10px] p-1 gap-0.5">
+        <div className="flex items-center bg-surface dark:bg-[#111113] border border-border-subtle dark:border-white/[0.06] rounded-[10px] p-1 gap-0.5">
             <button
                 onClick={onRefresh}
-                className="p-2 rounded-[7px] text-[#555] hover:text-[#ededed] hover:bg-white/[0.05] transition-colors"
+                className="p-2 rounded-[7px] text-txt-secondary dark:text-[#555] hover:text-txt-primary dark:hover:text-[#ededed] hover:bg-black/[0.05] dark:hover:bg-white/[0.05] transition-colors"
                 title="Rafraîchir"
             >
                 <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="w-4 h-4">
@@ -19,14 +19,14 @@ export default function ViewToolbar({ viewMode, onViewModeChange, onRefresh }: P
                 </svg>
             </button>
 
-            <div className="w-px h-4 bg-white/[0.06]" />
+            <div className="w-px h-4 bg-border-subtle dark:bg-white/[0.06]" />
 
             <button
                 onClick={() => onViewModeChange('grid')}
                 className={`p-2 rounded-[7px] transition-colors ${
                     viewMode === 'grid'
                         ? 'bg-gradient-to-r from-[#7c6ef8] to-[#42aff0] text-white'
-                        : 'text-[#555] hover:text-[#ededed] hover:bg-white/[0.05]'
+                        : 'text-txt-secondary dark:text-[#555] hover:text-txt-primary dark:hover:text-[#ededed] hover:bg-black/[0.05] dark:hover:bg-white/[0.05]'
                 }`}
                 title="Vue grille"
             >
@@ -40,7 +40,7 @@ export default function ViewToolbar({ viewMode, onViewModeChange, onRefresh }: P
                 className={`p-2 rounded-[7px] transition-colors ${
                     viewMode === 'list'
                         ? 'bg-gradient-to-r from-[#7c6ef8] to-[#42aff0] text-white'
-                        : 'text-[#555] hover:text-[#ededed] hover:bg-white/[0.05]'
+                        : 'text-txt-secondary dark:text-[#555] hover:text-txt-primary dark:hover:text-[#ededed] hover:bg-black/[0.05] dark:hover:bg-white/[0.05]'
                 }`}
                 title="Vue liste"
             >

@@ -7,9 +7,9 @@ import SubmitButton from '@/src/components/button/SubmitButton';
 import { createNewFolderAPI } from '@/src/api/folders';
 import { createNewFolderValidator } from '@/src/validator/folder';
 
-const inputWrapper = "mt-1 w-full bg-[#0d0d0d] border border-white/[0.08] rounded-[10px] px-4 py-3 flex items-center transition-all focus-within:border-[#7c6ef8]/50 focus-within:ring-1 focus-within:ring-[#7c6ef8]/20";
-const inputInner = "flex-grow bg-transparent focus:outline-none p-0 border-none ring-0 text-[#ededed] text-sm placeholder:text-[#333]";
-const labelClass = "block text-[11px] font-medium text-[#555] mb-1.5 uppercase tracking-wider";
+const inputWrapper = "mt-1 w-full bg-input-bg dark:bg-[#0d0d0d] border border-border-subtle dark:border-white/[0.08] rounded-[10px] px-4 py-3 flex items-center transition-all focus-within:border-[#7c6ef8]/50 focus-within:ring-1 focus-within:ring-[#7c6ef8]/20";
+const inputInner = "flex-grow bg-transparent focus:outline-none p-0 border-none ring-0 text-txt-primary dark:text-[#ededed] text-sm placeholder:text-[#9CA3AF] dark:placeholder:text-[#333]";
+const labelClass = "block text-[11px] font-medium text-txt-secondary dark:text-[#555] mb-1.5 uppercase tracking-wider";
 
 interface Props {
     isOpen: boolean;

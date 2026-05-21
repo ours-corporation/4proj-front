@@ -5,9 +5,9 @@ import InputField from "@/src/components/input/InputField";
 import SubmitButton from "@/src/components/button/SubmitButton";
 import { updatePassword } from "@/src/api/user";
 
-const iw = "mt-1 w-full bg-[#0d0d0d] border border-white/[0.08] rounded-[10px] px-4 py-3 flex items-center transition-all focus-within:border-[#7c6ef8]/50 focus-within:ring-1 focus-within:ring-[#7c6ef8]/20";
-const ii = "flex-grow bg-transparent focus:outline-none p-0 border-none ring-0 text-[#ededed] text-sm placeholder:text-[#333]";
-const lc = "block text-[11px] font-medium text-[#555] mb-1.5 uppercase tracking-wider";
+const iw = "mt-1 w-full bg-input-bg dark:bg-[#0d0d0d] border border-border-subtle dark:border-white/[0.08] rounded-[10px] px-4 py-3 flex items-center transition-all focus-within:border-[#7c6ef8]/50 focus-within:ring-1 focus-within:ring-[#7c6ef8]/20";
+const ii = "flex-grow bg-transparent focus:outline-none p-0 border-none ring-0 text-txt-primary dark:text-[#ededed] text-sm placeholder:text-[#9CA3AF] dark:placeholder:text-[#333]";
+const lc = "block text-[11px] font-medium text-txt-secondary dark:text-[#555] mb-1.5 uppercase tracking-wider";
 
 export default function UpdatePasswordForm() {
     const [oldPassword, setOldPassword] = useState("");
@@ -36,7 +36,7 @@ export default function UpdatePasswordForm() {
     };
 
     return (
-        <div className="bg-[#111113] border border-white/[0.06] rounded-[20px] p-6">
+        <div className="bg-surface dark:bg-[#111113] border border-border-subtle dark:border-white/[0.06] rounded-[20px] p-6 shadow-[0_4px_16px_rgba(0,0,0,0.06)] dark:shadow-none">
             <div className="flex items-center gap-3 mb-6">
                 <div className="w-9 h-9 rounded-[10px] bg-[#ef5350]/10 flex items-center justify-center flex-shrink-0">
                     <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="#ef5350" className="w-5 h-5">
@@ -44,8 +44,8 @@ export default function UpdatePasswordForm() {
                     </svg>
                 </div>
                 <div>
-                    <h2 className="text-[15px] font-semibold text-[#ededed]">Sécurité</h2>
-                    <p className="text-[12px] text-[#444]">Modifier votre mot de passe</p>
+                    <h2 className="text-[15px] font-semibold text-txt-primary dark:text-[#ededed]">Sécurité</h2>
+                    <p className="text-[12px] text-txt-secondary dark:text-[#444]">Modifier votre mot de passe</p>
                 </div>
             </div>
 

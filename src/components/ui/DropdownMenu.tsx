@@ -31,7 +31,7 @@ export function DropdownMenu({ items, onClose }: DropdownMenuProps) {
     return (
         <div
             ref={ref}
-            className="absolute right-0 top-full mt-1 w-44 bg-[#111113] border border-white/[0.08] rounded-[12px] shadow-[0_20px_60px_rgba(0,0,0,0.6)] overflow-hidden z-30 py-1"
+            className="absolute right-0 top-full mt-1 w-44 bg-white dark:bg-[#111113] border border-border-subtle dark:border-white/[0.08] rounded-[12px] shadow-[0_8px_30px_rgba(0,0,0,0.12)] dark:shadow-[0_20px_60px_rgba(0,0,0,0.6)] overflow-hidden z-30 py-1"
         >
             {items.map((item, i) => (
                 <button
@@ -42,7 +42,7 @@ export function DropdownMenu({ items, onClose }: DropdownMenuProps) {
                             ? 'text-[#ef5350] hover:bg-[#ef5350]/[0.08]'
                             : item.success
                             ? 'text-[#4CAF50] hover:bg-[#4CAF50]/[0.08]'
-                            : 'text-[#aaa] hover:text-[#ededed] hover:bg-white/[0.04]'
+                            : 'text-txt-secondary dark:text-[#aaa] hover:text-txt-primary dark:hover:text-[#ededed] hover:bg-black/[0.04] dark:hover:bg-white/[0.04]'
                     }`}
                 >
                     {item.icon && <span className="w-4 h-4 flex-shrink-0 opacity-70">{item.icon}</span>}
