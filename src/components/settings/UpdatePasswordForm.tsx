@@ -4,6 +4,7 @@ import { useState } from "react";
 import InputField from "@/src/components/input/InputField";
 import SubmitButton from "@/src/components/button/SubmitButton";
 import { updatePassword } from "@/src/api/user";
+import { passwordSchema } from "@/src/validator/auth";
 
 const iw = "mt-1 w-full bg-input-bg dark:bg-[#0d0d0d] border border-border-subtle dark:border-white/[0.08] rounded-[10px] px-4 py-3 flex items-center transition-all focus-within:border-[#7c6ef8]/50 focus-within:ring-1 focus-within:ring-[#7c6ef8]/20";
 const ii = "flex-grow bg-transparent focus:outline-none p-0 border-none ring-0 text-txt-primary dark:text-[#ededed] text-sm placeholder:text-[#9CA3AF] dark:placeholder:text-[#333]";
@@ -24,6 +25,8 @@ export default function UpdatePasswordForm() {
         setSuccess(false);
         try {
             if (newPassword !== confirmPassword) { setError("Les mots de passe ne correspondent pas."); setLoading(false); return; }
+            const result = passwordSchema.safeParse(newPassword);
+            if (!result.success) { setError(result.error.issues[0].message); setLoading(false); return; }
             await updatePassword(oldPassword, newPassword);
             setSuccess(true);
             setOldPassword(""); setNewPassword(""); setConfirmPassword("");
