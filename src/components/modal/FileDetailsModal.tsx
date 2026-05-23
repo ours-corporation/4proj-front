@@ -85,7 +85,7 @@ export default function FileDetailsModal({
             return <VideoPreview fileInformation={selectedFile} onClose={handleClose} />;
         }
         if (mimeType.startsWith('audio/')) {
-            return <AudioPreview file={file!} fileInformation={selectedFile} onClose={handleClose} />;
+            return <AudioPreview fileInformation={selectedFile} onClose={handleClose} />;
         }
         if (mimeType === 'text/plain') {
             return <TextPreview file={file!} fileInformation={selectedFile} onClose={handleClose} />;

@@ -128,7 +128,6 @@ export default function Home() {
         }
       `}</style>
 
-      {/* Global SVG gradient sprite */}
       <svg width="0" height="0" className="absolute overflow-hidden">
         <defs>
           <linearGradient id="icon-grad" x1="0%" y1="0%" x2="100%" y2="100%">
@@ -140,7 +139,6 @@ export default function Home() {
 
       <div className="bg-[#0d0d0d] text-[#ededed] font-['DM_Sans',sans-serif] overflow-x-hidden">
 
-        {/* ── Navbar ── */}
         <nav className="fixed top-0 left-0 right-0 z-[100] flex items-center justify-between px-12 py-4 bg-[#0d0d0d]/75 backdrop-blur-2xl border-b border-white/[0.07]">
           <a href="/" className="flex items-center gap-2.5 no-underline">
             <svg width="34" height="34" viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg">
@@ -161,7 +159,6 @@ export default function Home() {
           </div>
         </nav>
 
-        {/* ── Hero ── */}
         <section className="min-h-screen flex items-center px-12 pt-32 pb-20 relative overflow-hidden">
           <div
             className="glow-anim absolute -top-40 left-1/2 -translate-x-1/2 w-[1000px] h-[600px] pointer-events-none"
@@ -187,7 +184,6 @@ export default function Home() {
               </div>
             </div>
 
-            {/* Mock UI */}
             <div className="relative h-[500px]">
               <div className="float-anim absolute top-1/2 left-1/2 w-[300px] bg-[rgba(18,18,22,0.92)] border border-[#7c6ef8]/[0.18] rounded-[18px] p-[22px] backdrop-blur-[30px] shadow-[0_40px_90px_rgba(0,0,0,0.65),0_0_0_1px_rgba(124,110,248,0.08)]">
                 <div className="flex items-center gap-1.5 mb-[18px]">
@@ -237,7 +233,6 @@ export default function Home() {
           </div>
         </section>
 
-        {/* ── Features ── */}
         <section className="px-12 py-[110px]">
           <p className="text-center text-[11px] text-[#7c6ef8] uppercase tracking-[2.5px] font-medium mb-2.5">Fonctionnalités</p>
           <h2 className="font-['Syne',sans-serif] font-bold text-center -tracking-[1px] mb-3.5" style={{ fontSize: "clamp(30px, 3.5vw, 46px)" }}>Tout ce dont vous avez besoin</h2>
@@ -255,7 +250,6 @@ export default function Home() {
           </div>
         </section>
 
-        {/* ── How it works ── */}
         <section className="px-12 py-[110px]" style={{ background: "linear-gradient(180deg, transparent, rgba(124,110,248,0.04) 50%, transparent)" }}>
           <p className="text-center text-[11px] text-[#7c6ef8] uppercase tracking-[2.5px] font-medium mb-2.5">Démarrage</p>
           <h2 className="font-['Syne',sans-serif] font-bold text-center -tracking-[1px] mb-3.5" style={{ fontSize: "clamp(30px, 3.5vw, 46px)" }}>Simple à prendre en main</h2>
@@ -271,7 +265,6 @@ export default function Home() {
           </div>
         </section>
 
-        {/* ── CTA Band ── */}
         <section className="cta-glow mx-12 mb-[90px] rounded-[22px] bg-[#7c6ef8]/[0.05] border border-[#7c6ef8]/[0.18] px-12 py-20 text-center relative overflow-hidden">
           <h2 className="font-['Syne',sans-serif] font-extrabold -tracking-[1.5px] mb-3.5" style={{ fontSize: "clamp(30px, 4vw, 50px)" }}>
             Prêt à <span className="bg-gradient-to-r from-[#7c6ef8] to-[#42aff0] bg-clip-text text-transparent">démarrer</span> ?
@@ -280,7 +273,6 @@ export default function Home() {
           <a href="/register" className="px-8 py-3.5 rounded-[10px] text-[15px] font-medium text-white bg-gradient-to-r from-[#7c6ef8] to-[#42aff0] shadow-[0_0_40px_rgba(124,110,248,0.28)] hover:-translate-y-0.5 hover:shadow-[0_0_60px_rgba(124,110,248,0.5)] transition-all no-underline inline-block">Créer mon compte gratuitement</a>
         </section>
 
-        {/* ── Footer ── */}
         <footer className="border-t border-white/[0.07] px-12 py-8 flex items-center justify-between">
           <a href="/" className="flex items-center gap-2 no-underline">
             <svg width="22" height="22" viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg">

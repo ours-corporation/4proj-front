@@ -31,7 +31,6 @@ export default function UpdateFileModal({ isOpen, fileInfo, closeModal, onSucces
             name: fileName,
         });
         if (!resultat.success) {
-            console.log("Validation échouée:", resultat.error);
             setErrorMessage("Nom de fichier invalide.");
             return;
         }
@@ -44,8 +43,8 @@ export default function UpdateFileModal({ isOpen, fileInfo, closeModal, onSucces
                 closeModal();
                 onSuccess?.();
             })
-            .catch((error) => {
-                console.error("Erreur lors de la mise à jour du fichier:", error);
+            .catch(() => {
+                setErrorMessage("Erreur lors de la mise à jour du fichier.");
             });
     }
 

@@ -25,8 +25,8 @@ export function DropdownMenu({ items, onClose, anchorRef }: DropdownMenuProps) {
         if (anchorRef?.current) {
             const rect = anchorRef.current.getBoundingClientRect();
             setCoords({
-                top: rect.bottom + window.scrollY + 4,
-                left: rect.right + window.scrollX,
+                top: rect.bottom + 4,
+                left: rect.right,
             });
         }
     }, [anchorRef]);
@@ -49,7 +49,7 @@ export function DropdownMenu({ items, onClose, anchorRef }: DropdownMenuProps) {
             ref={ref}
             className="w-44 bg-white dark:bg-[#111113] border border-border-subtle dark:border-white/[0.08] rounded-[12px] shadow-[0_8px_30px_rgba(0,0,0,0.12)] dark:shadow-[0_20px_60px_rgba(0,0,0,0.6)] overflow-hidden py-1"
             style={coords ? {
-                position: 'absolute',
+                position: 'fixed',
                 top: coords.top,
                 left: coords.left,
                 transform: 'translateX(-100%)',

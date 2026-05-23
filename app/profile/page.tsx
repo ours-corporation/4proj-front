@@ -4,7 +4,7 @@ import { useState, useEffect } from "react";
 import Layout from '@/src/components/layout/Layout';
 import { useJwtInformation } from "@/src/hooks/getJwtInformation";
 import Loading from '@/src/components/Loading';
-import { getMyInformation, getMyProfilePicture, getStorageStats } from "@/src/api/user";
+import { getMyInformation, getMyProfilePicture, getStorageStats, downloadGdprExport } from "@/src/api/user";
 import { updateProfilePicture, deleteProfilePicture } from "@/src/api/user";
 import type { StorageStats } from "@/src/interface/storage";
 
@@ -29,6 +29,7 @@ export default function ProfilePage() {
 
     const [profilePictureOpenModal, setProfilePictureOpenModal] = useState(false);
     const [deleteAccountOpenModal, setDeleteAccountOpenModal] = useState(false);
+    const [exportingData, setExportingData] = useState(false);
     const [choosedProfilePicture, setChoosedProfilePicture] = useState<File[]>([]);
     const [profilePictureError, setProfilePictureError] = useState<string>("");
     const [uploadingPic, setUploadingPic] = useState(false);
@@ -46,9 +47,9 @@ export default function ProfilePage() {
     useEffect(() => {
         getMyInformation().then(data => {
             if (data) { setEmail(data.email); setUsername(data.username); setAccountCreationDate(data.created_at); }
-        }).catch(console.log);
+        }).catch(() => {});
         fetchUserProfilePic();
-        getStorageStats().then(setStorageStats).catch(console.error);
+        getStorageStats().then(setStorageStats).catch(() => {});
         return () => { if (profilePicture) URL.revokeObjectURL(profilePicture); };
     }, []);
 
@@ -122,6 +123,50 @@ export default function ProfilePage() {
                 <UpdatePasswordForm />
                 <div className="lg:col-span-2">
                     <StorageCard stats={storageStats} />
+                </div>
+
+                {/* Confidentialité */}
+                <div className="lg:col-span-2 bg-surface dark:bg-[#111113] border border-border-subtle dark:border-white/[0.06] rounded-[20px] p-6">
+                    <div className="flex items-center gap-3 mb-4">
+                        <div className="w-9 h-9 rounded-[10px] bg-[#7c6ef8]/10 flex items-center justify-center flex-shrink-0">
+                            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="#7c6ef8" className="w-5 h-5">
+                                <path strokeLinecap="round" strokeLinejoin="round" d="M9 12.75 11.25 15 15 9.75m-3-7.036A11.959 11.959 0 0 1 3.598 6 11.99 11.99 0 0 0 3 9.749c0 5.592 3.824 10.29 9 11.623 5.176-1.332 9-6.03 9-11.622 0-1.31-.21-2.571-.598-3.751h-.152c-3.196 0-6.1-1.248-8.25-3.285Z" />
+                            </svg>
+                        </div>
+                        <div>
+                            <h2 className="text-[15px] font-semibold text-txt-primary dark:text-[#ededed]">Confidentialité & RGPD</h2>
+                            <p className="text-[12px] text-txt-secondary dark:text-[#444]">Vos droits sur vos données personnelles</p>
+                        </div>
+                    </div>
+
+                    <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 p-4 rounded-[12px] bg-[#7c6ef8]/[0.04] border border-[#7c6ef8]/10">
+                        <div>
+                            <p className="text-[14px] font-medium text-txt-primary dark:text-[#ccc]">Exporter mes données</p>
+                            <p className="text-[12px] text-txt-secondary dark:text-[#555] mt-0.5">Téléchargez l'intégralité de vos données personnelles au format JSON (droit à la portabilité, art. 20 RGPD).</p>
+                        </div>
+                        <button
+                            onClick={async () => {
+                                setExportingData(true);
+                                try { await downloadGdprExport(); }
+                                catch { }
+                                finally { setExportingData(false); }
+                            }}
+                            disabled={exportingData}
+                            className="flex-shrink-0 flex items-center gap-2 px-4 py-2.5 text-[13px] font-medium rounded-[10px] border border-[#7c6ef8]/40 text-[#7c6ef8] hover:bg-[#7c6ef8]/[0.08] transition-all disabled:opacity-50 disabled:cursor-not-allowed"
+                        >
+                            {exportingData ? (
+                                <svg className="w-4 h-4 animate-spin" fill="none" viewBox="0 0 24 24">
+                                    <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4" />
+                                    <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8v4a4 4 0 00-4 4H4z" />
+                                </svg>
+                            ) : (
+                                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="w-4 h-4">
+                                    <path strokeLinecap="round" strokeLinejoin="round" d="M3 16.5v2.25A2.25 2.25 0 0 0 5.25 21h13.5A2.25 2.25 0 0 0 21 18.75V16.5M16.5 12 12 16.5m0 0L7.5 12m4.5 4.5V3" />
+                                </svg>
+                            )}
+                            {exportingData ? 'Export en cours…' : 'Exporter mes données'}
+                        </button>
+                    </div>
                 </div>
 
                 {/* Danger zone */}

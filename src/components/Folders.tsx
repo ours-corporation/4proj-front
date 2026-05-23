@@ -1,6 +1,6 @@
 'use client';
 
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import { FolderResponse } from '@/src/interface/folder';
 import { FileResponse } from "@/src/interface/file";
 import { useJwtInformation } from "@/src/hooks/getJwtInformation";
@@ -46,6 +46,8 @@ export default function Folders({ listFolders, listFiles, changeFolderId, viewMo
     const [openListMenuId, setOpenListMenuId] = useState<string | null>(null);
     const [thumbnails, setThumbnails] = useState<Record<number, string>>({});
     const [hoveredFolderId, setHoveredFolderId] = useState<number | null>(null);
+    const listMenuRefs = useRef<Map<string, HTMLButtonElement>>(new Map());
+    const listMenuAnchorRef = useRef<{ current: HTMLButtonElement | null }>({ current: null });
 
     useEffect(() => {
         if (!listFiles) return;
@@ -104,7 +106,7 @@ export default function Folders({ listFolders, listFiles, changeFolderId, viewMo
         setSelectedFile(file);
         setFile(null);
         setOpen(true);
-        if (file.mime_type.startsWith('video/')) { setFileLoading(false); return; }
+        if (file.mime_type.startsWith('video/') || file.mime_type.startsWith('audio/')) { setFileLoading(false); return; }
         setFileLoading(true);
         downloadFile({ fileId: file.id, mimeType: file.mime_type }).then(f => { setFile(f); setFileLoading(false); });
     }
@@ -230,7 +232,8 @@ export default function Folders({ listFolders, listFiles, changeFolderId, viewMo
                                 <span className="text-xs text-txt-secondary dark:text-[#444] w-32 text-right">{folder.created_at ? new Date(folder.created_at).toLocaleDateString('fr-FR', { day: 'numeric', month: 'short', year: 'numeric' }) : '—'}</span>
                                 <div className="relative w-8 flex-shrink-0" onMouseDown={e => e.stopPropagation()}>
                                     <button
-                                        onClick={(e) => { e.stopPropagation(); setOpenListMenuId(openListMenuId === `folder-${folder.id}` ? null : `folder-${folder.id}`); }}
+                                        ref={(el) => { if (el) listMenuRefs.current.set(`folder-${folder.id}`, el); else listMenuRefs.current.delete(`folder-${folder.id}`); }}
+                                        onClick={(e) => { e.stopPropagation(); const key = `folder-${folder.id}`; listMenuAnchorRef.current.current = listMenuRefs.current.get(key) ?? null; setOpenListMenuId(openListMenuId === key ? null : key); }}
                                         className="w-8 h-8 flex items-center justify-center rounded-[6px] text-txt-secondary dark:text-[#444] hover:text-txt-primary dark:hover:text-[#ededed] hover:bg-black/[0.05] dark:hover:bg-white/[0.06] transition-colors"
                                     >
                                         <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="w-4 h-4">
@@ -240,6 +243,7 @@ export default function Folders({ listFolders, listFiles, changeFolderId, viewMo
                                     {openListMenuId === `folder-${folder.id}` && (
                                         <DropdownMenu
                                             onClose={() => setOpenListMenuId(null)}
+                                            anchorRef={listMenuAnchorRef.current}
                                             items={[
                                                 ...(isTrash && restoreFolder ? [{ label: 'Restaurer', success: true, onClick: () => restoreFolder(folder) }] : []),
                                                 { label: 'Télécharger', onClick: () => downloadFolderById(folder.id, folder.name) },
@@ -279,7 +283,8 @@ export default function Folders({ listFolders, listFiles, changeFolderId, viewMo
                                     <span className="text-xs text-txt-secondary dark:text-[#444] w-32 text-right">{new Date(file.updatedAt).toLocaleDateString('fr-FR', { day: 'numeric', month: 'short', year: 'numeric' })}</span>
                                     <div className="relative w-8 flex-shrink-0" onMouseDown={e => e.stopPropagation()}>
                                         <button
-                                            onClick={(e) => { e.stopPropagation(); setOpenListMenuId(openListMenuId === `file-${file.id}` ? null : `file-${file.id}`); }}
+                                            ref={(el) => { if (el) listMenuRefs.current.set(`file-${file.id}`, el); else listMenuRefs.current.delete(`file-${file.id}`); }}
+                                            onClick={(e) => { e.stopPropagation(); const key = `file-${file.id}`; listMenuAnchorRef.current.current = listMenuRefs.current.get(key) ?? null; setOpenListMenuId(openListMenuId === key ? null : key); }}
                                             className="w-8 h-8 flex items-center justify-center rounded-[6px] text-txt-secondary dark:text-[#444] hover:text-txt-primary dark:hover:text-[#ededed] hover:bg-black/[0.05] dark:hover:bg-white/[0.06] transition-colors"
                                         >
                                             <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="w-4 h-4">
@@ -289,9 +294,10 @@ export default function Folders({ listFolders, listFiles, changeFolderId, viewMo
                                         {openListMenuId === `file-${file.id}` && (
                                             <DropdownMenu
                                                 onClose={() => setOpenListMenuId(null)}
+                                                anchorRef={listMenuAnchorRef.current}
                                                 items={[
                                                     ...(isTrash && restoreFile ? [{ label: 'Restaurer', success: true, onClick: () => restoreFile(file) }] : []),
-                                                    ...(!isTrash ? [{ label: 'Télécharger', onClick: () => downloadFileById(file.id, file.name) }] : []),
+                                                    ...(!isTrash ? [{ label: 'Télécharger', onClick: () => downloadFileById(file.id, file.fullName) }] : []),
                                                     ...(!fp(file) || fp(file) === 'WRITE' ? [{ label: 'Renommer', onClick: () => { setEditFileInfo(file); setOpenUpdateModal(true); } }] : []),
                                                     ...(!fp(file) ? [{ label: 'Partager', onClick: () => { setShareFileInfo(file); setOpenShareModal(true); } }] : []),
                                                     ...(!fp(file) || fp(file) === 'WRITE' ? [{ label: 'Déplacer', onClick: () => { setPositionFileInfo(file); setOpenMoveModal(true); } }] : []),
@@ -311,7 +317,7 @@ export default function Folders({ listFolders, listFiles, changeFolderId, viewMo
             <UpdateFileModal isOpen={openUpdateModal} fileInfo={editFileInfo!} closeModal={() => { setEditFileInfo(null); setOpenUpdateModal(false); }} onSuccess={onFileChanged} />
             <ShareFileModal isOpen={openShareModal} fileInfo={shareFileInfo!} closeModal={() => { setShareFileInfo(null); setOpenShareModal(false); }} />
             <MoveFileModal isOpen={openMoveModal} fileInfo={editFilePositionInfo!} closeModal={() => { setPositionFileInfo(null); setOpenMoveModal(false); }} />
-            <DeleteFileModal isOpen={openDeleteModal} fileInfo={deleteFileInfo!} closeModal={() => { setDeleteFileInfo(null); setOpenDeleteModal(false); }} onSuccess={onFileChanged} />
+            <DeleteFileModal isOpen={openDeleteModal} fileInfo={deleteFileInfo!} closeModal={() => { setDeleteFileInfo(null); setOpenDeleteModal(false); }} onSuccess={onFileChanged} isTrash={isTrash} />
             <RenameFolderModal isOpen={openRenameFolderModal} folderInfo={renameFolderInfo!} closeModal={() => { setRenameFolderInfo(null); setOpenRenameFolderModal(false); }} onSuccess={onFolderRenamed} />
             <DeleteFolderModal isOpen={openDeleteFolderModal} folderInfo={deleteFolderInfo!} closeModal={() => { setDeleteFolderInfo(null); setOpenDeleteFolderModal(false); }} />
             <MoveFolderModal isOpen={openMoveFolderModal} folderInfo={moveFolderInfo!} closeModal={() => { setMoveFolderInfo(null); setOpenMoveFolderModal(false); }} />

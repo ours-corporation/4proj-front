@@ -1,45 +1,53 @@
-import React, { useEffect, useState } from 'react';
+'use client';
+import React, { useEffect, useRef, useState } from 'react';
 import { FileResponse } from "@/src/interface/file";
-import { convertFileSize } from "@/src/utils/convert-file-size";
+import { getJwtToken } from "@/src/hooks/getJwtInformation";
 
 interface AudioPreviewProps {
     fileInformation: FileResponse;
-    file: File;
     onClose?: () => void;
 }
 
-export default function AudioPreview({ fileInformation, file }: AudioPreviewProps) {
-
-    const [previewUrl, setPreviewUrl] = useState<string>('');
+export default function AudioPreview({ fileInformation }: AudioPreviewProps) {
+    const audioRef = useRef<HTMLAudioElement>(null);
+    const [ready, setReady] = useState(false);
+    const [error, setError] = useState<string | null>(null);
 
     useEffect(() => {
-        if (!file) return;
+        const token = getJwtToken();
+        const streamUrl = `${process.env.NEXT_PUBLIC_API_URL}/api/files/${fileInformation.id}/stream`;
+        let aborted = false;
+        let objectUrl = '';
 
-        // Création de l'URL pour le fichier audio
-        const objectUrl = URL.createObjectURL(file);
-        // eslint-disable-next-line react-hooks/set-state-in-effect
-        setPreviewUrl(objectUrl);
+        (async () => {
+            try {
+                const res = await fetch(streamUrl, {
+                    headers: { Authorization: `Bearer ${token}` },
+                });
+                if (!res.ok) throw new Error(`HTTP ${res.status}`);
+                const blob = await res.blob();
+                if (aborted) return;
+                objectUrl = URL.createObjectURL(blob);
+                if (audioRef.current) audioRef.current.src = objectUrl;
+                setReady(true);
+            } catch {
+                if (!aborted) setError('Impossible de charger le fichier audio');
+            }
+        })();
 
-        // Nettoyage lors du démontage ou changement de fichier
         return () => {
-            URL.revokeObjectURL(objectUrl);
-            setPreviewUrl('');
+            aborted = true;
+            if (objectUrl) URL.revokeObjectURL(objectUrl);
         };
-    }, [file]);
+    }, [fileInformation.id]);
 
-    const formatDate = (dateString: string) => {
-        return new Date(dateString).toLocaleDateString('fr-FR', {
-            day: 'numeric', month: 'short', year: 'numeric', hour: '2-digit', minute: '2-digit'
-        });
-    };
-
-    if (!file) {
-        return <div className="p-4 text-center text-gray-500">Chargement de l'audio...</div>;
+    if (error) {
+        return <div className="p-4 text-center text-red-500">{error}</div>;
     }
 
     return (
         <div className="space-y-6">
-            <div className="relative w-full bg-main-bg dark:bg-dark-main-bg rounded-xl border border-gray-200 overflow-hidden group">
+            <div className="relative w-full bg-main-bg dark:bg-dark-main-bg rounded-xl border border-border-subtle dark:border-dark-border-subtle overflow-hidden group">
                 <div className="h-[300px] w-full flex flex-col items-center justify-center space-y-6 p-6">
                     <div className="bg-surface dark:bg-dark-surface p-6 rounded-full shadow-lg border border-border-subtle dark:border-dark-border-subtle">
                         <svg
@@ -58,11 +66,21 @@ export default function AudioPreview({ fileInformation, file }: AudioPreviewProp
                         </svg>
                     </div>
 
+                    {!ready && (
+                        <div className="flex flex-col items-center gap-3 text-gray-400">
+                            <svg className="w-6 h-6 animate-spin" fill="none" viewBox="0 0 24 24">
+                                <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4" />
+                                <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8v4a4 4 0 00-4 4H4z" />
+                            </svg>
+                            <span className="text-sm">Chargement de l'audio...</span>
+                        </div>
+                    )}
+
                     <audio
+                        ref={audioRef}
                         className="w-full max-w-md h-12"
                         controls
                         controlsList="nodownload"
-                        src={previewUrl}
                     >
                         Votre navigateur ne supporte pas la lecture de fichiers audio.
                     </audio>

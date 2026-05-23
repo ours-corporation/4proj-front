@@ -7,26 +7,21 @@ export async function downloadFile({ fileId, mimeType }: { fileId: number; mimeT
     const url = process.env.NEXT_PUBLIC_API_URL;
     const token = getJwtToken();
 
-    try {
-        const rep = await fetch(`${url}/api/files/${fileId}/download`, {
-            method: "GET",
-            headers: {
-                "Content-Type": "application/json",
-                "Authorization": `Bearer ${token}`,
-            },
-        });
+    const rep = await fetch(`${url}/api/files/${fileId}/download`, {
+        method: "GET",
+        headers: {
+            "Content-Type": "application/json",
+            "Authorization": `Bearer ${token}`,
+        },
+    });
 
-        if (!rep.ok) {
-            throw new Error(`Erreur HTTP: ${rep.status}`);
-        }
-
-        const blob = await rep.blob();
-        const type = mimeType || blob.type || 'application/octet-stream';
-        return new File([blob], "downloaded_file", { type });
-
-    } catch (error) {
-        throw error;
+    if (!rep.ok) {
+        throw new Error(`Erreur HTTP: ${rep.status}`);
     }
+
+    const blob = await rep.blob();
+    const type = mimeType || blob.type || 'application/octet-stream';
+    return new File([blob], "downloaded_file", { type });
 }
 
 export function uploadFileAPI(
@@ -37,9 +32,6 @@ export function uploadFileAPI(
     return new Promise((resolve, reject) => {
         const url = process.env.NEXT_PUBLIC_API_URL;
         const token = getJwtToken();
-
-        console.log("----------------")
-        console.log(parentFolderId)
 
         const formData = new FormData();
         if (file) formData.append("file", file);
@@ -66,9 +58,6 @@ export function uploadFileAPI(
         xhr.addEventListener("error", () => {
             reject(new Error(`Erreur réseau: ${xhr.status}`));
         });
-
-        console.log(`${url}/api/files/upload`)
-        console.log(formData)
 
         xhr.open("POST", `${url}/api/files/upload`);
         xhr.setRequestHeader("Authorization", `Bearer ${token}`);
@@ -159,24 +148,20 @@ export async function updateFileMetadata(fileId: number, newName: string): Promi
     const url = process.env.NEXT_PUBLIC_API_URL;
     const token = getJwtToken();
 
-    try {
-        const rep = await fetch(`${url}/api/files/${fileId}`, {
-            method: "PUT",
-            headers: {
-                "Content-Type": "application/json",
-                "Authorization": `Bearer ${token}`,
-            },
-            body: JSON.stringify({ name: newName }),
-        });
-        if (!rep.ok) {
-            throw new Error(`Erreur HTTP: ${rep.status}`);
-        }
-        const data = await rep.json();
-        return data as File;
+    const rep = await fetch(`${url}/api/files/${fileId}`, {
+        method: "PUT",
+        headers: {
+            "Content-Type": "application/json",
+            "Authorization": `Bearer ${token}`,
+        },
+        body: JSON.stringify({ name: newName }),
+    });
+
+    if (!rep.ok) {
+        throw new Error(`Erreur HTTP: ${rep.status}`);
     }
-    catch (error) {
-        throw error;
-    }
+
+    return rep.json() as Promise<File>;
 }
 
 export async function moveFileIntoFolder(fileId:number, folderId: string|null): Promise<File> {
@@ -184,25 +169,20 @@ export async function moveFileIntoFolder(fileId:number, folderId: string|null): 
     const token = getJwtToken();
     const folderIdToSend = folderId === "null" ? null : Number(folderId);
 
-     try {
-        const rep = await fetch(`${url}/api/files/${fileId}/move`, {
-            method: "PUT",
-            headers: {
-                "Content-Type": "application/json",
-                "Authorization": `Bearer ${token}`,
-            },
-            body: JSON.stringify({ folder_id : folderIdToSend }),
-        });
-        if (!rep.ok) {
-            throw new Error(`Erreur HTTP: ${rep.status}`);
-        }
-        const data = await rep.json();
-        return data as File;
-    }
-    catch (error) {
-        throw error;
+    const rep = await fetch(`${url}/api/files/${fileId}/move`, {
+        method: "PUT",
+        headers: {
+            "Content-Type": "application/json",
+            "Authorization": `Bearer ${token}`,
+        },
+        body: JSON.stringify({ folder_id: folderIdToSend }),
+    });
+
+    if (!rep.ok) {
+        throw new Error(`Erreur HTTP: ${rep.status}`);
     }
 
+    return rep.json() as Promise<File>;
 }
 
 export async function getRecentFilesAPI(limit: number = 10): Promise<FileResponse[]> {
@@ -244,47 +224,35 @@ export async function getFileShares(fileId: number): Promise<FileShareItem[]> {
 export async function restoreFile(fileId:number){
     const url = process.env.NEXT_PUBLIC_API_URL;
     const token = getJwtToken();
-        try {
-        const rep = await fetch(`${url}/api/files/${fileId}/restore`, {
-            method: "PUT",
-            headers: {
-                "Content-Type": "application/json",
-                "Authorization": `Bearer ${token}`,
-            },
-        });
+    const rep = await fetch(`${url}/api/files/${fileId}/restore`, {
+        method: "PUT",
+        headers: {
+            "Content-Type": "application/json",
+            "Authorization": `Bearer ${token}`,
+        },
+    });
 
-        if (!rep.ok) {
-            throw new Error(`Erreur HTTP: ${rep.status}`);
-        }
-
-        const data = await rep.json();
-        return data as FileResponse;
-
-    } catch (error) {
-        throw error;
+    if (!rep.ok) {
+        throw new Error(`Erreur HTTP: ${rep.status}`);
     }
+
+    return rep.json() as Promise<FileResponse>;
 }
 
 export async function copyFileById(fileId:number){
     const url = process.env.NEXT_PUBLIC_API_URL;
     const token = getJwtToken();
-        try {
-        const rep = await fetch(`${url}/api/files/${fileId}/copy`, {
-            method: "POST",
-            headers: {
-                "Content-Type": "application/json",
-                "Authorization": `Bearer ${token}`,
-            },
-        });
+    const rep = await fetch(`${url}/api/files/${fileId}/copy`, {
+        method: "POST",
+        headers: {
+            "Content-Type": "application/json",
+            "Authorization": `Bearer ${token}`,
+        },
+    });
 
-        if (!rep.ok) {
-            throw new Error(`Erreur HTTP: ${rep.status}`);
-        }
-
-        const data = await rep.json();
-        return data as FileResponse;
-
-    } catch (error) {
-        throw error;
+    if (!rep.ok) {
+        throw new Error(`Erreur HTTP: ${rep.status}`);
     }
+
+    return rep.json() as Promise<FileResponse>;
 }
