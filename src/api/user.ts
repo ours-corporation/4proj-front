@@ -44,6 +44,7 @@ export async function updatePassword(oldPassword: string, newPassword: string) {
 
 export async function getMyProfilePicture(_qualityValue?: string) {
     const rep = await authFetch(`/api/users/me/profile-picture`);
+    if (rep.status === 404) return null;
     if (!rep.ok) throw new Error(`Erreur HTTP: ${rep.status}`);
     return URL.createObjectURL(await rep.blob());
 }
