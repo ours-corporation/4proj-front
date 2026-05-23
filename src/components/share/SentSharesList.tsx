@@ -29,6 +29,7 @@ export default function SentSharesList() {
     const [pendingId, setPendingId] = useState<number | null>(null);
     const [passwordInputs, setPasswordInputs] = useState<Record<number, string>>({});
     const [copiedId, setCopiedId] = useState<number | null>(null);
+    const [dateInputs, setDateInputs] = useState<Record<number, string>>({});
 
     const fetchShares = useCallback(async () => {
         setLoading(true);
@@ -223,10 +224,23 @@ export default function SentSharesList() {
                                         <input
                                             type="date"
                                             className={selectClass}
-                                            value={toDateValue(share.expiresAt)}
+                                            value={dateInputs[share.id] ?? toDateValue(share.expiresAt)}
                                             min={new Date().toISOString().slice(0, 10)}
                                             disabled={isPending}
-                                            onChange={e => handleUpdateExpiry(share.id, e.target.value ? new Date(`${e.target.value}T23:59:00`).toISOString() : null)}
+                                            onChange={e => setDateInputs(prev => ({ ...prev, [share.id]: e.target.value }))}
+                                            onBlur={e => {
+                                                const val = e.target.value;
+                                                if (!val) {
+                                                    handleUpdateExpiry(share.id, null);
+                                                    return;
+                                                }
+                                                const date = new Date(val + 'T23:59:00');
+                                                if (!isNaN(date.getTime())) {
+                                                    handleUpdateExpiry(share.id, date.toISOString());
+                                                } else {
+                                                    setDateInputs(prev => ({ ...prev, [share.id]: toDateValue(share.expiresAt) }));
+                                                }
+                                            }}
                                         />
                                     </div>
                                 </div>

@@ -14,6 +14,7 @@ export default function SharesPanel({ shares, setShares, sharesLoading, sharesEr
     const [expandedShareId, setExpandedShareId] = useState<number | null>(null);
     const [passwordInputs, setPasswordInputs] = useState<Record<number, string>>({});
     const [copiedShareId, setCopiedShareId] = useState<number | null>(null);
+    const [dateInputs, setDateInputs] = useState<Record<number, string>>({});
 
     const formatDate = (dateString: string) =>
         new Date(dateString).toLocaleDateString('fr-FR', {
@@ -243,10 +244,23 @@ export default function SharesPanel({ shares, setShares, sharesLoading, sharesEr
                             <input
                                 type="date"
                                 className={selectClass}
-                                value={toDateInputValue(share.expiresAt)}
+                                value={dateInputs[share.id] ?? toDateInputValue(share.expiresAt)}
                                 min={new Date().toISOString().slice(0, 10)}
                                 disabled={isPending}
-                                onChange={e => handleUpdateExpiry(share.id, e.target.value ? new Date(e.target.value).toISOString() : null)}
+                                onChange={e => setDateInputs(prev => ({ ...prev, [share.id]: e.target.value }))}
+                                onBlur={e => {
+                                    const val = e.target.value;
+                                    if (!val) {
+                                        handleUpdateExpiry(share.id, null);
+                                        return;
+                                    }
+                                    const date = new Date(val + 'T12:00:00');
+                                    if (!isNaN(date.getTime())) {
+                                        handleUpdateExpiry(share.id, date.toISOString());
+                                    } else {
+                                        setDateInputs(prev => ({ ...prev, [share.id]: toDateInputValue(share.expiresAt) }));
+                                    }
+                                }}
                             />
                         </div>
                         <button
