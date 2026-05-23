@@ -216,7 +216,8 @@ export async function copyFolderById(folderId:number){
     });
 
     if (!rep.ok) {
-        throw new Error(`Erreur HTTP: ${rep.status}`);
+        const data = await rep.json().catch(() => ({}));
+        throw new Error(data.message || `Erreur HTTP: ${rep.status}`);
     }
 
     return rep.json() as Promise<FolderResponse>;

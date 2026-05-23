@@ -251,7 +251,8 @@ export async function copyFileById(fileId:number){
     });
 
     if (!rep.ok) {
-        throw new Error(`Erreur HTTP: ${rep.status}`);
+        const data = await rep.json().catch(() => ({}));
+        throw new Error(data.message || `Erreur HTTP: ${rep.status}`);
     }
 
     return rep.json() as Promise<FileResponse>;
