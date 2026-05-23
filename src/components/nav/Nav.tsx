@@ -3,9 +3,9 @@
 import React, { useState, useRef, useEffect } from 'react';
 import NavItems from "@/src/components/nav/NavItems";
 import { useJwtInformation } from "@/src/hooks/getJwtInformation";
-import { useRouter } from 'next/navigation';
-import { getMyProfilePicture } from '@/src/api/user';
+import { useRouter, usePathname } from 'next/navigation';
 import { logout } from '@/src/api/auth';
+import { useProfilePicture } from '@/src/context/ProfilePictureContext';
 
 const NAV_ITEMS = [
     {
@@ -46,21 +46,13 @@ const NAV_ITEMS = [
     },
 ];
 
-export default function NavBar({ currentPage }: { currentPage: string }) {
+export default function NavBar() {
     const userInfo = useJwtInformation();
     const router = useRouter();
+    const currentPage = usePathname();
     const [menuOpen, setMenuOpen] = useState(false);
     const menuRef = useRef<HTMLDivElement>(null);
-    const [profilePicture, setProfilePicture] = useState<string>("");
-
-    async function fetchUserProfilePic() {
-        try {
-            const url = await getMyProfilePicture();
-            if (url) setProfilePicture(url);
-        } catch {
-            setProfilePicture("");
-        }
-    }
+    const { profilePicture } = useProfilePicture();
 
     useEffect(() => {
         function handleClickOutside(event: MouseEvent) {
@@ -71,16 +63,6 @@ export default function NavBar({ currentPage }: { currentPage: string }) {
         document.addEventListener('mousedown', handleClickOutside);
         return () => document.removeEventListener('mousedown', handleClickOutside);
     }, []);
-
-    useEffect(() => {
-        fetchUserProfilePic();
-        window.addEventListener('profile-picture-updated', fetchUserProfilePic);
-        return () => window.removeEventListener('profile-picture-updated', fetchUserProfilePic);
-    }, []);
-
-    useEffect(() => {
-        return () => { if (profilePicture) URL.revokeObjectURL(profilePicture); };
-    }, [profilePicture]);
 
     async function handleLogout() {
         try { await logout(); } finally {
@@ -193,7 +175,12 @@ export default function NavBar({ currentPage }: { currentPage: string }) {
                         </div>
                     )}
                     <div className="flex-1 min-w-0 text-left">
-                        <p className="text-sm font-medium text-txt-primary dark:text-[#ccc] truncate">{userInfo?.username}</p>
+                        <p className="text-sm font-medium text-txt-primary dark:text-[#ccc] truncate" suppressHydrationWarning>
+                            {userInfo?.username
+                                ? userInfo.username
+                                : <span className="inline-block w-20 h-3.5 rounded bg-black/[0.06] dark:bg-white/[0.06] animate-pulse" />
+                            }
+                        </p>
                         <p className="text-[11px] text-txt-secondary dark:text-[#444] truncate">Mon compte</p>
                     </div>
                     <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="w-4 h-4 text-txt-secondary dark:text-[#444] flex-shrink-0">

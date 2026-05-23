@@ -4,6 +4,7 @@ import { createContext, useContext, useEffect, useRef, useState } from 'react';
 import { io, Socket } from 'socket.io-client';
 import type { ServerToClientEvents, ClientToServerEvents } from '@/src/types/socket-events';
 import { refreshToken } from '@/src/api/auth';
+import { storeAccessToken } from '@/src/hooks/getJwtInformation';
 
 type AppSocket = Socket<ServerToClientEvents, ClientToServerEvents>;
 
@@ -32,7 +33,7 @@ export function SocketProvider({ children }: { children: React.ReactNode }) {
                     if (!res.ok) return;
                     const data = await res.json();
                     if (data.accessToken) {
-                        localStorage.setItem('accessToken', data.accessToken);
+                        storeAccessToken(data.accessToken);
                         (socket.auth as Record<string, string>).token = data.accessToken;
                         socket.connect();
                     }

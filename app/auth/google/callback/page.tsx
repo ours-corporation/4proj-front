@@ -4,6 +4,7 @@ import Loading from "@/src/components/Loading";
 import { useEffect } from "react";
 import { authGoogle } from "@/src/api/authGoogle";
 import { useRouter } from "next/navigation";
+import { storeAccessToken } from "@/src/hooks/getJwtInformation";
 
 export default function GoogleCallback() {
     const router = useRouter();
@@ -30,7 +31,7 @@ export default function GoogleCallback() {
                 } else {
                     const data = await rep.json();
                     if (data.accessToken) {
-                        localStorage.setItem("accessToken", data.accessToken);
+                        storeAccessToken(data.accessToken);
                         router.push("/dashboard");
                     } else {
                         router.push("/login?error=" + encodeURIComponent("Échec de la connexion avec Google."));

@@ -1,5 +1,7 @@
 'use client';
 
+import { storeAccessToken } from "@/src/hooks/getJwtInformation";
+
 const API_URL = process.env.NEXT_PUBLIC_API_URL;
 
 async function attemptRefresh(): Promise<string | null> {
@@ -11,7 +13,7 @@ async function attemptRefresh(): Promise<string | null> {
         if (!res.ok) return null;
         const data = await res.json();
         if (data.accessToken) {
-            localStorage.setItem('accessToken', data.accessToken);
+            storeAccessToken(data.accessToken);
             return data.accessToken;
         }
         return null;

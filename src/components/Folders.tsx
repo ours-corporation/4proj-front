@@ -313,7 +313,7 @@ export default function Folders({ listFolders, listFiles, changeFolderId, viewMo
                 </div>
             )}
 
-            <FileDetailsModal isOpen={open} selectedFile={selectedFile} file={file} fileLoading={fileLoading} currentUserId={userInfo.id} onClose={setFileInformationAndClose} />
+            <FileDetailsModal isOpen={open} selectedFile={selectedFile} file={file} fileLoading={fileLoading} currentUserId={userInfo?.id ?? ""} onClose={setFileInformationAndClose} />
             <UpdateFileModal isOpen={openUpdateModal} fileInfo={editFileInfo!} closeModal={() => { setEditFileInfo(null); setOpenUpdateModal(false); }} onSuccess={onFileChanged} />
             <ShareFileModal isOpen={openShareModal} fileInfo={shareFileInfo!} closeModal={() => { setShareFileInfo(null); setOpenShareModal(false); }} />
             <MoveFileModal isOpen={openMoveModal} fileInfo={editFilePositionInfo!} closeModal={() => { setPositionFileInfo(null); setOpenMoveModal(false); }} />
