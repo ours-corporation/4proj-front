@@ -57,8 +57,7 @@ export default function NavBar({ currentPage }: { currentPage: string }) {
         try {
             const url = await getMyProfilePicture();
             if (url) setProfilePicture(url);
-        } catch (error: any) {
-            if (!error?.message?.includes('404')) console.log(error);
+        } catch {
             setProfilePicture("");
         }
     }

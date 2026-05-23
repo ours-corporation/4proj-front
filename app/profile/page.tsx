@@ -47,9 +47,9 @@ export default function ProfilePage() {
     useEffect(() => {
         getMyInformation().then(data => {
             if (data) { setEmail(data.email); setUsername(data.username); setAccountCreationDate(data.created_at); }
-        }).catch(console.log);
+        }).catch(() => {});
         fetchUserProfilePic();
-        getStorageStats().then(setStorageStats).catch(console.error);
+        getStorageStats().then(setStorageStats).catch(() => {});
         return () => { if (profilePicture) URL.revokeObjectURL(profilePicture); };
     }, []);
 

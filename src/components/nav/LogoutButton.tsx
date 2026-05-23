@@ -21,13 +21,11 @@ export default function LogoutButton({isActive = false}:LogoutButtonProps){
         try {
         const rep = await logout();
         if (rep.status == 200){
-            console.log(rep.status);
             localStorage.removeItem("accessToken");
             sessionStorage.removeItem("accessToken");
             router.replace("/login");
         }
-        } catch (err) {
-        console.error(err);
+        } catch {
         alert("Erreur lors de la déconnexion");
         }
     };
