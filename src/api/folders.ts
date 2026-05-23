@@ -74,7 +74,10 @@ export async function restoreFolder(folderId: number) {
 
 export async function downloadFolder({ folderId }: { folderId: number }): Promise<File> {
     const rep = await authFetch(`/api/folders/${folderId}/download`);
-    if (!rep.ok) throw new Error(`Erreur HTTP: ${rep.status}`);
+    if (!rep.ok) {
+        const data = await rep.json().catch(() => ({}));
+        throw new Error(data.message || `Erreur HTTP: ${rep.status}`);
+    }
     const blob = await rep.blob();
     return new File([blob], "downloaded_folder", { type: blob.type });
 }
