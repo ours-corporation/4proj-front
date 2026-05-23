@@ -191,10 +191,8 @@ export default function ProfilePage() {
                                 type="button"
                                 onClick={async () => {
                                     await deleteProfilePicture();
-                                    URL.revokeObjectURL(profilePicture);
-                                    setProfilePicture("");
                                     setChoosedProfilePicture([]);
-                                    window.dispatchEvent(new Event('profile-picture-updated'));
+                                    refreshProfilePicture();
                                     setProfilePictureOpenModal(false);
                                 }}
                                 className="text-[13px] text-[#ef5350] hover:underline"
