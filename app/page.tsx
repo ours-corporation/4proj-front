@@ -120,6 +120,16 @@ export default function Home() {
           height: 1px;
           background: linear-gradient(90deg, rgba(124,110,248,0.4), rgba(66,175,240,0.4));
         }
+        @font-face {
+          font-family: 'Syne';
+          font-style: normal;
+          font-weight: 700 800;
+          font-display: swap;
+          src: local('Syne');
+          ascent-override: 90%;
+          descent-override: 20%;
+          line-gap-override: 0%;
+        }
         .cta-glow::before {
           content: '';
           position: absolute; top: -80px; left: 50%; transform: translateX(-50%);
@@ -243,7 +253,9 @@ export default function Home() {
                 <div className="w-[46px] h-[46px] rounded-[11px] bg-[#7c6ef8]/10 border border-[#7c6ef8]/[0.18] flex items-center justify-center mb-[18px]">
                   {f.icon}
                 </div>
-                <div className="font-['Syne',sans-serif] text-[16px] font-bold text-[#e8e8e8] mb-2">{f.name}</div>
+                <div style={{ marginBottom: 12 }}>
+                  <span className="font-['Syne',sans-serif] font-bold text-[#e8e8e8]" style={{ fontSize: 16, lineHeight: 2 }}>{f.name}</span>
+                </div>
                 <div className="text-[13.5px] text-[#555] leading-[1.65] font-light">{f.desc}</div>
               </div>
             ))}
