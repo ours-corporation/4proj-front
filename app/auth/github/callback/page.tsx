@@ -23,8 +23,13 @@ export default function GithubCallback() {
             return;
         }
 
+        const termsRequired = urlParams.get('terms_required') === 'true';
         storeAccessToken(accessToken);
-        router.push("/dashboard");
+        if (termsRequired) {
+            router.push("/accept-terms");
+        } else {
+            router.push("/dashboard");
+        }
     }, []);
 
     return <Loading />;
