@@ -7,7 +7,7 @@ import { FcGoogle } from "react-icons/fc";
 import { FaGithub } from "react-icons/fa";
 import { useNotAuth } from "@/src/hooks/useAuth";
 import { registerValidatorValidator } from "@/src/validator/auth";
-import { GetGoogleClientId, GetGithubClientId } from "@/src/services/envReader";
+import { GetGoogleClientId } from "@/src/services/envReader";
 import InputField from "@/src/components/input/InputField";
 import SubmitButton from "@/src/components/button/SubmitButton";
 
@@ -30,16 +30,10 @@ export default function RegisterPage() {
     const [googleRedirectUri, setGoogleRedirectUri] = useState("");
     const googleClientId = GetGoogleClientId();
 
-    const [githubCallback, setGithubCallback] = useState("");
-    const [githubRedirectUri, setGithubRedirectUri] = useState("");
-    const githubClientId = GetGithubClientId();
-
     useEffect(() => {
         setGoogleCallback(window.location.origin + "/auth/google/callback");
         setGoogleRedirectUri("https://accounts.google.com/o/oauth2/v2/auth?client_id=" + googleClientId + "&redirect_uri=" + googleCallback + "&response_type=code&scope=openid email profile&access_type=offline&prompt=consent");
-        setGithubCallback(window.location.origin + "/auth/github/callback");
-        setGithubRedirectUri("https://github.com/login/oauth/authorize?client_id=" + githubClientId + "&redirect_uri=" + githubCallback + "&scope=user:email&state=xyz");
-    }, [googleClientId, googleCallback, googleRedirectUri, githubClientId, githubCallback, githubRedirectUri]);
+    }, [googleClientId, googleCallback, googleRedirectUri]);
 
     const handleSubmit = async (e: { preventDefault: () => void }) => {
         e.preventDefault();
@@ -250,7 +244,7 @@ export default function RegisterPage() {
 
                     <button
                         type="button"
-                        onClick={() => { window.location.href = githubRedirectUri; }}
+                        onClick={() => { window.location.href = `${process.env.NEXT_PUBLIC_API_URL}/api/auth/github/initiate?platform=web`; }}
                         className="w-full flex items-center justify-center gap-2.5 py-2.5 rounded-[10px] border border-border-subtle dark:border-white/[0.07] bg-surface-hover dark:bg-white/[0.02] text-txt-secondary dark:text-[#bbb] text-sm mb-6 hover:border-[#7c6ef8]/30 dark:hover:border-white/[0.15] hover:bg-[#7c6ef8]/[0.04] dark:hover:bg-white/[0.05] hover:text-txt-primary dark:hover:text-white transition-all cursor-pointer"
                     >
                         <FaGithub size={20} />
