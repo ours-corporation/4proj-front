@@ -86,6 +86,18 @@ export async function resetPassword(token: string, password: string) {
     });
 }
 
+export async function acceptTerms(accessToken: string) {
+    const url = process.env.NEXT_PUBLIC_API_URL
+
+    return await fetch(url + "/api/accept-terms", {
+        method: "POST",
+        headers: {
+            "Content-Type": "application/json",
+            "Authorization": `Bearer ${accessToken}`,
+        },
+    });
+}
+
 export async function resendVerification(email: string) {
     const url = process.env.NEXT_PUBLIC_API_URL
 

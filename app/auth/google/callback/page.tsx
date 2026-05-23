@@ -32,7 +32,11 @@ export default function GoogleCallback() {
                     const data = await rep.json();
                     if (data.accessToken) {
                         storeAccessToken(data.accessToken);
-                        router.push("/dashboard");
+                        if (data.terms_required) {
+                            router.push("/accept-terms");
+                        } else {
+                            router.push("/dashboard");
+                        }
                     } else {
                         router.push("/login?error=" + encodeURIComponent("Échec de la connexion avec Google."));
                     }
