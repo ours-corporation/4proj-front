@@ -168,7 +168,7 @@ export default function Folders({ listFolders, listFiles, changeFolderId, viewMo
                                 openShares={!fp(folder) ? (f) => { setFolderDetailsInfo(f); setOpenFolderDetailsModal(true); } : undefined}
                                 shareFolder={!fp(folder) ? (f) => { setShareFolderInfo(f); setOpenShareFolderModal(true); } : undefined}
                                 moveFolder={!fp(folder) || fp(folder) === 'WRITE' ? (f) => { setMoveFolderInfo(f); setOpenMoveFolderModal(true); } : undefined}
-                                copyFolder={!fp(folder) || fp(folder) === 'WRITE' ? async (f) => { await copyFolderById(f.id); onFolderRenamed?.(); } : undefined}
+                                copyFolder={!fp(folder) || fp(folder) === 'WRITE' ? async (f) => { try { await copyFolderById(f.id); onFolderRenamed?.(); } catch (e: any) { alert(e.message); } } : undefined}
                             />
                         </div>
                     ))}
@@ -188,7 +188,7 @@ export default function Folders({ listFolders, listFiles, changeFolderId, viewMo
                                 shareFile={!fp(file) ? (f) => { setShareFileInfo(f); setOpenShareModal(true); return Promise.resolve(); } : undefined}
                                 moveFile={!fp(file) || fp(file) === 'WRITE' ? (f) => { setPositionFileInfo(f); setOpenMoveModal(true); return Promise.resolve(); } : undefined}
                                 deleteFile={!fp(file) || isTrash ? (f) => { setDeleteFileInfo(f); setOpenDeleteModal(true); } : undefined}
-                                copyFile={!fp(file) || fp(file) === 'WRITE' ? async (f) => { await copyFileById(f.id); onFileChanged?.(); } : undefined}
+                                copyFile={!fp(file) || fp(file) === 'WRITE' ? async (f) => { try { await copyFileById(f.id); onFileChanged?.(); } catch (e: any) { alert(e.message); } } : undefined}
                             />
                         </div>
                     ))}
