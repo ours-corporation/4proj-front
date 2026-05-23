@@ -20,6 +20,7 @@ export default function RegisterPage() {
     const [password, setPassword] = useState("");
     const [confirmPassword, setConfirmPassword] = useState("");
     const [username, setUsername] = useState("");
+    const [termsAccepted, setTermsAccepted] = useState(false);
     const [loading, setLoading] = useState(useNotAuth());
     const [error, setError] = useState("");
     const [registered, setRegistered] = useState(false);
@@ -40,7 +41,7 @@ export default function RegisterPage() {
         setLoading(true);
         setError("");
 
-        const validatorResult = registerValidatorValidator.safeParse({ username, email, password, confirmPassword });
+        const validatorResult = registerValidatorValidator.safeParse({ username, email, password, confirmPassword, terms_accepted: termsAccepted || undefined });
         if (!validatorResult.success) {
             setError(validatorResult.error.issues[0].message);
             setLoading(false);
@@ -54,7 +55,7 @@ export default function RegisterPage() {
                 return;
             }
 
-            const res = await register(email, password, username);
+            const res = await register(email, password, username, termsAccepted);
 
             if (!res.ok) {
                 if (res.status === 409) {
@@ -207,6 +208,34 @@ export default function RegisterPage() {
                                 wrapperClassName={inputWrapper}
                                 inputClassName={inputInner}
                             />
+                        </div>
+
+                        <div className="mb-4">
+                            <label className="flex items-start gap-2.5 cursor-pointer group">
+                                <div className="relative flex-shrink-0 mt-0.5">
+                                    <input
+                                        type="checkbox"
+                                        id="terms"
+                                        checked={termsAccepted}
+                                        onChange={(e) => setTermsAccepted(e.target.checked)}
+                                        className="sr-only peer"
+                                    />
+                                    <div className="w-4 h-4 rounded border border-border-subtle dark:border-white/[0.15] bg-input-bg dark:bg-[#0d0d0d] peer-checked:bg-gradient-to-br peer-checked:from-[#7c6ef8] peer-checked:to-[#42aff0] peer-checked:border-transparent transition-all flex items-center justify-center">
+                                        {termsAccepted && (
+                                            <svg className="w-2.5 h-2.5 text-white" fill="none" stroke="currentColor" strokeWidth="3" viewBox="0 0 24 24">
+                                                <path strokeLinecap="round" strokeLinejoin="round" d="M5 13l4 4L19 7" />
+                                            </svg>
+                                        )}
+                                    </div>
+                                </div>
+                                <span className="text-[12px] text-txt-secondary dark:text-[#666] leading-relaxed">
+                                    J&apos;accepte les{" "}
+                                    <a href="/mentions-legales" target="_blank" className="text-[#7c6ef8] hover:text-[#42aff0] transition-colors no-underline">mentions légales</a>
+                                    {" "}et les{" "}
+                                    <a href="/cgu" target="_blank" className="text-[#7c6ef8] hover:text-[#42aff0] transition-colors no-underline">CGU</a>
+                                    {" "}<span className="text-[#ef5350]">*</span>
+                                </span>
+                            </label>
                         </div>
 
                         {error && (
