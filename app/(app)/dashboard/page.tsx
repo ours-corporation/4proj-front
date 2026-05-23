@@ -1,8 +1,5 @@
 'use client';
 
-import { useAuth } from '@/src/hooks/useAuth';
-import Loading from '@/src/components/Loading';
-import Layout from '@/src/components/layout/Layout';
 import Error from '@/src/components/Error';
 import { useJwtInformation } from '@/src/hooks/getJwtInformation';
 import GlobalCard from '@/src/components/card/GlobalCard';
@@ -37,18 +34,15 @@ function ClockIcon() {
 }
 
 export default function Dashboard() {
-    const userInfo    = useJwtInformation();
-    const authLoading = useAuth();
-    const { usedBytes, totalBytes, categories, loading, isMock } = useStorageData(!authLoading);
+    const userInfo = useJwtInformation();
+    const { usedBytes, totalBytes, categories, loading, isMock } = useStorageData(true);
 
-    if (authLoading) return <Loading />;
-    if (!userInfo)   return <Error errorMsg="Une erreur est survenue lors du chargement des informations utilisateur." />;
+    if (!userInfo) return null;
 
     const usedPct = totalBytes > 0 ? ((usedBytes / totalBytes) * 100).toFixed(1) : '0';
 
     return (
-        <Layout currentPage="/dashboard">
-            {/* Hidden gradient sprite for SVG stroke references */}
+        <>
             <svg width="0" height="0" className="absolute overflow-hidden" aria-hidden="true">
                 <defs>
                     <linearGradient id="dash-grad" x1="0%" y1="0%" x2="100%" y2="100%">
@@ -58,12 +52,11 @@ export default function Dashboard() {
                 </defs>
             </svg>
 
-            {/* Page heading */}
             <div className="mb-8">
                 <h1 className="text-2xl font-bold text-txt-primary dark:text-[#ededed] mb-1">
                     Bonjour,{" "}
                     <span className="bg-gradient-to-r from-[#7c6ef8] to-[#42aff0] bg-clip-text text-transparent">
-                        {userInfo.username}
+                        {userInfo?.username}
                     </span>{" "}!
                 </h1>
                 <p className="text-sm text-txt-secondary dark:text-[#555]">
@@ -71,10 +64,7 @@ export default function Dashboard() {
                 </p>
             </div>
 
-            {/* Stats grid */}
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-5 mb-8">
-
-                {/* Storage used card */}
                 <GlobalCard svgIcon={<StorageIcon />}>
                     <p className="text-[11px] font-semibold text-txt-secondary dark:text-[#444] uppercase tracking-widest mb-3">Espace utilisé</p>
 
@@ -93,8 +83,6 @@ export default function Dashboard() {
                                     / {convertFileSize(totalBytes)}
                                 </span>
                             </div>
-
-                            {/* Progress bar */}
                             <div className="w-full bg-black/[0.05] dark:bg-white/[0.05] rounded-full h-2 overflow-hidden">
                                 <div
                                     className="h-full rounded-full bg-gradient-to-r from-[#7c6ef8] to-[#42aff0] transition-all duration-700 ease-out"
@@ -106,7 +94,6 @@ export default function Dashboard() {
                     )}
                 </GlobalCard>
 
-                {/* Storage breakdown card */}
                 <div className="md:col-span-2">
                     <GlobalCard svgIcon={<ChartIcon />}>
                         <div className="flex items-center justify-between mb-5">
@@ -119,7 +106,6 @@ export default function Dashboard() {
                                 </span>
                             )}
                         </div>
-
                         {loading ? (
                             <div className="flex justify-center py-8">
                                 <svg className="w-6 h-6 animate-spin text-[#444]" fill="none" viewBox="0 0 24 24">
@@ -134,13 +120,12 @@ export default function Dashboard() {
                 </div>
             </div>
 
-            {/* Recent files */}
             <GlobalCard svgIcon={<ClockIcon />}>
                 <p className="text-[11px] font-semibold text-txt-secondary dark:text-[#444] uppercase tracking-widest mb-4">
                     Fichiers récents
                 </p>
                 <ShowRecentFile />
             </GlobalCard>
-        </Layout>
+        </>
     );
 }

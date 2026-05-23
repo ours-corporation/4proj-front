@@ -3,6 +3,7 @@
 import Loading from "@/src/components/Loading";
 import { useEffect } from "react";
 import { useRouter } from "next/navigation";
+import { storeAccessToken } from "@/src/hooks/getJwtInformation";
 
 export default function GithubCallback() {
     const router = useRouter();
@@ -22,7 +23,7 @@ export default function GithubCallback() {
             return;
         }
 
-        localStorage.setItem("accessToken", accessToken);
+        storeAccessToken(accessToken);
         router.push("/dashboard");
     }, []);
 

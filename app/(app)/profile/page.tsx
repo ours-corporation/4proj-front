@@ -1,11 +1,10 @@
 'use client';
 
 import { useState, useEffect } from "react";
-import Layout from '@/src/components/layout/Layout';
 import { useJwtInformation } from "@/src/hooks/getJwtInformation";
-import Loading from '@/src/components/Loading';
-import { getMyInformation, getMyProfilePicture, getStorageStats, downloadGdprExport } from "@/src/api/user";
+import { getMyInformation, getStorageStats, downloadGdprExport } from "@/src/api/user";
 import { updateProfilePicture, deleteProfilePicture } from "@/src/api/user";
+import { useProfilePicture } from "@/src/context/ProfilePictureContext";
 import type { StorageStats } from "@/src/interface/storage";
 
 import UpdateUserMailForm from "@/src/components/settings/UpdateUserMailForm";
@@ -15,16 +14,14 @@ import Modal from "@/src/components/modal/Modal";
 import InputFile from "@/src/components/input/InputFile";
 import SubmitButton from "@/src/components/button/SubmitButton";
 import DeleteAccountModal from "@/src/components/modal/DeleteAccount";
-import { useAuth } from '@/src/hooks/useAuth';
 
 export default function ProfilePage() {
     const userInfo = useJwtInformation();
-    const loading = useAuth();
 
     const [username, setUsername] = useState("");
     const [email, setEmail] = useState("");
     const [accountCreationDate, setAccountCreationDate] = useState("");
-    const [profilePicture, setProfilePicture] = useState<string>("");
+    const { profilePicture, refresh: refreshProfilePicture } = useProfilePicture();
     const [storageStats, setStorageStats] = useState<StorageStats | null>(null);
 
     const [profilePictureOpenModal, setProfilePictureOpenModal] = useState(false);
@@ -34,23 +31,11 @@ export default function ProfilePage() {
     const [profilePictureError, setProfilePictureError] = useState<string>("");
     const [uploadingPic, setUploadingPic] = useState(false);
 
-    async function fetchUserProfilePic() {
-        try {
-            if (profilePicture) URL.revokeObjectURL(profilePicture);
-            const url = await getMyProfilePicture();
-            if (url) setProfilePicture(url);
-        } catch (error: any) {
-            if (!error?.message?.includes('404') && error?.status !== 404) console.error(error);
-        }
-    }
-
     useEffect(() => {
         getMyInformation().then(data => {
             if (data) { setEmail(data.email); setUsername(data.username); setAccountCreationDate(data.created_at); }
         }).catch(() => {});
-        fetchUserProfilePic();
         getStorageStats().then(setStorageStats).catch(() => {});
-        return () => { if (profilePicture) URL.revokeObjectURL(profilePicture); };
     }, []);
 
     const memberYear = accountCreationDate ? accountCreationDate.slice(0, 4) : new Date().getFullYear().toString();
@@ -62,11 +47,8 @@ export default function ProfilePage() {
 
     function fmtGo(bytes: number) { return (bytes / (1024 ** 3)).toFixed(1); }
 
-    if (loading) return <Loading />;
-
     return (
-        <Layout currentPage="/profile">
-
+        <>
             {/* ── Profile header card ── */}
             <div className="bg-surface dark:bg-[#111113] border border-border-subtle dark:border-white/[0.06] rounded-[20px] p-6 mb-6">
                 <div className="flex flex-col sm:flex-row items-start sm:items-center gap-5">
@@ -248,7 +230,7 @@ export default function ProfilePage() {
                             setUploadingPic(true);
                             try {
                                 await updateProfilePicture(choosedProfilePicture[0]);
-                                await fetchUserProfilePic();
+                                await refreshProfilePicture();
                                 window.dispatchEvent(new Event('profile-picture-updated'));
                                 setProfilePictureOpenModal(false);
                                 setChoosedProfilePicture([]);
@@ -265,6 +247,6 @@ export default function ProfilePage() {
                 email={email}
                 closeModal={() => setDeleteAccountOpenModal(false)}
             />
-        </Layout>
+        </>
     );
 }

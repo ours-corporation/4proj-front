@@ -3,6 +3,7 @@
 import React, { useEffect, useState } from "react";
 import { login } from "@/src/api/auth";
 import { useRouter } from "next/navigation";
+import { storeAccessToken } from "@/src/hooks/getJwtInformation";
 import { FcGoogle } from "react-icons/fc";
 import { FaGithub } from "react-icons/fa";
 import { loginValidatorValidator } from "@/src/validator/auth";
@@ -65,7 +66,7 @@ export default function LoginPage() {
             }
             const data = await res.json();
             if (data.accessToken) {
-                localStorage.setItem("accessToken", data.accessToken);
+                storeAccessToken(data.accessToken);
                 router.push("/dashboard");
             }
         } catch {

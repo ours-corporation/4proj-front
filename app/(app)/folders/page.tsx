@@ -2,11 +2,8 @@
 
 import { useState, useEffect, useCallback, Suspense } from 'react';
 import { useSearchParams } from 'next/navigation';
-import { useAuth } from '@/src/hooks/useAuth';
 import { useSocketEvent } from '@/src/hooks/useSocketEvent';
 import Loading from '@/src/components/Loading';
-import Layout from '@/src/components/layout/Layout';
-import Error from "@/src/components/Error";
 import Folders from "@/src/components/Folders";
 import { FolderDetailResponse, getFolderById } from "@/src/api/folders";
 import CreateFolderModal from "@/src/components/modal/CreateFolderModal";
@@ -17,7 +14,6 @@ function FoldersContent() {
     const searchParams = useSearchParams();
     const [folderId, setFolderId] = useState<string>(searchParams.get('folderId') ?? '');
     const [folderData, setFolderData] = useState<FolderDetailResponse | null>(null);
-    const [error, setError] = useState<string | null>(null);
     const [viewMode, setViewMode] = useState<'grid' | 'list'>('grid');
     const [createFolderOpen, setCreateFolderOpen] = useState(false);
     const [addFileOpen, setAddFileOpen] = useState(false);
@@ -25,7 +21,6 @@ function FoldersContent() {
     useEffect(() => { setFolderId(searchParams.get('folderId') ?? ''); }, [searchParams]);
 
     const fetchFolderData = useCallback(async () => {
-        setError(null);
         try {
             const data = await getFolderById({ folderId });
             setFolderData(data);
@@ -53,18 +48,12 @@ function FoldersContent() {
         } catch { setFolderData(null); }
     }
 
-    const loading = useAuth();
-    if (loading) return <Loading />;
-    if (error) return <Error errorMsg="Une erreur est survenue lors du chargement des informations utilisateur." />;
-
     return (
-        <Layout currentPage="/folders">
-            {/* Page header */}
+        <>
             <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 mb-6">
                 <div>
                     <h1 className="text-xl font-bold text-txt-primary dark:text-[#ededed]">Mes Fichiers</h1>
 
-                    {/* Breadcrumb */}
                     {folderData?.breadcrumbs && folderData.breadcrumbs.length > 0 && (
                         <nav className="flex items-center gap-1 mt-1.5" aria-label="Breadcrumb">
                             {folderData.breadcrumbs.map((crumb, index) => (
@@ -137,7 +126,7 @@ function FoldersContent() {
                 parentFolderId={folderId ? parseInt(folderId) : null}
                 onSuccess={fetchFolderData}
             />
-        </Layout>
+        </>
     );
 }
 

@@ -1,6 +1,6 @@
 'use client';
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { jwtDecode } from "jwt-decode";
 
 interface CustomJwtPayload {
@@ -17,29 +17,42 @@ interface UserInfo {
     email: string;
 }
 
-export function useJwtInformation() {
-    const [userInfo] = useState<UserInfo>(() => {
-        const defaultUser: UserInfo = { id:"", username: "No Name", email: "" };
-        if (typeof window === "undefined") return defaultUser;
-        const token = localStorage.getItem("accessToken");
-        if (token) {
-            try {
-                const decoded = jwtDecode<CustomJwtPayload>(token);
-                return {
-                    id: decoded.id,
-                    username: decoded.username,
-                    email: decoded.email
-                };
-            } catch {
-                localStorage.removeItem("accessToken");
-            }
+function readFromToken(): UserInfo | null {
+    if (typeof window === "undefined") return null;
+    const token = localStorage.getItem("accessToken");
+    if (token) {
+        try {
+            const decoded = jwtDecode<CustomJwtPayload>(token);
+            return { id: decoded.id, username: decoded.username, email: decoded.email };
+        } catch {
+            localStorage.removeItem("accessToken");
         }
-        return defaultUser;
-    });
+    }
+    return null;
+}
+
+export function useJwtInformation() {
+    const [userInfo, setUserInfo] = useState<UserInfo | null>(null);
+
+    useEffect(() => {
+        setUserInfo(readFromToken());
+        function refresh() {
+            const next = readFromToken();
+            if (next) setUserInfo(next);
+        }
+        window.addEventListener("auth:token-updated", refresh);
+        return () => window.removeEventListener("auth:token-updated", refresh);
+    }, []);
+
     return userInfo;
 }
 
 export function getJwtToken() {
     if (typeof window === "undefined") return null;
     return localStorage.getItem("accessToken");
+}
+
+export function storeAccessToken(token: string) {
+    localStorage.setItem("accessToken", token);
+    window.dispatchEvent(new Event("auth:token-updated"));
 }

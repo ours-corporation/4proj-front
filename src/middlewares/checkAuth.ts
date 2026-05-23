@@ -1,6 +1,7 @@
 'use client';
 
 import { refreshToken } from "@/src/api/auth";
+import { storeAccessToken } from "@/src/hooks/getJwtInformation";
 
 function isTokenValid(token: string): boolean {
     try {
@@ -26,7 +27,7 @@ export async function checkAuth(): Promise<boolean> {
         if (!response.ok) return false;
         const data = await response.json();
         if (data.accessToken) {
-            localStorage.setItem('accessToken', data.accessToken);
+            storeAccessToken(data.accessToken);
             return true;
         }
     } catch { /* réseau indisponible */ }

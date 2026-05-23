@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import { Geist, Geist_Mono } from "next/font/google";
 import "./globals.css";
 import SocketProviderWrapper from "./SocketProviderWrapper";
+import NextTopLoader from "nextjs-toploader";
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -41,6 +42,7 @@ export default function RootLayout({
       <body
         className={`${geistSans.variable} ${geistMono.variable} antialiased`}
       >
+        <NextTopLoader color="#7c6ef8" shadow="0 0 10px #7c6ef8,0 0 5px #42aff0" showSpinner={false} />
         <SocketProviderWrapper>{children}</SocketProviderWrapper>
       </body>
     </html>

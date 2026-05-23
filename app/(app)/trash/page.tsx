@@ -1,15 +1,11 @@
 'use client';
 
 import React, { useState, useEffect, useCallback } from 'react';
-import { useAuth } from '@/src/hooks/useAuth';
 import { useSocketEvent } from '@/src/hooks/useSocketEvent';
-import Loading from '@/src/components/Loading';
-import Layout from '@/src/components/layout/Layout';
 import { getTrashAPI, TrashResponse } from '@/src/api/trash';
 import Folders from '@/src/components/Folders';
-import Modal from "@/src/components/modal/Modal";
 import DeleteTrashModal from "@/src/components/modal/DeleteTrash";
-import {restoreFolder} from "@/src/api/folders";
+import { restoreFolder } from "@/src/api/folders";
 import { restoreFile } from '@/src/api/file';
 import { FolderResponse } from '@/src/interface/folder';
 import { FileResponse } from '@/src/interface/file';
@@ -39,45 +35,48 @@ export default function TrashPage() {
     useSocketEvent('folder:deleted', useCallback(() => { fetchTrash(); }, [fetchTrash]));
     useSocketEvent('trash:emptied', useCallback(() => { fetchTrash(); }, [fetchTrash]));
 
-    const authLoading = useAuth();
-    if (authLoading || loading) return <Loading />;
-
     const folders = trashData?.folders ?? [];
     const files = trashData?.files ?? [];
     const total = folders.length + files.length;
 
-    async function restoreFolderFromTrash(folder:FolderResponse){
+    async function restoreFolderFromTrash(folder: FolderResponse) {
         setLoading(true);
         setError(null);
-        
-        try{
+        try {
             await restoreFolder(folder.id);
             await fetchTrash();
-        }
-        catch {
+        } catch {
             setError("Une erreur est survenue lors de la restauration.");
         } finally {
             setLoading(false);
         }
     }
 
-    async function restoreFileFromTrash(file:FileResponse){
+    async function restoreFileFromTrash(file: FileResponse) {
         setLoading(true);
         setError(null);
-        
-        try{
+        try {
             await restoreFile(file.id);
             await fetchTrash();
-        }
-        catch {
+        } catch {
             setError("Une erreur est survenue lors de la restauration.");
         } finally {
             setLoading(false);
         }
     }
 
+    if (loading) return (
+        <div className="flex items-center justify-center py-24">
+            <svg className="w-6 h-6 animate-spin text-[#444]" fill="none" viewBox="0 0 24 24">
+                <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4" />
+                <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8v4a4 4 0 00-4 4H4z" />
+            </svg>
+        </div>
+    );
+
     return (
-        <Layout currentPage="/trash">
+        <>
+            {error && <p className="text-red-500 mb-4">{error}</p>}
             <div className="flex flex-row items-center justify-between mb-6">
                 <div>
                     <h1 className="text-3xl font-bold text-txt-primary dark:text-dark-txt-primary">
@@ -88,19 +87,16 @@ export default function TrashPage() {
                     </p>
                 </div>
                 {total > 0 && (
-                
                     <div className="flex items-center bg-surface dark:bg-dark-surface rounded-lg p-1 space-x-1.5">
-                        <button 
+                        <button
                             onClick={fetchTrash}
                             className='p-1.5 rounded-md transition-colors text-txt-secondary hover:bg-gray-100 dark:hover:bg-gray-700 ml-2'
                             title='rafraichir'
                         >
-                            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" className="size-6">
-                                <path stroke-linecap="round" stroke-linejoin="round" d="M16.023 9.348h4.992v-.001M2.985 19.644v-4.992m0 0h4.992m-4.993 0 3.181 3.183a8.25 8.25 0 0 0 13.803-3.7M4.031 9.865a8.25 8.25 0 0 1 13.803-3.7l3.181 3.182m0-4.991v4.99" />
+                            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth="1.5" stroke="currentColor" className="size-6">
+                                <path strokeLinecap="round" strokeLinejoin="round" d="M16.023 9.348h4.992v-.001M2.985 19.644v-4.992m0 0h4.992m-4.993 0 3.181 3.183a8.25 8.25 0 0 0 13.803-3.7M4.031 9.865a8.25 8.25 0 0 1 13.803-3.7l3.181 3.182m0-4.991v4.99" />
                             </svg>
-
                         </button>
-
                         <button
                             onClick={() => setViewMode('grid')}
                             className={`p-1.5 rounded-md transition-colors ${viewMode === 'grid' ? 'bg-action dark:bg-dark-action text-white' : 'text-txt-secondary dark:text-dark-txt-secondary hover:bg-gray-100 dark:hover:bg-gray-700'}`}
@@ -119,21 +115,19 @@ export default function TrashPage() {
                                 <path strokeLinecap="round" strokeLinejoin="round" d="M8.25 6.75h12M8.25 12h12m-12 5.25h12M3.75 6.75h.007v.008H3.75V6.75Zm.375 0a.375.375 0 1 1-.75 0 .375.375 0 0 1 .75 0ZM3.75 12h.007v.008H3.75V12Zm.375 0a.375.375 0 1 1-.75 0 .375.375 0 0 1 .75 0Zm-.375 5.25h.007v.008H3.75v-.008Zm.375 0a.375.375 0 1 1-.75 0 .375.375 0 0 1 .75 0Z" />
                             </svg>
                         </button>
-
                         <button name="clear-trash" className="flex flex-row bg-action dark:bg-dark-action hover:bg-action-hover dark:hover:bg-dark-action-hover text-white font-semibold py-2 px-4 rounded-lg shadow-md transition duration-300 mr-4"
-                        onClick={() => setCleanTrashOpen(true)}
-                    >
-                       <div className="flex justify-center items-center mr-3">
-                            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth="1.5" stroke="currentColor" className="w-6 h-6">
-                            <path strokeLinecap="round" strokeLinejoin="round" d="m14.74 9-.346 9m-4.788 0L9.26 9m9.968-3.21c.342.052.682.107 1.022.166m-1.022-.165L18.16 19.673a2.25 2.25 0 0 1-2.244 2.077H8.084a2.25 2.25 0 0 1-2.244-2.077L4.772 5.79m14.456 0a48.108 48.108 0 0 0-3.478-.397m-12 .562c.34-.059.68-.114 1.022-.165m0 0a48.11 48.11 0 0 1 3.478-.397m7.5 0v-.916c0-1.18-.91-2.164-2.09-2.201a51.964 51.964 0 0 0-3.32 0c-1.18.037-2.09 1.022-2.09 2.201v.916m7.5 0a48.667 48.667 0 0 0-7.5 0"/>
-                                <g transform="scale(1.5) translate(-3,-3)">
-                                    <path strokeLinecap="round" strokeLinejoin="round" d="M6 18 18 6M6 6l12 12"/>
-                                </g>
-                            </svg>
-                        </div>
-
-                        Vider la corbeille
-                    </button>
+                            onClick={() => setCleanTrashOpen(true)}
+                        >
+                            <div className="flex justify-center items-center mr-3">
+                                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth="1.5" stroke="currentColor" className="w-6 h-6">
+                                    <path strokeLinecap="round" strokeLinejoin="round" d="m14.74 9-.346 9m-4.788 0L9.26 9m9.968-3.21c.342.052.682.107 1.022.166m-1.022-.165L18.16 19.673a2.25 2.25 0 0 1-2.244 2.077H8.084a2.25 2.25 0 0 1-2.244-2.077L4.772 5.79m14.456 0a48.108 48.108 0 0 0-3.478-.397m-12 .562c.34-.059.68-.114 1.022-.165m0 0a48.11 48.11 0 0 1 3.478-.397m7.5 0v-.916c0-1.18-.91-2.164-2.09-2.201a51.964 51.964 0 0 0-3.32 0c-1.18.037-2.09 1.022-2.09 2.201v.916m7.5 0a48.667 48.667 0 0 0-7.5 0" />
+                                    <g transform="scale(1.5) translate(-3,-3)">
+                                        <path strokeLinecap="round" strokeLinejoin="round" d="M6 18 18 6M6 6l12 12" />
+                                    </g>
+                                </svg>
+                            </div>
+                            Vider la corbeille
+                        </button>
                     </div>
                 )}
             </div>
@@ -152,18 +146,15 @@ export default function TrashPage() {
                     changeFolderId={async () => {}}
                     viewMode={viewMode}
                     contextPermission="READ"
-
                     isTrash={true}
                     restoreFolder={restoreFolderFromTrash}
                     restoreFile={restoreFileFromTrash}
                 />
             )}
             <DeleteTrashModal
-            isOpen={cleanTrashOpen}
-            closeModal = {() => setCleanTrashOpen(false)}
-            >
-
-            </DeleteTrashModal>
-        </Layout>
+                isOpen={cleanTrashOpen}
+                closeModal={() => setCleanTrashOpen(false)}
+            />
+        </>
     );
 }

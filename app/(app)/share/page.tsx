@@ -1,11 +1,7 @@
 'use client';
 
 import { useState, useEffect, useCallback } from 'react';
-import { useAuth } from '@/src/hooks/useAuth';
 import { useSocketEvent } from '@/src/hooks/useSocketEvent';
-import Loading from '@/src/components/Loading';
-import Layout from '@/src/components/layout/Layout';
-import Error from "@/src/components/Error";
 import { FolderShareDetailResponse, getReceivedSharesAPI } from "@/src/api/share";
 import Folders from "@/src/components/Folders";
 import { getFolderById } from "@/src/api/folders";
@@ -20,7 +16,6 @@ export default function ShowShareFolders() {
     const [folderData, setFolderData] = useState<FolderShareDetailResponse | null>(null);
     const [breadcrumbs, setBreadcrumbs] = useState<{ id: number | null; name: string }[]>([]);
     const [contextPermission, setContextPermission] = useState<'READ' | 'WRITE' | null>(null);
-    const [error, setError] = useState<string | null>(null);
     const [viewMode, setViewMode] = useState<'grid' | 'list'>('grid');
     const [createFolderOpen, setCreateFolderOpen] = useState(false);
     const [addFileOpen, setAddFileOpen] = useState(false);
@@ -29,7 +24,6 @@ export default function ShowShareFolders() {
     const canWrite = folderId !== '' && contextPermission === 'WRITE';
 
     const fetchShareData = useCallback(async () => {
-        setError(null);
         try {
             const data = await getReceivedSharesAPI();
             setFolderData(data);
@@ -76,17 +70,12 @@ export default function ShowShareFolders() {
         }
     }
 
-    const loading = useAuth();
-    if (loading) return <Loading />;
-    if (error) return <Error errorMsg="Une erreur est survenue lors du chargement des informations utilisateur." />;
-
     return (
-        <Layout currentPage="/share">
+        <>
             <h1 className="text-3xl font-bold text-txt-primary dark:text-dark-txt-primary mb-4">
                 Partages
             </h1>
 
-            {/* Onglets */}
             <div className="flex gap-1 p-1 bg-surface dark:bg-dark-surface rounded-xl w-fit mb-6">
                 <button
                     onClick={() => { setActiveTab('received'); setFolderId(''); }}
@@ -172,6 +161,6 @@ export default function ShowShareFolders() {
                     />
                 </>
             )}
-        </Layout>
+        </>
     );
 }
