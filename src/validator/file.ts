@@ -1,7 +1,10 @@
 import { z } from "zod";
 
 export const addFileValidator = z.object({
-    file: z.instanceof(File, { message: "Un fichier est requis" }),
+    files: z
+        .array(z.instanceof(File, { message: "Chaque élément doit être un fichier" }))
+        .min(1, "Au moins un fichier est requis")
+        .max(50, "50 fichiers maximum par envoi"),
 });
 
 export const updateFileValidator = z.object({

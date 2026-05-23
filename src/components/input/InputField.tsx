@@ -10,20 +10,24 @@ type InputProps = {
     onChange: (newValue: string) => void;
     extension?: string;
     disabled?: boolean;
+    labelClassName?: string;
+    wrapperClassName?: string;
+    inputClassName?: string;
+    placeholder?: string;
 };
 
-export default function InputField({id, name, label, value, type, required, onChange, extension, disabled = false }: InputProps) {
+export default function InputField({id, name, label, value, type, required, onChange, extension, disabled = false, labelClassName, wrapperClassName, inputClassName, placeholder }: InputProps) {
     return (
         <div>
             <label
-                className={`block text-sm font-medium ${disabled ? "text-gray-400" : "text-txt-primary dark:text-dark-txt-primary"}`}
+                className={labelClassName ?? `block text-sm font-medium ${disabled ? "text-gray-400" : "text-txt-primary dark:text-dark-txt-primary"}`}
                 htmlFor={id}
             >
                 {label} {required && <span className="text-red-500">*</span>}
             </label>
 
-            <div className={`
-                mt-1 w-full rounded-md border 
+            <div className={wrapperClassName ?? `
+                mt-1 w-full rounded-md border
                 px-3 py-2
                 flex items-center transition-colors duration-200
                 ${disabled
@@ -36,9 +40,10 @@ export default function InputField({id, name, label, value, type, required, onCh
                     name={name}
                     type={type}
                     value={value}
+                    placeholder={placeholder}
                     onChange={(e) => onChange(e.target.value)}
                     disabled={disabled}
-                    className={`
+                    className={inputClassName ?? `
                         flex-grow
                         bg-transparent
                         focus:outline-none

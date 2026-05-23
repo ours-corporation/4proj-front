@@ -1,38 +1,30 @@
 'use client';
 
 import Loading from "@/src/components/Loading";
-import {useEffect} from "react";
-import { authGoogle } from "@/src/api/authGoogle";
-import {useRouter} from "next/navigation";
-import {authGithub} from "@/src/api/authGithub";
+import { useEffect } from "react";
+import { useRouter } from "next/navigation";
 
-export default function Dashboard() {
+export default function GithubCallback() {
     const router = useRouter();
 
     useEffect(() => {
-        async function verify() {
-            const urlParams = new URLSearchParams(window.location.search);
-            const code = urlParams.get('code');
-            if (!code) {
-                router.push("/login");
-                return;
-            }
+        const urlParams = new URLSearchParams(window.location.search);
+        const accessToken = urlParams.get('access_token');
+        const error = urlParams.get('error');
 
-            const rep = await authGithub(code)
-            if (!rep.ok) {
-                router.push("/login");
-            } else {
-                const data = await rep.json();
-
-                if(data.accessToken) {
-                    localStorage.setItem("accessToken", data.accessToken);
-                    router.push("/dashboard");
-                }
-            }
+        if (error) {
+            router.push("/login?error=" + encodeURIComponent(error));
+            return;
         }
 
-        verify();
-    });
+        if (!accessToken) {
+            router.push("/login?error=" + encodeURIComponent("Échec de la connexion avec GitHub."));
+            return;
+        }
 
-    return <Loading /> ;
+        localStorage.setItem("accessToken", accessToken);
+        router.push("/dashboard");
+    }, []);
+
+    return <Loading />;
 }

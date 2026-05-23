@@ -1,6 +1,7 @@
-import {getJwtToken} from "@/src/hooks/getJwtInformation";
-import {FolderResponse} from "@/src/interface/folder";
-import {FileResponse} from "@/src/interface/file";
+import { authFetch } from "@/src/api/authFetch";
+import { FolderResponse } from "@/src/interface/folder";
+import { FileResponse } from "@/src/interface/file";
+import { FileShareItem } from "@/src/interface/share";
 
 export interface FolderDetailResponse {
     current: FolderResponse;
@@ -9,96 +10,97 @@ export interface FolderDetailResponse {
     files: FileResponse[];
 }
 
+export interface FolderMovingResponse {
+    moved: { type: "folder"; id: number }[];
+    failed: { type: "folder"; id: number; error: string }[];
+}
+
 export async function getFolderById({ folderId }: { folderId: string }): Promise<FolderDetailResponse> {
-    const url = process.env.NEXT_PUBLIC_API_URL;
-    const token = getJwtToken(); // Assurez-vous que ceci retourne le token string
-
-
-    try {
-        const rep = await fetch(`${url}/api/folders/${folderId}`, {
-            method: "GET",
-            headers: {
-                "Content-Type": "application/json",
-                "Authorization": `Bearer ${token}`,
-            },
-        });
-
-        if (!rep.ok) {
-            throw new Error(`Erreur HTTP: ${rep.status}`);
-        }
-
-        const data: FolderDetailResponse = await rep.json();
-        return data;
-
-    } catch (error) {
-        throw error;
-    }
+    const rep = await authFetch(`/api/folders/${folderId}`, {
+        headers: { "Content-Type": "application/json" },
+    });
+    if (!rep.ok) throw new Error(`Erreur HTTP: ${rep.status}`);
+    return rep.json();
 }
 
 export async function deleteFolderById(folderId: number, force = false): Promise<void> {
-    const url = process.env.NEXT_PUBLIC_API_URL;
-    const token = getJwtToken();
-
-    const endpoint = force
-        ? `${url}/api/folders/${folderId}/trash`
-        : `${url}/api/folders/${folderId}`;
-
-    const rep = await fetch(endpoint, {
-        method: "DELETE",
-        headers: {
-            "Authorization": `Bearer ${token}`,
-        },
-    });
-
-    if (!rep.ok) {
-        throw new Error(`Erreur HTTP: ${rep.status}`);
-    }
+    const endpoint = force ? `/api/folders/${folderId}` : `/api/folders/${folderId}/trash`;
+    const rep = await authFetch(endpoint, { method: "DELETE" });
+    if (!rep.ok) throw new Error(`Erreur HTTP: ${rep.status}`);
 }
 
 export async function renameFolderById(folderId: number, newName: string): Promise<FolderResponse> {
-    const url = process.env.NEXT_PUBLIC_API_URL;
-    const token = getJwtToken();
-
-    const rep = await fetch(`${url}/api/folders/${folderId}`, {
+    const rep = await authFetch(`/api/folders/${folderId}`, {
         method: "PUT",
-        headers: {
-            "Content-Type": "application/json",
-            "Authorization": `Bearer ${token}`,
-        },
+        headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ name: newName }),
     });
+    if (!rep.ok) throw new Error(`Erreur HTTP: ${rep.status}`);
+    return rep.json();
+}
 
-    if (!rep.ok) {
-        throw new Error(`Erreur HTTP: ${rep.status}`);
-    }
-
-    return await rep.json();
+export async function getFolderShares(folderId: number): Promise<FileShareItem[]> {
+    const rep = await authFetch(`/api/folders/${folderId}/shares`);
+    if (!rep.ok) throw new Error(`Erreur HTTP: ${rep.status}`);
+    return rep.json();
 }
 
 export async function createNewFolderAPI(folderName: string, parentFolderId: number | null): Promise<FolderResponse> {
-    const url = process.env.NEXT_PUBLIC_API_URL;
-    const token = getJwtToken();
+    const rep = await authFetch(`/api/folders`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ name: folderName, parent_id: parentFolderId }),
+    });
+    if (!rep.ok) throw new Error(`Erreur HTTP: ${rep.status}`);
+    return rep.json();
+}
 
-    try {
-        const rep = await fetch(`${url}/api/folders`, {
-            method: "POST",
-            headers: {
-                "Content-Type": "application/json",
-                "Authorization": `Bearer ${token}`,
-            },
-            body: JSON.stringify({
-                name: folderName,
-                parent_id: parentFolderId,
-            }),
-        });
+export async function getRootFolder(): Promise<FolderDetailResponse> {
+    const rep = await authFetch(`/api/folders`, {
+        headers: { "Content-Type": "application/json" },
+    });
+    if (!rep.ok) throw new Error(`Erreur HTTP: ${rep.status}`);
+    return rep.json();
+}
 
-        if (!rep.ok) {
-            throw new Error(`Erreur HTTP: ${rep.status}`);
-        }
+export async function restoreFolder(folderId: number) {
+    const rep = await authFetch(`/api/folders/${folderId}/restore`, {
+        method: "PUT",
+        headers: { "Content-Type": "application/json" },
+    });
+    if (!rep.ok) throw new Error(`Erreur HTTP: ${rep.status}`);
+    return rep.json() as Promise<FolderDetailResponse>;
+}
 
-        return await rep.json();
+export async function downloadFolder({ folderId }: { folderId: number }): Promise<File> {
+    const rep = await authFetch(`/api/folders/${folderId}/download`);
+    if (!rep.ok) throw new Error(`Erreur HTTP: ${rep.status}`);
+    const blob = await rep.blob();
+    return new File([blob], "downloaded_folder", { type: blob.type });
+}
 
-    } catch (error) {
-        throw error;
-    }
+export async function moveFolderIntoFolder(
+    movingFolderId: number | null,
+    destinationFolderId: string | null,
+): Promise<FolderMovingResponse> {
+    const destinationFolderIdToSend = destinationFolderId === "null" ? null : Number(destinationFolderId);
+    const rep = await authFetch(`/api/items/move`, {
+        method: "PUT",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+            items: [{ type: "folder", id: movingFolderId }],
+            destination_folder_id: destinationFolderIdToSend,
+        }),
+    });
+    if (!rep.ok) throw new Error(`Erreur HTTP: ${rep.status}`);
+    return rep.json();
+}
+
+export async function copyFolderById(folderId: number) {
+    const rep = await authFetch(`/api/folders/${folderId}/copy`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+    });
+    if (!rep.ok) throw new Error(`Erreur HTTP: ${rep.status}`);
+    return rep.json() as Promise<FolderResponse>;
 }
