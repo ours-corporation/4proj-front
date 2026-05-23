@@ -6,11 +6,13 @@ import Loading from "@/src/components/Loading";
 import NavBar from "@/src/components/nav/Nav";
 import Headers from "@/src/components/layout/Headers";
 import { ProfilePictureProvider } from "@/src/context/ProfilePictureContext";
+import { ToastProvider } from "@/src/context/ToastContext";
 
 export default function AppLayout({ children }: { children: React.ReactNode }) {
     const loading = useAuth();
 
     return (
+        <ToastProvider>
         <ProfilePictureProvider>
             <div className="flex h-screen w-full bg-main-bg dark:bg-[#0d0d0d] overflow-hidden">
                 <NavBar />
@@ -22,5 +24,6 @@ export default function AppLayout({ children }: { children: React.ReactNode }) {
                 </main>
             </div>
         </ProfilePictureProvider>
+        </ToastProvider>
     );
 }

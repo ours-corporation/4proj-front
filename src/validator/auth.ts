@@ -29,5 +29,6 @@ export const registerValidatorValidator = z.object({
 
     email: z.email("Le format de l'email est invalide"),
     password: passwordSchema,
-    confirmPassword: z.string({ message: "La confirmation du mot de passe est obligatoire" }).min(1, "La confirmation du mot de passe est obligatoire")
+    confirmPassword: z.string({ message: "La confirmation du mot de passe est obligatoire" }).min(1, "La confirmation du mot de passe est obligatoire"),
+    terms_accepted: z.literal(true, { message: "Vous devez accepter les CGU et les mentions légales." }),
 })

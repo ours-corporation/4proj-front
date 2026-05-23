@@ -24,6 +24,7 @@ import { downloadFileService } from "@/src/services/downloadFile";
 import { downloadFolderService } from '../services/downloadFolder';
 import FileDetailsModal from "@/src/components/modal/FileDetailsModal";
 import { DropdownMenu } from "@/src/components/ui/DropdownMenu";
+import { useToast } from "@/src/context/ToastContext";
 
 interface FoldersProps {
     listFolders: FolderResponse[];
@@ -40,6 +41,7 @@ interface FoldersProps {
 
 export default function Folders({ listFolders, listFiles, changeFolderId, viewMode = 'grid', onFolderRenamed, onFileChanged, contextPermission, isTrash, restoreFolder, restoreFile }: FoldersProps) {
     const userInfo = useJwtInformation();
+    const { showToast } = useToast();
     const fp = (item: FolderResponse | FileResponse) => item.permission ?? contextPermission ?? null;
 
     const [open, setOpen] = useState(false);
@@ -114,7 +116,7 @@ export default function Folders({ listFolders, listFiles, changeFolderId, viewMo
     function setFileInformationAndClose() { setOpen(false); setSelectedFile(null); setFile(null); }
 
     async function downloadFileById(fileId: number | null, fileName: string) { await downloadFileService(fileId, fileName); }
-    async function downloadFolderById(folderId: number | null, folderName: string) { await downloadFolderService(folderId, folderName); }
+    async function downloadFolderById(folderId: number | null, folderName: string) { try { await downloadFolderService(folderId, folderName); } catch (e: any) { showToast(e.message); } }
 
     async function handleDrop(e: React.DragEvent, targetFolderId: number) {
         e.preventDefault();
@@ -168,7 +170,7 @@ export default function Folders({ listFolders, listFiles, changeFolderId, viewMo
                                 openShares={!fp(folder) ? (f) => { setFolderDetailsInfo(f); setOpenFolderDetailsModal(true); } : undefined}
                                 shareFolder={!fp(folder) ? (f) => { setShareFolderInfo(f); setOpenShareFolderModal(true); } : undefined}
                                 moveFolder={!fp(folder) || fp(folder) === 'WRITE' ? (f) => { setMoveFolderInfo(f); setOpenMoveFolderModal(true); } : undefined}
-                                copyFolder={!fp(folder) || fp(folder) === 'WRITE' ? async (f) => { try { await copyFolderById(f.id); onFolderRenamed?.(); } catch (e: any) { alert(e.message); } } : undefined}
+                                copyFolder={!fp(folder) || fp(folder) === 'WRITE' ? async (f) => { try { await copyFolderById(f.id); onFolderRenamed?.(); } catch (e: any) { showToast(e.message); } } : undefined}
                             />
                         </div>
                     ))}
@@ -188,7 +190,7 @@ export default function Folders({ listFolders, listFiles, changeFolderId, viewMo
                                 shareFile={!fp(file) ? (f) => { setShareFileInfo(f); setOpenShareModal(true); return Promise.resolve(); } : undefined}
                                 moveFile={!fp(file) || fp(file) === 'WRITE' ? (f) => { setPositionFileInfo(f); setOpenMoveModal(true); return Promise.resolve(); } : undefined}
                                 deleteFile={!fp(file) || isTrash ? (f) => { setDeleteFileInfo(f); setOpenDeleteModal(true); } : undefined}
-                                copyFile={!fp(file) || fp(file) === 'WRITE' ? async (f) => { try { await copyFileById(f.id); onFileChanged?.(); } catch (e: any) { alert(e.message); } } : undefined}
+                                copyFile={!fp(file) || fp(file) === 'WRITE' ? async (f) => { try { await copyFileById(f.id); onFileChanged?.(); } catch (e: any) { showToast(e.message); } } : undefined}
                             />
                         </div>
                     ))}

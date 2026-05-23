@@ -12,7 +12,7 @@ export async function login(email: string, password: string) {
     });
 }
 
-export async function register(email: string, password: string, username?: string) {
+export async function register(email: string, password: string, username?: string, terms_accepted?: boolean) {
 
     const url = process.env.NEXT_PUBLIC_API_URL
 
@@ -21,7 +21,7 @@ export async function register(email: string, password: string, username?: strin
         headers: {
             "Content-Type": "application/json",
         },
-        body: JSON.stringify({email, password, username}),
+        body: JSON.stringify({email, password, username, terms_accepted}),
     });
 }
 
