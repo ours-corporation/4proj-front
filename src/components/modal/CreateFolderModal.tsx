@@ -21,11 +21,13 @@ interface Props {
 export default function CreateFolderModal({ isOpen, onClose, parentFolderId, onSuccess }: Props) {
     const [folderName, setFolderName] = useState('');
     const [folderNameError, setFolderNameError] = useState('');
+    const [loading, setLoading] = useState(false);
 
     async function handleCreate() {
         setFolderNameError('');
         const result = createNewFolderValidator.safeParse({ name: folderName });
         if (!result.success) { setFolderNameError(result.error.issues[0].message); return; }
+        setLoading(true);
         try {
             await createNewFolderAPI(folderName, parentFolderId);
             setFolderName('');
@@ -33,6 +35,8 @@ export default function CreateFolderModal({ isOpen, onClose, parentFolderId, onS
             onClose();
         } catch (err) {
             console.error('Erreur lors de la création du dossier :', err);
+        } finally {
+            setLoading(false);
         }
     }
 
@@ -59,8 +63,10 @@ export default function CreateFolderModal({ isOpen, onClose, parentFolderId, onS
                     id="create-folder-button"
                     type="button"
                     text="Créer le dossier"
+                    loadingText="Création..."
+                    loading={loading}
                     onClick={handleCreate}
-                    className="w-full py-3 rounded-[10px] bg-gradient-to-r from-[#7c6ef8] to-[#42aff0] text-white text-[14px] font-medium hover:opacity-90 transition-all cursor-pointer"
+                    className="w-full py-3 rounded-[10px] bg-gradient-to-r from-[#7c6ef8] to-[#42aff0] text-white text-[14px] font-medium hover:opacity-90 transition-all cursor-pointer disabled:opacity-50 disabled:cursor-not-allowed"
                 />
             </div>
         </Modal>

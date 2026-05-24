@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import { useState, useEffect } from 'react';
 import Modal from "@/src/components/modal/Modal";
 import { FileResponse } from "@/src/interface/file";
 import InputField from "@/src/components/input/InputField";
@@ -17,6 +17,7 @@ export default function UpdateFileModal({ isOpen, fileInfo, closeModal, onSucces
     const [errorMessage, setErrorMessage] = useState<string | null>(null);
     const [fileName, setFileName] = useState<string>("");
     const [fileExtension, setFileExtension] = useState<string>("");
+    const [loading, setLoading] = useState(false);
 
     useEffect(() => {
         if (fileInfo?.name) {
@@ -27,25 +28,21 @@ export default function UpdateFileModal({ isOpen, fileInfo, closeModal, onSucces
     }, [fileInfo]);
 
     async function updateFileInfo() {
-        const resultat = updateFileValidator.safeParse({
-            name: fileName,
-        });
+        const resultat = updateFileValidator.safeParse({ name: fileName });
         if (!resultat.success) {
             setErrorMessage("Nom de fichier invalide.");
             return;
         }
-
-
-        const fullFileName = fileName + fileExtension;
-
-        updateFileMetadata(fileInfo.id, fullFileName)
-            .then(() => {
-                closeModal();
-                onSuccess?.();
-            })
-            .catch(() => {
-                setErrorMessage("Erreur lors de la mise à jour du fichier.");
-            });
+        setLoading(true);
+        try {
+            await updateFileMetadata(fileInfo.id, fileName + fileExtension);
+            closeModal();
+            onSuccess?.();
+        } catch {
+            setErrorMessage("Erreur lors de la mise à jour du fichier.");
+        } finally {
+            setLoading(false);
+        }
     }
 
     if (!isOpen) return null;
@@ -82,9 +79,9 @@ export default function UpdateFileModal({ isOpen, fileInfo, closeModal, onSucces
                         id="update-file-button"
                         type="button"
                         text="Mettre à jour"
-                        onClick={() => {
-                            updateFileInfo();
-                        }}
+                        loadingText="Mise à jour..."
+                        loading={loading}
+                        onClick={updateFileInfo}
                     />
                 </div>
 

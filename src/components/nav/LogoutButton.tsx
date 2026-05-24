@@ -20,7 +20,7 @@ export default function LogoutButton({isActive = false}:LogoutButtonProps){
     const handleLogout = async () => {
         try {
         const rep = await logout();
-        if (rep.status == 200){
+        if (rep.ok){
             localStorage.removeItem("accessToken");
             sessionStorage.removeItem("accessToken");
             router.replace("/login");

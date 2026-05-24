@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import { useState, useEffect } from 'react';
 import Modal from "@/src/components/modal/Modal";
 import { FolderResponse } from "@/src/interface/folder";
 import InputField from "@/src/components/input/InputField";
@@ -15,6 +15,7 @@ interface RenameFolderModalProps {
 export default function RenameFolderModal({ isOpen, folderInfo, closeModal, onSuccess }: RenameFolderModalProps) {
     const [folderName, setFolderName] = useState<string>("");
     const [errorMessage, setErrorMessage] = useState<string | null>(null);
+    const [loading, setLoading] = useState(false);
 
     useEffect(() => {
         if (folderInfo?.name) {
@@ -27,13 +28,15 @@ export default function RenameFolderModal({ isOpen, folderInfo, closeModal, onSu
             setErrorMessage("Le nom du dossier ne peut pas être vide.");
             return;
         }
-
+        setLoading(true);
         try {
             await renameFolderById(folderInfo.id, folderName.trim());
             closeModal();
             onSuccess?.();
         } catch {
             setErrorMessage("Une erreur est survenue lors du renommage.");
+        } finally {
+            setLoading(false);
         }
     }
 
@@ -64,6 +67,8 @@ export default function RenameFolderModal({ isOpen, folderInfo, closeModal, onSu
                         id="rename-folder-button"
                         type="button"
                         text="Renommer"
+                        loadingText="Renommage..."
+                        loading={loading}
                         onClick={handleRename}
                     />
                 </div>
