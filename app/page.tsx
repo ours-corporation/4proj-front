@@ -120,6 +120,9 @@ export default function Home() {
           height: 1px;
           background: linear-gradient(90deg, rgba(124,110,248,0.4), rgba(66,175,240,0.4));
         }
+        @media (max-width: 767px) {
+          .steps-line::before { display: none; }
+        }
         @font-face {
           font-family: 'Syne';
           font-style: normal;
@@ -136,6 +139,9 @@ export default function Home() {
           width: 700px; height: 300px; pointer-events: none;
           background: radial-gradient(ellipse, rgba(124,110,248,0.12) 0%, transparent 65%);
         }
+        @media (max-width: 767px) {
+          .cta-glow::before { width: 100%; }
+        }
       `}</style>
 
       <svg width="0" height="0" className="absolute overflow-hidden">
@@ -149,7 +155,7 @@ export default function Home() {
 
       <div className="bg-[#0d0d0d] text-[#ededed] font-['DM_Sans',sans-serif] overflow-x-hidden">
 
-        <nav className="fixed top-0 left-0 right-0 z-[100] flex items-center justify-between px-12 py-4 bg-[#0d0d0d]/75 backdrop-blur-2xl border-b border-white/[0.07]">
+        <nav className="fixed top-0 left-0 right-0 z-[100] flex items-center justify-between px-4 md:px-12 py-4 bg-[#0d0d0d]/75 backdrop-blur-2xl border-b border-white/[0.07]">
           <a href="/" className="flex items-center gap-2.5 no-underline">
             <svg width="34" height="34" viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg">
               <defs>
@@ -163,18 +169,18 @@ export default function Home() {
             </svg>
             <span className="font-['Syne',sans-serif] text-[18px] font-bold bg-gradient-to-r from-[#7c6ef8] to-[#42aff0] bg-clip-text text-transparent">Supfile</span>
           </a>
-          <div className="flex gap-2.5">
-            <a href="/login" className="px-[18px] py-2 rounded-lg text-sm text-[#bbb] border border-[#7c6ef8]/25 hover:border-[#7c6ef8] hover:text-white transition-all no-underline">Se connecter</a>
-            <a href="/register" className="px-[18px] py-2 rounded-lg text-sm font-medium text-white bg-gradient-to-r from-[#7c6ef8] to-[#42aff0] hover:opacity-90 hover:-translate-y-px transition-all no-underline">S'inscrire</a>
+          <div className="flex gap-2">
+            <a href="/login" className="px-3 md:px-[18px] py-2 rounded-lg text-xs md:text-sm text-[#bbb] border border-[#7c6ef8]/25 hover:border-[#7c6ef8] hover:text-white transition-all no-underline">Se connecter</a>
+            <a href="/register" className="px-3 md:px-[18px] py-2 rounded-lg text-xs md:text-sm font-medium text-white bg-gradient-to-r from-[#7c6ef8] to-[#42aff0] hover:opacity-90 hover:-translate-y-px transition-all no-underline">S'inscrire</a>
           </div>
         </nav>
 
-        <section className="min-h-screen flex items-center px-12 pt-32 pb-20 relative overflow-hidden">
+        <section className="min-h-screen flex items-center px-4 md:px-12 pt-28 md:pt-32 pb-14 md:pb-20 relative overflow-hidden">
           <div
             className="glow-anim absolute -top-40 left-1/2 -translate-x-1/2 w-[1000px] h-[600px] pointer-events-none"
             style={{ background: "radial-gradient(ellipse at center, rgba(124,110,248,0.14) 0%, rgba(66,175,240,0.07) 45%, transparent 70%)" }}
           />
-          <div className="max-w-[1160px] mx-auto w-full grid grid-cols-2 gap-20 items-center relative z-10">
+          <div className="max-w-[1160px] mx-auto w-full grid grid-cols-1 md:grid-cols-2 gap-10 md:gap-20 items-center relative z-10">
             <div>
               <div className="inline-flex items-center gap-2 bg-[#7c6ef8]/[0.08] border border-[#7c6ef8]/[0.22] rounded-full px-3.5 py-1.5 mb-6 text-[11px] text-[#9d93f9] font-medium tracking-widest uppercase">
                 <span className="blink-anim w-1.5 h-1.5 rounded-full bg-[#7c6ef8]" />
@@ -185,7 +191,7 @@ export default function Home() {
                 <span className="bg-gradient-to-r from-[#7c6ef8] to-[#42aff0] bg-clip-text text-transparent">Partagez.</span><br />
                 <span>Maîtrisez.</span>
               </h1>
-              <p className="text-[17px] text-[#5e5e6e] font-light leading-[1.75] max-w-[460px] mb-10">
+              <p className="text-[15px] md:text-[17px] text-[#5e5e6e] font-light leading-[1.75] max-w-[460px] mb-8 md:mb-10">
                 La plateforme de gestion de fichiers cloud conçue pour votre productivité. Sécurisez, organisez et partagez vos données en toute simplicité.
               </p>
               <div className="flex gap-3 flex-wrap">
@@ -194,7 +200,7 @@ export default function Home() {
               </div>
             </div>
 
-            <div className="relative h-[500px]">
+            <div className="hidden md:block relative h-[500px]">
               <div className="float-anim absolute top-1/2 left-1/2 w-[300px] bg-[rgba(18,18,22,0.92)] border border-[#7c6ef8]/[0.18] rounded-[18px] p-[22px] backdrop-blur-[30px] shadow-[0_40px_90px_rgba(0,0,0,0.65),0_0_0_1px_rgba(124,110,248,0.08)]">
                 <div className="flex items-center gap-1.5 mb-[18px]">
                   <span className="w-2 h-2 rounded-full bg-[#ff5f57]" />
@@ -243,11 +249,11 @@ export default function Home() {
           </div>
         </section>
 
-        <section className="px-12 py-[110px]">
+        <section className="px-4 md:px-12 py-16 md:py-[110px]">
           <p className="text-center text-[11px] text-[#7c6ef8] uppercase tracking-[2.5px] font-medium mb-2.5">Fonctionnalités</p>
-          <h2 className="font-['Syne',sans-serif] font-bold text-center -tracking-[1px] mb-3.5" style={{ fontSize: "clamp(30px, 3.5vw, 46px)" }}>Tout ce dont vous avez besoin</h2>
-          <p className="text-center text-[#666] text-[16px] font-light leading-[1.65] max-w-[500px] mx-auto mb-[60px]">Une suite complète d'outils pour gérer vos fichiers au quotidien, sans compromis.</p>
-          <div className="grid grid-cols-3 gap-[18px] max-w-[1080px] mx-auto">
+          <h2 className="font-['Syne',sans-serif] font-bold text-center -tracking-[1px] mb-3.5" style={{ fontSize: "clamp(26px, 3.5vw, 46px)" }}>Tout ce dont vous avez besoin</h2>
+          <p className="text-center text-[#666] text-[15px] md:text-[16px] font-light leading-[1.65] max-w-[500px] mx-auto mb-10 md:mb-[60px]">Une suite complète d'outils pour gérer vos fichiers au quotidien, sans compromis.</p>
+          <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4 md:gap-[18px] max-w-[1080px] mx-auto">
             {features.map((f, i) => (
               <div key={i} className="bg-[#141414] border border-white/[0.06] rounded-2xl p-7 transition-all duration-300 hover:border-[#7c6ef8]/35 hover:-translate-y-1 hover:shadow-[0_24px_60px_rgba(0,0,0,0.35),0_0_0_1px_rgba(124,110,248,0.08)]">
                 <div className="w-[46px] h-[46px] rounded-[11px] bg-[#7c6ef8]/10 border border-[#7c6ef8]/[0.18] flex items-center justify-center mb-[18px]">
@@ -262,11 +268,11 @@ export default function Home() {
           </div>
         </section>
 
-        <section className="px-12 py-[110px]" style={{ background: "linear-gradient(180deg, transparent, rgba(124,110,248,0.04) 50%, transparent)" }}>
+        <section className="px-4 md:px-12 py-16 md:py-[110px]" style={{ background: "linear-gradient(180deg, transparent, rgba(124,110,248,0.04) 50%, transparent)" }}>
           <p className="text-center text-[11px] text-[#7c6ef8] uppercase tracking-[2.5px] font-medium mb-2.5">Démarrage</p>
-          <h2 className="font-['Syne',sans-serif] font-bold text-center -tracking-[1px] mb-3.5" style={{ fontSize: "clamp(30px, 3.5vw, 46px)" }}>Simple à prendre en main</h2>
-          <p className="text-center text-[#666] text-[16px] font-light leading-[1.65] max-w-[500px] mx-auto mb-[60px]">Opérationnel en moins de 2 minutes, sans carte bancaire requise.</p>
-          <div className="steps-line grid grid-cols-3 gap-12 max-w-[880px] mx-auto relative">
+          <h2 className="font-['Syne',sans-serif] font-bold text-center -tracking-[1px] mb-3.5" style={{ fontSize: "clamp(26px, 3.5vw, 46px)" }}>Simple à prendre en main</h2>
+          <p className="text-center text-[#666] text-[15px] md:text-[16px] font-light leading-[1.65] max-w-[500px] mx-auto mb-10 md:mb-[60px]">Opérationnel en moins de 2 minutes, sans carte bancaire requise.</p>
+          <div className="steps-line grid grid-cols-1 md:grid-cols-3 gap-10 md:gap-12 max-w-[880px] mx-auto relative">
             {steps.map((s, i) => (
               <div key={i} className="text-center">
                 <div className="w-[54px] h-[54px] rounded-full bg-gradient-to-r from-[#7c6ef8] to-[#42aff0] flex items-center justify-center font-['Syne',sans-serif] text-xl font-extrabold text-white mx-auto mb-5 relative z-10 shadow-[0_0_28px_rgba(124,110,248,0.45)]">{s.n}</div>
@@ -277,15 +283,15 @@ export default function Home() {
           </div>
         </section>
 
-        <section className="cta-glow mx-12 mb-[90px] rounded-[22px] bg-[#7c6ef8]/[0.05] border border-[#7c6ef8]/[0.18] px-12 py-20 text-center relative overflow-hidden">
+        <section className="cta-glow mx-4 md:mx-12 mb-14 md:mb-[90px] rounded-[18px] md:rounded-[22px] bg-[#7c6ef8]/[0.05] border border-[#7c6ef8]/[0.18] px-6 md:px-12 py-14 md:py-20 text-center relative overflow-hidden">
           <h2 className="font-['Syne',sans-serif] font-extrabold -tracking-[1.5px] mb-3.5" style={{ fontSize: "clamp(30px, 4vw, 50px)" }}>
             Prêt à <span className="bg-gradient-to-r from-[#7c6ef8] to-[#42aff0] bg-clip-text text-transparent">démarrer</span> ?
           </h2>
-          <p className="text-[#4a4a5a] text-[16px] font-light mb-9">Rejoignez Supfile et prenez le contrôle de vos fichiers dès aujourd'hui.</p>
+          <p className="text-[#4a4a5a] text-[14px] md:text-[16px] font-light mb-7 md:mb-9">Rejoignez Supfile et prenez le contrôle de vos fichiers dès aujourd'hui.</p>
           <a href="/register" className="px-8 py-3.5 rounded-[10px] text-[15px] font-medium text-white bg-gradient-to-r from-[#7c6ef8] to-[#42aff0] shadow-[0_0_40px_rgba(124,110,248,0.28)] hover:-translate-y-0.5 hover:shadow-[0_0_60px_rgba(124,110,248,0.5)] transition-all no-underline inline-block">Créer mon compte gratuitement</a>
         </section>
 
-        <footer className="border-t border-white/[0.07] px-12 py-8 flex items-center justify-between">
+        <footer className="border-t border-white/[0.07] px-4 md:px-12 py-8 flex flex-col items-center gap-4 md:flex-row md:justify-between">
           <a href="/" className="flex items-center gap-2 no-underline">
             <svg width="22" height="22" viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg">
               <defs>
@@ -299,8 +305,8 @@ export default function Home() {
             </svg>
             <span className="font-['Syne',sans-serif] text-sm font-semibold bg-gradient-to-r from-[#7c6ef8] to-[#42aff0] bg-clip-text text-transparent">Supfile</span>
           </a>
-          <span className="text-[12px] text-[#333]">© 2026 Supfile. Tous droits réservés.</span>
-          <div className="flex gap-5">
+          <span className="text-[12px] text-[#333] order-last md:order-none">© 2026 Supfile. Tous droits réservés.</span>
+          <div className="flex flex-wrap justify-center gap-4 md:gap-5">
             <a href="/cgu" className="text-[12px] text-[#333] no-underline hover:text-[#888] transition-colors">CGU</a>
             <a href="/mentions-legales" className="text-[12px] text-[#333] no-underline hover:text-[#888] transition-colors">Mentions légales</a>
             <a href="/login" className="text-[12px] text-[#333] no-underline hover:text-[#888] transition-colors">Connexion</a>
