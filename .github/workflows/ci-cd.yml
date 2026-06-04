@@ -9,14 +9,14 @@ on:
 jobs:
   ci:
     name: Executions des tests
-    runs-on: vps
+    runs-on: self-hosted
     steps:
       - name: En attente des tests
         run: echo "Execution des tests..."
 
   deploy:
     name: Déploiement Production
-    runs-on: vps
+    runs-on: self-hosted
     needs: ci
     concurrency:
       group: deploy-prod
